@@ -1,9 +1,0 @@
-package mylinkedlists;
-
-public class Main
-{
-    public static void main(String[] args)
-    {
-        
-    }
-}
