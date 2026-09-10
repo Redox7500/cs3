@@ -42,7 +42,7 @@ class AList<T> implements List<T>
     public void moveIndexToStart() {this.currentIndex = 0;}
 
     @Override
-    public void moveIndexToEnd() {this.currentIndex = this.array.length - 1;}
+    public void moveIndexToEnd() {this.currentIndex = elementCount - 1;}
 
     @Override
     public void moveIndexLeft() {assert this.currentIndex > 0 : "Index out of range"; this.currentIndex--;}
@@ -115,7 +115,7 @@ class AList<T> implements List<T>
     public boolean equals(List<T> otherList)
     {
         if (this.length() != otherList.length()) return false;
-        
+
         otherList.moveIndexToStart();
         for (T value:this.array)
         {
