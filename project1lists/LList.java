@@ -98,13 +98,13 @@ class LList<T> implements List<T>
     }
 
     @Override
-    public void moveIndexToStart() {this.currentLink = this.headLink; this.currentIndex = 0;}
+    public void moveCurrentIndexToStart() {this.currentLink = this.headLink; this.currentIndex = 0;}
 
     @Override
-    public void moveIndexToEnd() {this.currentLink = this.tailLink; this.currentIndex = this.elementCount - 1;}
+    public void moveCurrentIndexToEnd() {this.currentLink = this.tailLink; this.currentIndex = this.elementCount - 1;}
 
     @Override
-    public void moveIndexLeft()
+    public void moveCurrentIndexLeft()
     {
         assert this.currentLink != this.headLink : "Index out of range";
 
@@ -114,7 +114,7 @@ class LList<T> implements List<T>
     }
     
     @Override
-    public void moveIndexRight() {assert this.currentLink != this.tailLink : "Index out of range"; this.currentLink = this.currentLink.nextLink; this.currentIndex++;}
+    public void moveCurrentIndexRight() {assert this.currentLink != this.tailLink : "Index out of range"; this.currentLink = this.currentLink.nextLink; this.currentIndex++;}
 
     @Override
     public T getCurrentValue() {assert this.elementCount > 0 : "Index out of range"; return this.currentLink.nextLink.value;}
@@ -162,7 +162,7 @@ class LList<T> implements List<T>
         {
             this.currentLink.nextLink.release();
             this.currentLink.nextLink = null;
-            if (this.elementCount > 1) this.moveIndexLeft();
+            if (this.elementCount > 1) this.moveCurrentIndexLeft();
             else this.headLink.nextLink = this.headLink;
             this.tailLink = this.currentLink;
         }
@@ -204,8 +204,8 @@ class LList<T> implements List<T>
     {
         if (this.length() != otherList.length()) return false;
 
-        otherList.moveIndexToStart();
-        for (Link<T> tempLink = this.headLink; tempLink != this.tailLink; tempLink = tempLink.nextLink, otherList.moveIndexRight()) if (tempLink.nextLink.value != otherList.getCurrentValue()) return false;
+        otherList.moveCurrentIndexToStart();
+        for (Link<T> tempLink = this.headLink; tempLink != this.tailLink; tempLink = tempLink.nextLink, otherList.moveCurrentIndexRight()) if (tempLink.nextLink.value != otherList.getCurrentValue()) return false;
         return true;
     }
 }

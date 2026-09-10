@@ -39,16 +39,16 @@ class AList<T> implements List<T>
     public void setCurrentIndex(int index) {assert index >= 0 && index < this.elementCount : "Index out of range"; this.currentIndex = index;}
 
     @Override
-    public void moveIndexToStart() {this.currentIndex = 0;}
+    public void moveCurrentIndexToStart() {this.currentIndex = 0;}
 
     @Override
-    public void moveIndexToEnd() {this.currentIndex = elementCount - 1;}
+    public void moveCurrentIndexToEnd() {this.currentIndex = elementCount - 1;}
 
     @Override
-    public void moveIndexLeft() {assert this.currentIndex > 0 : "Index out of range"; this.currentIndex--;}
+    public void moveCurrentIndexLeft() {assert this.currentIndex > 0 : "Index out of range"; this.currentIndex--;}
     
     @Override
-    public void moveIndexRight() {assert this.currentIndex + 1 < this.elementCount : "Index out of range"; this.currentIndex++;}
+    public void moveCurrentIndexRight() {assert this.currentIndex + 1 < this.elementCount : "Index out of range"; this.currentIndex++;}
 
     @Override
     public T getCurrentValue() {assert this.elementCount > 0 : "Index out of range"; return this.array[this.currentIndex];}
@@ -84,6 +84,7 @@ class AList<T> implements List<T>
 
         for (int i = this.currentIndex; i < this.elementCount - 1; i++) this.array[i] = this.array[i + 1]; // Shift them down
         this.elementCount--; // Decrement size
+        if (this.currentIndex == this.elementCount && this.currentIndex > 0) this.currentIndex--;
 
         return element;
     }
@@ -116,11 +117,11 @@ class AList<T> implements List<T>
     {
         if (this.length() != otherList.length()) return false;
 
-        otherList.moveIndexToStart();
+        otherList.moveCurrentIndexToStart();
         for (T value:this.array)
         {
             if (value != otherList.getCurrentValue()) return false;
-            otherList.moveIndexRight();
+            otherList.moveCurrentIndexRight();
         }
         return true;
     }

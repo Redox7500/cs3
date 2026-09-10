@@ -1,5 +1,6 @@
 package project1lists;
 
+// add negative indices like in python maybe?
 /** List ADT */
 public interface List<T>
 {
@@ -13,16 +14,16 @@ public interface List<T>
     public void setCurrentIndex(int index);
 
     /** Set current index to 0 */
-    public void moveIndexToStart();
+    public void moveCurrentIndexToStart();
 
     /** Set current index to one less than the size of the list */
-    public void moveIndexToEnd();
+    public void moveCurrentIndexToEnd();
 
     /** Move the current index one step left */
-    public void moveIndexLeft();
+    public void moveCurrentIndexLeft();
 
     /** Move the current index one step right */
-    public void moveIndexRight();
+    public void moveCurrentIndexRight();
 
     /** @return The value of the list at the current index */
     public T getCurrentValue();
