@@ -7,13 +7,15 @@ public class Main
         List<Integer> list = new LList<Integer>();
         list.append(1);
         list.append(2);
-        System.out.println(list.getCurrentValue());
+        list.moveCurrentIndexToEnd();
+        // list.moveCurrentIndexLeft();
+        // list.moveCurrentIndexLeft();
         list.remove();
-        System.out.println(list.getCurrentValue());
+        list.println();
         list.append(3);
+        list.moveCurrentIndexRight();
         list.remove();
-        list.remove();
-        list.print();
+        list.println();
         System.out.println(list.getCurrentValue());
     }
 }

@@ -30,7 +30,7 @@ class AList<T> implements List<T>
     AList() {this(AList.defaultSize);}
 
     @Override
-    public int length() {return this.elementCount;}
+    public int size() {return this.elementCount;}
     
     @Override
     public int getCurrentIndex() {return this.currentIndex;}
@@ -102,7 +102,14 @@ class AList<T> implements List<T>
                 System.out.print(this.array[i]);
             }
         }
-        System.out.println("]");
+        System.out.print("]");
+    }
+
+    @Override
+    public void println()
+    {
+        this.print();
+        System.out.println();
     }
 
     @Override
@@ -115,7 +122,7 @@ class AList<T> implements List<T>
     @Override
     public boolean equals(List<T> otherList)
     {
-        if (this.length() != otherList.length()) return false;
+        if (this.size() != otherList.size()) return false;
 
         otherList.moveCurrentIndexToStart();
         for (T value:this.array)

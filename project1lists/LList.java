@@ -27,6 +27,7 @@ class LList<T> implements List<T>
             
             Link toReturn = freeList;
             freeList = freeList.nextLink;
+            System.out.println("using freelist");
 
             return toReturn;
         }
@@ -60,8 +61,8 @@ class LList<T> implements List<T>
         private void release()
         {
             this.value = null;
-            this.nextLink = freeList;
-            freeList = this;
+            this.nextLink = Link.freeList;
+            Link.freeList = this;
         }
     }
 
@@ -83,7 +84,7 @@ class LList<T> implements List<T>
     LList() {}
 
     @Override
-    public int length() {return this.elementCount;}
+    public int size() {return this.elementCount;}
 
     @Override
     public int getCurrentIndex() {return this.currentIndex;}
@@ -108,9 +109,9 @@ class LList<T> implements List<T>
     {
         assert this.currentLink != this.headLink : "Index out of range";
 
-        Link<T> previousCurrentLink = this.currentLink;
-        for (this.currentLink = this.headLink; this.currentLink.nextLink != previousCurrentLink; this.currentLink = this.currentLink.nextLink); // March down list until we find the previous link
+        this.currentLink = this.headLink;
         this.currentIndex--;
+        for (int i = 0; i < this.currentIndex - 1; i++, this.currentLink = this.currentLink.nextLink);
     }
     
     @Override
@@ -156,19 +157,26 @@ class LList<T> implements List<T>
     @Override
     public T remove()
     {
+        assert this.elementCount > 0 : "Index out of range";
+        
         T value = this.currentLink.nextLink.value; // Remember value
 
+        this.currentLink.nextLink.release();
+        this.currentLink.nextLink = this.currentLink.nextLink.nextLink; // Remove from list
+        // System.out.println(this.currentLink == this.headLink);
         if (this.currentLink == this.tailLink) // Removed last
         {
-            this.currentLink.nextLink.release();
-            this.currentLink.nextLink = null;
-            if (this.elementCount > 1) this.moveCurrentIndexLeft();
-            else this.headLink.nextLink = this.headLink;
-            this.tailLink = this.currentLink;
-        }
-        else
-        {
-            this.currentLink.nextLink = this.currentLink.nextLink.nextLink; // Remove from list
+            System.out.println("a");
+            if (this.elementCount > 1)
+            {
+                this.moveCurrentIndexLeft();
+                this.tailLink = this.currentLink;
+            }
+            else
+            {
+                this.headLink.nextLink = this.headLink;
+            }
+            // this.tailLink = this.currentLink;
         }
         this.elementCount--;
 
@@ -189,7 +197,14 @@ class LList<T> implements List<T>
                 System.out.print((tempLink = tempLink.nextLink).value);
             }
         }
-        System.out.println("]");
+        System.out.print("]");
+    }
+
+    @Override
+    public void println()
+    {
+        this.print();
+        System.out.println();
     }
 
     @Override
@@ -202,7 +217,7 @@ class LList<T> implements List<T>
     @Override
     public boolean equals(List<T> otherList)
     {
-        if (this.length() != otherList.length()) return false;
+        if (this.size() != otherList.size()) return false;
 
         otherList.moveCurrentIndexToStart();
         for (Link<T> tempLink = this.headLink; tempLink != this.tailLink; tempLink = tempLink.nextLink, otherList.moveCurrentIndexRight()) if (tempLink.nextLink.value != otherList.getCurrentValue()) return false;

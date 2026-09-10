@@ -5,7 +5,7 @@ package project1lists;
 public interface List<T>
 {
     /** @return The number of elements in the list */
-    public int length();
+    public int size();
 
     /** @return The current index */
     public int getCurrentIndex();
@@ -49,8 +49,11 @@ public interface List<T>
      */
     public T remove();
 
-    /** Print the values in the list */
+    /** Print the values in the list, comma separated, between square brackets*/
     public void print();
+
+    /** Print the values in the list, comma separated, between square brackets, followed by a newline */
+    public void println();
 
     /** @param value The value to search the list for
      * @return Boolean representing whether or not the list has the specified value
