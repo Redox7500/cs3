@@ -1,56 +1,63 @@
 package project1lists;
 
 /** List ADT */
-public interface List<E>
+public interface List<T>
 {
-    /** @return The number of elements in the list. */
+    /** @return The number of elements in the list */
     public int length();
 
-    /** @return The index of the current element. */
+    /** @return The current index */
     public int getCurrentIndex();
 
-    /** Set current index.
-        @param pos The index to make current. */
+    /** @param index The index to make current */
     public void setCurrentIndex(int index);
 
-    /** @return The current element. */
-    public E getCurrentElement();
+    /** Set current index to 0 */
+    public void moveIndexToStart();
 
-    /** @param The element to set the value at currentIndex to. */
-    public void setCurrentElement(E element);
+    /** Set current index to one less than the size of the list */
+    public void moveIndexToEnd();
 
-    /** Remove all contents from the list, so it is once again
-        empty. Client is responsible for reclaiming storage
-        used by the list elements. */
+    /** Move the current index one step left */
+    public void moveIndexLeft();
+
+    /** Move the current index one step right */
+    public void moveIndexRight();
+
+    /** @return The value of the list at the current index */
+    public T getCurrentValue();
+
+    /** @param value The value to set the list at the current index to */
+    public void setCurrentValue(T value);
+
+    /** Remove all contents from the list, so it is once again empty. The client is responsible for reclaiming storage used by the list elements. */
     public void clear();
 
-    /** Insert an element at the current location. The client
-        is responsible for ensuring that the list’s capacity
-        is not exceeded.
-        @param item The element to be inserted. */
-    public void insert(E element);
+    /** Insert an element at the current location with the specified value. The client is responsible for ensuring that the list’s capacity is not exceeded.
+     * @param value The value to be inserted
+     */
+    public void insert(T value);
 
-    /** Append an element at the end of the list. The client
-        is responsible for ensuring that the list’s capacity
-        is not exceeded.
-        @param item The element to be appended. */
-    public void append(E element);
+    /** Append an element at the end of the list with the specified value. The client is responsible for ensuring that the list’s capacity is not exceeded.
+     * @param value The value of the element to be appended
+     */
+    public void append(T value);
 
-    /** Remove and return the current element.
-        @return The element that was removed. */
-    public E remove();
+    /** Remove the element at the current index and return its value
+     * @return The value of the element that was removed
+     */
+    public T remove();
 
-    /** Set the current index to the start of the list */
-    public void moveToStart();
+    /** Print the values in the list */
+    public void print();
 
-    /** Set the current index to the end of the list */
-    public void moveToEnd();
+    /** @param value The value to search the list for
+     * @return Boolean representing whether or not the list has the specified value
+     */
+    public boolean contains(T value);
 
-    /** Move the current index one step left. No change
-        if already at beginning. */
-    public void prev();
-
-    /** Move the current index one step right. No change
-        if already at end. */
-    public void next();
+    /** Check whether or not two lists have the same values and the same element count. Implementations may affect the current index of this list and/or otherList.
+     * @param otherList The list to compare to
+     */
+    public boolean equals(List<T> otherList);
 }
