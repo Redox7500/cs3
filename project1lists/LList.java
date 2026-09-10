@@ -27,7 +27,6 @@ class LList<T> implements List<T>
             
             Link toReturn = freeList;
             freeList = freeList.nextLink;
-            System.out.println("using freelist");
 
             return toReturn;
         }
@@ -44,6 +43,7 @@ class LList<T> implements List<T>
         {
             Link<T> toReturn = Link.<T>acquire();
             toReturn.value = value;
+            toReturn.nextLink = null;
 
             return toReturn;
         }
@@ -149,6 +149,7 @@ class LList<T> implements List<T>
     @Override
     public void append(T value)
     {
+        this.println();
         this.tailLink = this.tailLink.nextLink;
         this.tailLink.nextLink = Link.acquire(value);
         this.elementCount++;
@@ -163,10 +164,8 @@ class LList<T> implements List<T>
 
         this.currentLink.nextLink.release();
         this.currentLink.nextLink = this.currentLink.nextLink.nextLink; // Remove from list
-        // System.out.println(this.currentLink == this.headLink);
         if (this.currentLink == this.tailLink) // Removed last
         {
-            System.out.println("a");
             if (this.elementCount > 1)
             {
                 this.moveCurrentIndexLeft();
@@ -176,7 +175,6 @@ class LList<T> implements List<T>
             {
                 this.headLink.nextLink = this.headLink;
             }
-            // this.tailLink = this.currentLink;
         }
         this.elementCount--;
 

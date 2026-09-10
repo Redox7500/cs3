@@ -16,6 +16,10 @@ public class Main
         list.moveCurrentIndexRight();
         list.remove();
         list.println();
+        list.remove();
+        list.println();
+        list.append(4);
+        list.println();
         System.out.println(list.getCurrentValue());
     }
 }
