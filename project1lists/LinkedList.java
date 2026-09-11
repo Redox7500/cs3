@@ -1,7 +1,9 @@
 package project1lists;
 
+// i should change all of the this.currentLink == this.tailLink Index out of range things to this.currentIndex < this.elementCount - 1 or something
+// same for DList
 /** Linked list implementation */
-class LList<T> implements List<T>
+class LinkedList<T> implements List<T>
 {
     private static class Link<T>
     {
@@ -20,10 +22,7 @@ class LList<T> implements List<T>
         @SuppressWarnings({"rawtypes", "unchecked"})
         private static <T> Link<T> acquire()
         {
-            if (freeList == null)
-            {
-                return new Link<T>();
-            }
+            if (freeList == null) return new Link<T>();
             
             Link toReturn = freeList;
             freeList = freeList.nextLink;
@@ -33,7 +32,7 @@ class LList<T> implements List<T>
 
         private static <T> Link<T> acquire(boolean looping)
         {
-            Link<T> toReturn = Link.<T>acquire();
+            Link<T> toReturn = Link.acquire();
             toReturn.nextLink = toReturn;
 
             return toReturn;
@@ -41,7 +40,7 @@ class LList<T> implements List<T>
 
         private static <T> Link<T> acquire(T value)
         {
-            Link<T> toReturn = Link.<T>acquire();
+            Link<T> toReturn = Link.acquire();
             toReturn.value = value;
             toReturn.nextLink = null;
 
@@ -50,7 +49,7 @@ class LList<T> implements List<T>
 
         private static <T> Link<T> acquire(T value, Link<T> nextLink)
         {
-            Link<T> toReturn = Link.<T>acquire();
+            Link<T> toReturn = Link.acquire();
             toReturn.value = value;
             toReturn.nextLink = nextLink;
 
@@ -81,7 +80,7 @@ class LList<T> implements List<T>
     /** Size of list */
     private int elementCount = 0;
 
-    LList() {}
+    LinkedList() {}
 
     @Override
     public int size() {return this.elementCount;}
@@ -126,7 +125,7 @@ class LList<T> implements List<T>
     @Override
     public void clear()
     {
-        for (Link<T> tempLink = this.headLink; (tempLink = tempLink.nextLink) != null; tempLink.release())
+        for (Link<T> tempLink = this.headLink; tempLink != null; tempLink = tempLink.nextLink) tempLink.release();
         this.headLink.nextLink = this.headLink; // Drop access to links
         this.currentIndex = 0;
         this.elementCount = 0;
@@ -135,21 +134,20 @@ class LList<T> implements List<T>
     @Override
     public void insert(T value)
     {
-        if (this.currentLink == this.tailLink)
-        {
-            this.append(value);
-        }
-        else
+        if (this.currentLink != this.tailLink)
         {
             this.currentLink.nextLink = Link.acquire(value, this.currentLink.nextLink);
             this.elementCount++;
+        }
+        else
+        {
+            this.append(value);
         }
     }
     
     @Override
     public void append(T value)
     {
-        this.println();
         this.tailLink = this.tailLink.nextLink;
         this.tailLink.nextLink = Link.acquire(value);
         this.elementCount++;
@@ -162,12 +160,14 @@ class LList<T> implements List<T>
         
         T value = this.currentLink.nextLink.value; // Remember value
 
-        this.currentLink.nextLink.release();
-        this.currentLink.nextLink = this.currentLink.nextLink.nextLink; // Remove from list
+        Link<T> currentNextLink = this.currentLink.nextLink;
+        this.currentLink.nextLink = currentNextLink.nextLink; // Remove from list
+        currentNextLink.release();
         if (this.currentLink == this.tailLink) // Removed last
         {
             if (this.elementCount > 1)
             {
+                System.out.println(this.getCurrentValue());
                 this.moveCurrentIndexLeft();
                 this.tailLink = this.currentLink;
             }
@@ -187,13 +187,8 @@ class LList<T> implements List<T>
         System.out.print("[");
         if (this.elementCount > 0)
         {
-            Link<T> tempLink = this.headLink;
-            System.out.print((tempLink = tempLink.nextLink).value);
-            while (tempLink.nextLink != null)
-            {
-                System.out.print(", ");
-                System.out.print((tempLink = tempLink.nextLink).value);
-            }
+            System.out.print(this.headLink.nextLink.value);
+            for (Link<T> tempLink = this.headLink.nextLink; tempLink.nextLink != null; ) System.out.print(", " + (tempLink = tempLink.nextLink).value);
         }
         System.out.print("]");
     }
@@ -208,7 +203,7 @@ class LList<T> implements List<T>
     @Override
     public boolean contains(T value)
     {
-        for (Link<T> tempLink = headLink; tempLink != tailLink;) if ((tempLink = tempLink.nextLink).value == value) return true;
+        for (Link<T> tempLink = headLink; tempLink != tailLink; ) if ((tempLink = tempLink.nextLink).value == value) return true;
         return false;
     }
 
