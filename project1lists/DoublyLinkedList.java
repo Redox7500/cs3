@@ -86,7 +86,7 @@ class DoublyLinkedList<T> implements List<T>
     public int getCurrentIndex() {return this.currentIndex;}
 
     @Override
-    public void setCurrentIndex(int index)
+    public void moveCurrentIndexTo(int index)
     {
         assert index >= 0 && index < this.elementCount : "Index out of range";
 
@@ -135,7 +135,6 @@ class DoublyLinkedList<T> implements List<T>
         {
             this.currentLink.previousLink.nextLink = Link.acquire(value, this.currentLink.previousLink, this.currentLink);
             this.currentLink.previousLink = this.currentLink.previousLink.nextLink;
-            // this.currentLink = Link.acquire(value, this.currentLink.previousLink, this.currentLink);
             this.elementCount++;
         }
         else
@@ -167,7 +166,7 @@ class DoublyLinkedList<T> implements List<T>
         T value = this.currentLink.value; // Remember value
         Link<T> currentPreviousLink = this.currentLink.previousLink;
         Link<T> currentNextLink = this.currentLink.nextLink;
-        // this.currentLink.release();
+        this.currentLink.release();
         if (currentPreviousLink != null) currentPreviousLink.nextLink = currentNextLink;
         if (currentNextLink != null)
         {
@@ -179,45 +178,6 @@ class DoublyLinkedList<T> implements List<T>
             this.currentLink = currentPreviousLink;
             this.tailLink = this.currentLink;
         }
-        // System.out.println(this.headLink.value);
-        // System.out.println(this.currentLink.value);
-        // System.out.println(this.tailLink.value);
-        // System.out.println(this.headLink);
-        // System.out.println(this.tailLink == this.headLink);
-        // this.currentLink.previousLink.nextLink = this.currentLink.nextLink;
-        // this.currentLink.nextLink.previousLink = this.currentLink.previousLink;
-        // if (this.currentLink != this.headLink)
-        // {
-        //     if (this.currentLink != this.tailLink)
-        //     {
-        //         System.out.println("a");
-        //         Link<T> currentNextLink = this.currentLink.nextLink;
-        //         this.currentLink.previousLink.nextLink = currentNextLink;
-        //         this.currentLink.release();
-        //         this.currentLink = currentNextLink;
-        //     }
-        //     else
-        //     {
-        //         System.out.println("c");
-        //         this.tailLink = this.tailLink.previousLink;
-        //         this.currentLink.release();
-        //         this.tailLink.nextLink = null;
-        //         this.currentLink = this.tailLink;
-        //     }
-        // }
-        // else if (this.elementCount > 1)
-        // {
-        //     System.out.println("b");
-        //     this.headLink = this.currentLink.nextLink;
-        //     this.currentLink.release();
-        //     this.headLink.previousLink = null;
-        //     this.currentLink = this.headLink;
-        // }
-        // else
-        // {
-        //     this.currentLink.release();
-        //     this.headLink = this.currentLink = this.tailLink = null;
-        // }
         this.elementCount--;
 
         return value;
@@ -233,29 +193,5 @@ class DoublyLinkedList<T> implements List<T>
             for (Link<T> tempLink = this.headLink.nextLink; tempLink != null; tempLink = tempLink.nextLink) System.out.print(", " + tempLink.value);
         }
         System.out.print("]");
-    }
-
-    @Override
-    public void println()
-    {
-        this.print();
-        System.out.println();
-    }
-
-    @Override
-    public boolean contains(T value)
-    {
-        for (Link<T> tempLink = headLink; tempLink != null; tempLink = tempLink.nextLink) if (tempLink.value == value) return true;
-        return false;
-    }
-
-    @Override
-    public boolean equals(List<T> otherList)
-    {
-        if (this.size() != otherList.size()) return false;
-
-        otherList.moveCurrentIndexToStart();
-        for (Link<T> tempLink = this.headLink; tempLink != null; tempLink = tempLink.nextLink, otherList.moveCurrentIndexRight()) if (tempLink.value != otherList.getCurrentValue()) return false;
-        return true;
     }
 }

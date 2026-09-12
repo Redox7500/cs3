@@ -89,7 +89,7 @@ class LinkedList<T> implements List<T>
     public int getCurrentIndex() {return this.currentIndex;}
 
     @Override
-    public void setCurrentIndex(int index)
+    public void moveCurrentIndexTo(int index)
     {
         assert index >= 0 && index < this.elementCount : "Index out of range";
 
@@ -191,29 +191,5 @@ class LinkedList<T> implements List<T>
             for (Link<T> tempLink = this.headLink.nextLink; tempLink.nextLink != null; ) System.out.print(", " + (tempLink = tempLink.nextLink).value);
         }
         System.out.print("]");
-    }
-
-    @Override
-    public void println()
-    {
-        this.print();
-        System.out.println();
-    }
-
-    @Override
-    public boolean contains(T value)
-    {
-        for (Link<T> tempLink = headLink; tempLink != tailLink; ) if ((tempLink = tempLink.nextLink).value == value) return true;
-        return false;
-    }
-
-    @Override
-    public boolean equals(List<T> otherList)
-    {
-        if (this.size() != otherList.size()) return false;
-
-        otherList.moveCurrentIndexToStart();
-        for (Link<T> tempLink = this.headLink; tempLink != this.tailLink; tempLink = tempLink.nextLink, otherList.moveCurrentIndexRight()) if (tempLink.nextLink.value != otherList.getCurrentValue()) return false;
-        return true;
     }
 }

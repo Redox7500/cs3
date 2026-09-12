@@ -36,19 +36,7 @@ class ArrayList<T> implements List<T>
     public int getCurrentIndex() {return this.currentIndex;}
 
     @Override
-    public void setCurrentIndex(int index) {assert index >= 0 && index < this.elementCount : "Index out of range"; this.currentIndex = index;}
-
-    @Override
-    public void moveCurrentIndexToStart() {this.currentIndex = 0;}
-
-    @Override
-    public void moveCurrentIndexToEnd() {this.currentIndex = elementCount - 1;}
-
-    @Override
-    public void moveCurrentIndexLeft() {assert this.currentIndex > 0 : "Index out of range"; this.currentIndex--;}
-    
-    @Override
-    public void moveCurrentIndexRight() {assert this.currentIndex + 1 < this.elementCount : "Index out of range"; this.currentIndex++;}
+    public void moveCurrentIndexTo(int index) {assert index >= 0 && index < this.elementCount : "Index out of range"; this.currentIndex = index;}
 
     @Override
     public T getCurrentValue() {assert this.elementCount > 0 : "Index out of range"; return this.array[this.currentIndex];}
@@ -103,33 +91,5 @@ class ArrayList<T> implements List<T>
             }
         }
         System.out.print("]");
-    }
-
-    @Override
-    public void println()
-    {
-        this.print();
-        System.out.println();
-    }
-
-    @Override
-    public boolean contains(T value)
-    {
-        for (T v:this.array) if (v == value) return true;
-        return false;
-    }
-
-    @Override
-    public boolean equals(List<T> otherList)
-    {
-        if (this.size() != otherList.size()) return false;
-
-        otherList.moveCurrentIndexToStart();
-        for (T value:this.array)
-        {
-            if (value != otherList.getCurrentValue()) return false;
-            otherList.moveCurrentIndexRight();
-        }
-        return true;
     }
 }

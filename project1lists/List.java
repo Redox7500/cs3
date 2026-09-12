@@ -11,19 +11,19 @@ public interface List<T>
     public int getCurrentIndex();
 
     /** @param index The index to make current */
-    public void setCurrentIndex(int index);
+    public void moveCurrentIndexTo(int index);
 
     /** Set current index to 0 */
-    public void moveCurrentIndexToStart();
+    public default void moveCurrentIndexToStart() {this.moveCurrentIndexTo(0);}
 
     /** Set current index to one less than the size of the list */
-    public void moveCurrentIndexToEnd();
+    public default void moveCurrentIndexToEnd() {this.moveCurrentIndexTo(this.size() - 1);}
 
     /** Move the current index one step left */
-    public void moveCurrentIndexLeft();
+    public default void moveCurrentIndexLeft() {this.moveCurrentIndexTo(this.getCurrentIndex() - 1);}
 
     /** Move the current index one step right */
-    public void moveCurrentIndexRight();
+    public default void moveCurrentIndexRight() {this.moveCurrentIndexTo(this.getCurrentIndex() + 1);}
 
     /** @return The value of the list at the current index */
     public T getCurrentValue();
@@ -53,15 +53,28 @@ public interface List<T>
     public void print();
 
     /** Print the values in the list, comma separated, between square brackets, followed by a newline */
-    public void println();
+    public default void println() {this.print(); System.out.println();}
 
-    /** @param value The value to search the list for
-     * @return Boolean representing whether or not the list has the specified value
-     */
-    public boolean contains(T value);
+    /** Shaffer's name for my equivalent moveCurrentIndexToStart method */
+    public default void moveToStart() {this.moveCurrentIndexToStart();}
 
-    /** Check whether or not two lists have the same values and the same element count. Implementations may affect the current index of this list and/or otherList.
-     * @param otherList The list to compare to
-     */
-    public boolean equals(List<T> otherList);
+    /** Shaffer's name for my equivalent moveCurrentIndexToEnd method */
+    public default void moveToEnd() {this.moveCurrentIndexToEnd();}
+
+    /** Shaffer's name for my equivalent moveCurrentIndexLeft method */
+    public default void prev() {this.moveCurrentIndexLeft();}
+
+    /** Shaffer's name for my equivalent moveCurrentIndexRight method */
+    public default void next() {this.moveCurrentIndexRight();}
+
+    /** Shaffer's name for my equivalent getCurrentIndex method */
+    public default int currPos() {return this.getCurrentIndex();}
+
+    /** Shaffer's name for my equivalent moveCurrentIndexTo method
+     * @param pos The position to make current
+    */
+    public default void moveToPos(int pos) {this.moveCurrentIndexTo(pos);}
+
+    /** Shaffer's name for my equivalent getCurrentValue method */
+    public default T getValue() {return this.getCurrentValue();}
 }
