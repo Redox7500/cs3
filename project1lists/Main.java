@@ -4,16 +4,17 @@ public class Main
 {
     public static void main(String[] args)
     {
-        List<Integer> list = new ArrayList<Integer>();
-        list.append(1);
-        list.append(2);
+        List<Integer> list = new LinkedList<Integer>();
+        list.insert(1);
+        list.insert(2);
         list.moveCurrentIndexToEnd();
         System.out.println(list.getCurrentValue());
+        list.println();
         // list.moveCurrentIndexLeft();
         // list.moveCurrentIndexLeft();
         list.remove();
         list.println();
-        list.append(3);
+        list.insert(3);
         System.out.println(list.getCurrentValue());
         list.println();
         list.moveCurrentIndexRight();

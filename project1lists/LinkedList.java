@@ -134,14 +134,15 @@ class LinkedList<T> implements List<T>
     @Override
     public void insert(T value)
     {
-        if (this.currentLink != this.tailLink)
+        if (this.elementCount == 0)
         {
-            this.currentLink.nextLink = Link.acquire(value, this.currentLink.nextLink);
-            this.elementCount++;
+            this.append(value);
         }
         else
         {
-            this.append(value);
+            this.currentLink.nextLink = Link.acquire(value, this.currentLink.nextLink);
+            // this.currentLink = this.currentLink.nextLink;
+            this.elementCount++;
         }
     }
     
@@ -167,7 +168,7 @@ class LinkedList<T> implements List<T>
         {
             if (this.elementCount > 1)
             {
-                System.out.println(this.getCurrentValue());
+                System.out.println(this.headLink.value);
                 this.moveCurrentIndexLeft();
                 this.tailLink = this.currentLink;
             }

@@ -131,15 +131,35 @@ class DoublyLinkedList<T> implements List<T>
     @Override
     public void insert(T value)
     {
-        if (this.currentLink != this.tailLink)
+        // if (this.currentLink == this.tailLink)
+        // {
+        //     this.append(value);
+        // }
+        // else if (this.currentLink == this.headLink)
+        if (this.elementCount == 0)
         {
-            this.currentLink.previousLink.nextLink = Link.acquire(value, this.currentLink.previousLink, this.currentLink);
-            this.currentLink.previousLink = this.currentLink.previousLink.nextLink;
-            this.elementCount++;
+            this.append(value);
         }
         else
         {
-            this.append(value);
+            if (this.currentLink == this.headLink)
+            {
+                this.headLink.previousLink = Link.acquire(value, null, this.headLink);
+                this.headLink = this.currentLink = this.headLink.previousLink;
+            }
+            else
+            {
+                this.currentLink.previousLink = Link.acquire(value, this.currentLink.previousLink, this.currentLink);
+                this.currentLink = this.currentLink.previousLink;
+                this.currentLink.previousLink.nextLink = this.currentLink;
+                // this.currentLink.previousLink.nextLink = Link.acquire(value, this.currentLink.previousLink, this.currentLink);
+                // this.currentLink.previousLink = this.currentLink.previousLink.nextLink;
+                // this.currentLink = this.currentLink.previousLink;
+
+                // this.currentLink.previousLink.nextLink = Link.acquire(value, this.currentLink.previousLink, this.currentLink);
+                // this.currentLink.previousLink = this.currentLink.previousLink.nextLink;
+            }
+            this.elementCount++;
         }
     }
     
@@ -164,19 +184,26 @@ class DoublyLinkedList<T> implements List<T>
         assert this.elementCount > 0 : "Index out of range";
         
         T value = this.currentLink.value; // Remember value
+
         Link<T> currentPreviousLink = this.currentLink.previousLink;
         Link<T> currentNextLink = this.currentLink.nextLink;
         this.currentLink.release();
-        if (currentPreviousLink != null) currentPreviousLink.nextLink = currentNextLink;
-        if (currentNextLink != null)
+        if (this.currentLink != this.headLink) currentPreviousLink.nextLink = currentNextLink;
+        if (this.currentLink != this.tailLink)
         {
+            boolean a = this.headLink == this.currentLink; // no
             currentNextLink.previousLink = currentPreviousLink;
             this.currentLink = currentNextLink;
+            if (a) // wow this is terrible
+            {
+                this.headLink = this.currentLink; // there has to be a better way dude
+            }
         }
         else
         {
             this.currentLink = currentPreviousLink;
             this.tailLink = this.currentLink;
+            if (this.elementCount == 1) this.headLink = null;
         }
         this.elementCount--;
 
