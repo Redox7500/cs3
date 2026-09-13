@@ -8,7 +8,7 @@ public class Main
         list.insert(1);
         list.insert(2);
         list.moveCurrentIndexToEnd();
-        System.out.println(list.getCurrentValue());
+        // System.out.println(list.getCurrentValue());
         list.println();
         // list.moveCurrentIndexLeft();
         // list.moveCurrentIndexLeft();

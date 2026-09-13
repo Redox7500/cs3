@@ -141,6 +141,7 @@ class LinkedList<T> implements List<T>
         else
         {
             this.currentLink.nextLink = Link.acquire(value, this.currentLink.nextLink);
+            if (this.currentLink == this.tailLink) this.tailLink = this.tailLink.nextLink;
             // this.currentLink = this.currentLink.nextLink;
             this.elementCount++;
         }
@@ -168,7 +169,9 @@ class LinkedList<T> implements List<T>
         {
             if (this.elementCount > 1)
             {
-                System.out.println(this.headLink.value);
+                // System.out.println(this.headLink.nextLink.value);
+                // System.out.println(this.currentLink.nextLink.value);
+                // System.out.println(value);
                 this.moveCurrentIndexLeft();
                 this.tailLink = this.currentLink;
             }
