@@ -131,11 +131,6 @@ class DoublyLinkedList<T> implements List<T>
     @Override
     public void insert(T value)
     {
-        // if (this.currentLink == this.tailLink)
-        // {
-        //     this.append(value);
-        // }
-        // else if (this.currentLink == this.headLink)
         if (this.elementCount == 0)
         {
             this.append(value);
@@ -152,12 +147,6 @@ class DoublyLinkedList<T> implements List<T>
                 this.currentLink.previousLink = Link.acquire(value, this.currentLink.previousLink, this.currentLink);
                 this.currentLink = this.currentLink.previousLink;
                 this.currentLink.previousLink.nextLink = this.currentLink;
-                // this.currentLink.previousLink.nextLink = Link.acquire(value, this.currentLink.previousLink, this.currentLink);
-                // this.currentLink.previousLink = this.currentLink.previousLink.nextLink;
-                // this.currentLink = this.currentLink.previousLink;
-
-                // this.currentLink.previousLink.nextLink = Link.acquire(value, this.currentLink.previousLink, this.currentLink);
-                // this.currentLink.previousLink = this.currentLink.previousLink.nextLink;
             }
             this.elementCount++;
         }
