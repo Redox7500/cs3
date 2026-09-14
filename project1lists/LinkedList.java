@@ -22,7 +22,7 @@ class LinkedList<T> implements List<T>
         @SuppressWarnings({"rawtypes", "unchecked"})
         private static <T> Link<T> acquire()
         {
-            if (freeList == null) return new Link<T>();
+            if (freeList == null) return new Link<>();
             
             Link toReturn = freeList;
             freeList = freeList.nextLink;
@@ -33,7 +33,7 @@ class LinkedList<T> implements List<T>
         private static <T> Link<T> acquire(boolean looping)
         {
             Link<T> toReturn = Link.acquire();
-            toReturn.nextLink = toReturn;
+            if (looping) toReturn.nextLink = toReturn;
 
             return toReturn;
         }
@@ -66,7 +66,7 @@ class LinkedList<T> implements List<T>
     }
 
     /** Pointer to first link */
-    private Link<T> headLink = Link.acquire(true);
+    private final Link<T> headLink = Link.acquire(true);
 
     /** Pointer to second to last link */
     private Link<T> tailLink = this.headLink;
@@ -94,7 +94,7 @@ class LinkedList<T> implements List<T>
         assert index >= 0 && index < this.elementCount : "Index out of range";
 
         this.currentLink = this.headLink;
-        for (this.currentIndex = 0; this.currentIndex < index; this.currentIndex++, this.currentLink = this.currentLink.nextLink);
+        for (this.currentIndex = 0; this.currentIndex < index; this.currentIndex++) this.currentLink = this.currentLink.nextLink;
     }
 
     @Override
@@ -110,7 +110,7 @@ class LinkedList<T> implements List<T>
 
         this.currentLink = this.headLink;
         this.currentIndex--;
-        for (int i = 0; i < this.currentIndex - 1; i++, this.currentLink = this.currentLink.nextLink);
+        for (int i = 0; i < this.currentIndex - 1; i++) this.currentLink = this.currentLink.nextLink;
     }
     
     @Override

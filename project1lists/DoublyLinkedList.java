@@ -25,7 +25,7 @@ class DoublyLinkedList<T> implements List<T>
         @SuppressWarnings({"rawtypes", "unchecked"})
         private static <T> Link<T> acquire()
         {
-            if (freeList == null) return new Link<T>();
+            if (freeList == null) return new Link<>();
             
             Link toReturn = freeList;
             freeList = freeList.nextLink;
