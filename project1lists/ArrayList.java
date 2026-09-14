@@ -4,7 +4,7 @@ package project1lists;
 class ArrayList<T> implements List<T>
 {
     /** Maximum amount of elements AList is instantiated to contain by default */
-    private static final int defaultSize = 10;
+    private static final int DEFAULT_SIZE = 10;
 
     /** Number of elements this list has */
     private int elementCount;
@@ -27,7 +27,7 @@ class ArrayList<T> implements List<T>
     }
 
     /** Create a list with the default capacity. */
-    ArrayList() {this(ArrayList.defaultSize);}
+    ArrayList() {this(ArrayList.DEFAULT_SIZE);}
 
     @Override
     public int size() {return this.elementCount;}
