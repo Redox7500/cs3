@@ -108,10 +108,10 @@ class CustomDoublyLinkedList<T> implements CustomList<T>
     public void moveCurrentIndexToEnd() {this.currentLink = this.tailLink; this.currentIndex = this.elementCount - 1;}
 
     @Override
-    public void moveCurrentIndexLeft() {assert this.currentLink != this.headLink : "Index out of range"; this.currentLink = this.currentLink.previousLink; this.currentIndex--;}
+    public void moveCurrentIndexLeft() {assert this.currentIndex != 0 : "Index out of range"; this.currentLink = this.currentLink.previousLink; this.currentIndex--;}
     
     @Override
-    public void moveCurrentIndexRight() {assert this.currentLink != this.tailLink : "Index out of range"; this.currentLink = this.currentLink.nextLink; this.currentIndex++;}
+    public void moveCurrentIndexRight() {assert this.currentIndex != this.elementCount - 1 : "Index out of range"; this.currentLink = this.currentLink.nextLink; this.currentIndex++;}
 
     @Override
     public T getCurrentValue() {assert this.elementCount > 0 : "Index out of range"; return this.currentLink.value;}
@@ -180,13 +180,9 @@ class CustomDoublyLinkedList<T> implements CustomList<T>
         if (this.currentLink != this.headLink) currentPreviousLink.nextLink = currentNextLink;
         if (this.currentLink != this.tailLink)
         {
-            boolean a = this.headLink == this.currentLink; // no
             currentNextLink.previousLink = currentPreviousLink;
             this.currentLink = currentNextLink;
-            if (a) // wow this is terrible
-            {
-                this.headLink = this.currentLink; // there has to be a better way dude
-            }
+            if (this.currentIndex == 0) this.headLink = this.currentLink;
         }
         else
         {

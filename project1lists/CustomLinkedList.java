@@ -1,7 +1,5 @@
 package project1lists;
 
-// i should change all of the this.currentLink == this.tailLink Index out of range things to this.currentIndex < this.elementCount - 1 or something
-// same for DList
 /** Linked list implementation */
 class CustomLinkedList<T> implements CustomList<T>
 {
@@ -106,7 +104,7 @@ class CustomLinkedList<T> implements CustomList<T>
     @Override
     public void moveCurrentIndexLeft()
     {
-        assert this.currentLink != this.headLink : "Index out of range";
+        assert this.currentIndex != 0 : "Index out of range";
 
         this.currentLink = this.headLink;
         this.currentIndex--;
@@ -114,7 +112,7 @@ class CustomLinkedList<T> implements CustomList<T>
     }
     
     @Override
-    public void moveCurrentIndexRight() {assert this.currentLink != this.tailLink : "Index out of range"; this.currentLink = this.currentLink.nextLink; this.currentIndex++;}
+    public void moveCurrentIndexRight() {assert this.currentIndex != this.elementCount - 1 : "Index out of range"; this.currentLink = this.currentLink.nextLink; this.currentIndex++;}
 
     @Override
     public T getCurrentValue() {assert this.elementCount > 0 : "Index out of range"; return this.currentLink.nextLink.value;}
