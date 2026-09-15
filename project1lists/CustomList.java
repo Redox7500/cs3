@@ -2,7 +2,7 @@ package project1lists;
 
 // add negative indices like in python maybe?
 /** List ADT */
-public interface List<T>
+public interface CustomList<T>
 {
     /** @return The number of elements in the list */
     public int size();

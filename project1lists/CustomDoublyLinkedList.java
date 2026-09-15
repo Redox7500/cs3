@@ -1,7 +1,7 @@
 package project1lists;
 
 /** Linked list implementation */
-class DoublyLinkedList<T> implements List<T>
+class CustomDoublyLinkedList<T> implements CustomList<T>
 {
     private static class Link<T>
     {
@@ -77,7 +77,7 @@ class DoublyLinkedList<T> implements List<T>
     /** Size of list */
     private int elementCount = 0;
 
-    DoublyLinkedList() {}
+    CustomDoublyLinkedList() {}
 
     @Override
     public int size() {return this.elementCount;}

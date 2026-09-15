@@ -1,7 +1,7 @@
 package project1lists;
 
 /** Array-based list implementation */
-class ArrayList<T> implements List<T>
+class CustomArrayList<T> implements CustomList<T>
 {
     /** Maximum amount of elements AList is instantiated to contain by default */
     private static final int DEFAULT_SIZE = 10;
@@ -19,7 +19,7 @@ class ArrayList<T> implements List<T>
      * @param size Maximum amount of elements this instance should have
      */
     @SuppressWarnings("unchecked") // For generic array allocation
-    ArrayList(int size)
+    CustomArrayList(int size)
     {
         this.elementCount = 0;
         this.currentIndex = 0;
@@ -27,7 +27,7 @@ class ArrayList<T> implements List<T>
     }
 
     /** Create a list with the default capacity. */
-    ArrayList() {this(ArrayList.DEFAULT_SIZE);}
+    CustomArrayList() {this(CustomArrayList.DEFAULT_SIZE);}
 
     @Override
     public int size() {return this.elementCount;}

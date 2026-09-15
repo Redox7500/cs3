@@ -3,7 +3,7 @@ package project1lists;
 // i should change all of the this.currentLink == this.tailLink Index out of range things to this.currentIndex < this.elementCount - 1 or something
 // same for DList
 /** Linked list implementation */
-class LinkedList<T> implements List<T>
+class CustomLinkedList<T> implements CustomList<T>
 {
     private static class Link<T>
     {
@@ -80,7 +80,7 @@ class LinkedList<T> implements List<T>
     /** Size of list */
     private int elementCount = 0;
 
-    LinkedList() {}
+    CustomLinkedList() {}
 
     @Override
     public int size() {return this.elementCount;}

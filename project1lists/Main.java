@@ -4,7 +4,7 @@ public class Main
 {
     public static void main(String[] args)
     {
-        List<Integer> list = new LinkedList<>();
+        CustomList<Integer> list = new CustomLinkedList<>();
         list.insert(1);
         list.insert(2);
         list.moveCurrentIndexToEnd();
