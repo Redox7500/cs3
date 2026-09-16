@@ -49,6 +49,9 @@ public interface CustomList<T>
      */
     public T remove();
 
+    /** @return A copy of this list as far down as its elements (but elements in the copied array point to the same place as corresponding elements in this array) */
+    public CustomList<T> copy();
+
     /** Print the values in the list, comma separated, between square brackets*/
     public void print();
 

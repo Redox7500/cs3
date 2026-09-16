@@ -46,15 +46,15 @@ public class Main
 
     /** Tests if customList and list behave the same when the specified function is called
      * <p>
-     * Note: This function only works with Byte lists because generating random numbers for them is easy and there's really no purpose to add other types; they should all work the same (also Bytes are the smallest)
+     * Note: This function only works with Integer lists because generating random numbers for them is easy and there's really no purpose to add other types; they should all work the same (also Integers make it so that functionInput works for both values and indices)
      * @param customList An instance of your custom list implementation to test
      * @param list An instance of reliable code such as ArrayList that has the same values/state as your customList
      * @param currentIndex A supplementary property of list that matches your customList's internal current index (as stated before, both instances should have the exact same values/state)
      * @param function The index of which function you would like to test. These indices are 0 based and go from the top to the bottom of the CustomList.java file.
-     * @param functionInput (optional) The value to give to the function at the index you chose, which will not be used if the function you chose has no inputs
+     * @param functionInput (optional) The value to give to the function you chose, which will not be used if the function you chose has no inputs
      * @return A FunctionTestResult stating the behavior of the customList relative to the list
      */
-    private static FunctionTestResult testFunction(CustomList<Byte> customList, List<Byte> list, int currentIndex, int function, int functionInput)
+    private static FunctionTestResult testFunction(CustomList<Integer> customList, List<Integer> list, int currentIndex, int function, int functionInput)
     {
         assert function >= 0 && function < 13 : "Invalid function index";
 
@@ -96,84 +96,77 @@ public class Main
                 return FunctionTestResult.SUCCESS;
             }
             case 4:
-                {
+            {
                 try {customList.moveCurrentIndexToEnd();}
-                catch (Exception _) {return false;}
+                catch (Exception _) {return FunctionTestResult.FAIL;}
                 currentIndex = list.size() - 1;
 
-                return true;
+                return FunctionTestResult.SUCCESS;
             }
             case 5:
             {
-                boolean listError = currentIndex == 0;
-
                 try {customList.moveCurrentIndexLeft();}
-                catch (Exception _) {return listError;}
+                catch (Exception _) {return (currentIndex == 0)? FunctionTestResult.ERROR : FunctionTestResult.FAIL;}
                 currentIndex--;
 
-                return true;
+                return FunctionTestResult.SUCCESS;
             }
             case 6:
             {
-                boolean listError = currentIndex == list.size() - 1;
-
                 try {customList.moveCurrentIndexRight();}
-                catch (Exception _) {return listError;}
+                catch (Exception _) {return (currentIndex == list.size() - 1)? FunctionTestResult.ERROR : FunctionTestResult.FAIL;}
                 currentIndex++;
 
-                return true;
+                return FunctionTestResult.SUCCESS;
             }
             case 7:
             {
                 // note that this should never have an error because a branch will stop if it encounters an invalid index/any kind of error at all/any kind of discrepancy between customList and list
-                return customList.getCurrentValue() == list.get(currentIndex);
+                return (customList.getCurrentValue() == list.get(currentIndex))? FunctionTestResult.SUCCESS : FunctionTestResult.FAIL;
             }
             case 8:
             {
-                byte[] valueArray = new byte[]{}; RNG.nextBytes(valueArray);
-                try {customList.setCurrentValue(valueArray[0]);}
-                catch (Exception _) {return false;}
-                list.set(currentIndex, valueArray[0]);
+                try {customList.setCurrentValue(functionInput);}
+                catch (Exception _) {return (list.size() == 0)? FunctionTestResult.ERROR : FunctionTestResult.FAIL;}
+                list.set(currentIndex, functionInput);
 
-                return true;
+                return FunctionTestResult.SUCCESS;
             }
             case 9:
             {
                 try {customList.clear();}
-                catch (Exception _) {return false;}
+                catch (Exception _) {return FunctionTestResult.FAIL;}
                 list.clear();
 
-                return true;
+                return FunctionTestResult.SUCCESS;
             }
             case 10:
             {
                 try {customList.insert(functionInput);}
-                catch (Exception _) {return false;}
+                catch (Exception _) {return FunctionTestResult.FAIL;}
                 list.add(currentIndex, functionInput);
 
-                return true;
+                return FunctionTestResult.SUCCESS;
             }
             case 11:
             {
                 try {customList.append(functionInput);}
-                catch (Exception _) {return false;}
+                catch (Exception _) {return FunctionTestResult.FAIL;}
                 list.add(functionInput);
 
-                return true;
+                return FunctionTestResult.SUCCESS;
             }
             case 12:
             {
-                boolean listError = list.size() == 0;
-
                 try {customList.remove();}
-                catch (Exception _) {return listError;}
+                catch (Exception _) {return (list.size() == 0)? FunctionTestResult.ERROR : FunctionTestResult.FAIL;}
                 list.remove(currentIndex);
 
-                return true;
+                return FunctionTestResult.SUCCESS;
             }
             default:
             {
-                return false; // This code should never be able to happen because of the assert above
+                return FunctionTestResult.FAIL; // This code should never be able to happen because of the assert above
             }
         }
     }
@@ -188,10 +181,9 @@ public class Main
      * @param functionInput (optional) The value to give to the function at the index you chose, which will not be used if the function you chose has no inputs
      * @return A FunctionTestResult stating the behavior of the customList relative to the list
      */
-    private static boolean testFunction(CustomList<Byte> customList, List<Byte> list, int currentIndex, int function)
+    private static FunctionTestResult testFunction(CustomList<Integer> customList, List<Integer> list, int currentIndex, int function)
     {
-        byte[] value = new byte[]{}; RNG.nextBytes(value);
-        return Main.testFunction(customList, list, currentIndex, function, value[0]);
+        return Main.testFunction(customList, list, currentIndex, function, RNG.nextInt());
     }
 
     public static void main(String[] args)

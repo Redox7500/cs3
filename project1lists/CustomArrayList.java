@@ -78,6 +78,17 @@ class CustomArrayList<T> implements CustomList<T>
     }
 
     @Override
+    public CustomArrayList<T> copy()
+    {
+        int length = this.array.length;
+        CustomArrayList<T> toReturn = new CustomArrayList<>(length);
+        System.arraycopy(this.array, 0, toReturn.array, 0, length);
+        toReturn.moveCurrentIndexTo(this.currentIndex);
+        
+        return toReturn;
+    }
+
+    @Override
     public void print()
     {
         System.out.print("[");

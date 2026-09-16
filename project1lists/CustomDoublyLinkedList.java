@@ -197,6 +197,16 @@ class CustomDoublyLinkedList<T> implements CustomList<T>
     }
 
     @Override
+    public CustomDoublyLinkedList<T> copy()
+    {
+        CustomDoublyLinkedList<T> toReturn = new CustomDoublyLinkedList<>();
+        for (Link<T> tempLink = this.headLink; tempLink != null; tempLink = tempLink.nextLink) toReturn.append(tempLink.value);
+        toReturn.moveCurrentIndexTo(this.currentIndex);
+
+        return toReturn;
+    }
+
+    @Override
     public void print()
     {
         System.out.print("[");
