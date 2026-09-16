@@ -55,26 +55,26 @@ public interface CustomList<T>
     /** Print the values in the list, comma separated, between square brackets, followed by a newline */
     public default void println() {this.print(); System.out.println();}
 
-    /** Shaffer's name for my equivalent moveCurrentIndexToStart method */
+    /** Shaffer's name for my equivalent {@link #project1lists.CustomList.moveCurrentIndexToStart moveCurrentIndexToStart} method */
     public default void moveToStart() {this.moveCurrentIndexToStart();}
 
-    /** Shaffer's name for my equivalent moveCurrentIndexToEnd method */
+    /** Shaffer's name for my equivalent {@link #project1lists.CustomList.moveCurrentIndexToEnd moveCurrentIndexToEnd} method */
     public default void moveToEnd() {this.moveCurrentIndexToEnd();}
 
-    /** Shaffer's name for my equivalent moveCurrentIndexLeft method */
+    /** Shaffer's name for my equivalent {@link #project1lists.CustomList.moveCurrentIndexLeft moveCurrentIndexLeft} method */
     public default void prev() {this.moveCurrentIndexLeft();}
 
-    /** Shaffer's name for my equivalent moveCurrentIndexRight method */
+    /** Shaffer's name for my equivalent {@link #project1lists.CustomList.moveCurrentIndexRight moveCurrentIndexRight} method */
     public default void next() {this.moveCurrentIndexRight();}
 
-    /** Shaffer's name for my equivalent getCurrentIndex method */
+    /** Shaffer's name for my equivalent {@link #project1lists.CustomList.getCurrentIndex getCurrentIndex} method */
     public default int currPos() {return this.getCurrentIndex();}
 
-    /** Shaffer's name for my equivalent moveCurrentIndexTo method
+    /** Shaffer's name for my equivalent {@link #project1lists.CustomList.moveCurrentIndexTo moveCurrentIndexTo} method
      * @param pos The position to make current
     */
     public default void moveToPos(int pos) {this.moveCurrentIndexTo(pos);}
 
-    /** Shaffer's name for my equivalent getCurrentValue method */
+    /** Shaffer's name for my equivalent {@link #project1lists.CustomList.getCurrentValue getCurrentValue} method */
     public default T getValue() {return this.getCurrentValue();}
 }

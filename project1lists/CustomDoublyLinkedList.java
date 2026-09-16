@@ -6,6 +6,7 @@ class CustomDoublyLinkedList<T> implements CustomList<T>
     private static class Link<T>
     {
         /** Linked list of nodes that are not currently being used and can be reused
+         * <p>
          * Note: Doubly linked free lists do not take advantage of the link's previousLink property, as there is no need.
         */
         @SuppressWarnings("rawtypes")
