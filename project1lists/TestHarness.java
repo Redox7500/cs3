@@ -2,12 +2,9 @@ package project1lists;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class TestHarness
 {
-    private static final Random RNG = new Random();
-
     /** Return type of testCustomListMethod */
     private static enum TestCustomListResult
     {
@@ -196,27 +193,6 @@ public class TestHarness
         }
     }
 
-    /** This is an overload of {@link #project1lists.Main.testCustomListMethod(CustomList, List, int, int, Byte) testCustomListMethod} without the last Byte argument (functionInput). This is replaced with a random number.
-     * <p>
-     * Note: This function only works with Byte lists because generating random numbers for them is easy and there's really no purpose to add other types; they should all work the same (also Bytes are the smallest)
-     * @param customList An instance of your custom list implementation to test
-     * @param list An instance of reliable code such as ArrayList that has the same values/state as your customList
-     * @param currentIndex A supplementary property of list that matches your customList's internal current index (as stated before, both instances should have the exact same values/state)
-     * @param function The index of which function you would like to test. These indices are 0 based and go from the top to the bottom of the CustomList.java file.
-     * @param functionInput (optional) The value to give to the function at the index you chose, which will not be used if the function you chose has no inputs
-     * @return A TestCustomListResult stating the behavior of the customList relative to the list
-     */
-    private static TestCustomListResult testCustomListMethod(CustomList<Integer> customList, List<Integer> list, int[] currentIndex, int function)
-    {
-        return TestHarness.testCustomListMethod(customList, list, currentIndex, function, RNG.nextInt());
-    }
-
-    /** Test every function of the customListClass
-     * <p>
-     * Note: This function also only uses Integer elements, see {@link #project1lists.TestHarness.testFunction(CustomList, List, int, int, int) testFunction} for why
-     * @param customListClass The CustomList implementation to test
-     * @return Whether or not the class's behavior is as expected (compared to {@link #java.util.ArrayList ArrayList}) <!-- this link doesn't work for some weird reason -->
-    */
     /** Test every method of the customListClass
      * Note: This function also only works with an element type of Integer, see {@link project1lists.TestHarness.testCustomListMethod(CustomList, List, int, int, int) testCustomListMethod} for why
      * @param customListClass The class to test the behavior of
