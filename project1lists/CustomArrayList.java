@@ -42,7 +42,13 @@ class CustomArrayList<T> implements CustomList<T>
     public T getCurrentValue() {assert this.elementCount > 0 : "Index out of range"; return this.array[this.currentIndex];}
 
     @Override
-    public void setCurrentValue(T value) {assert this.elementCount > 0: "Index out of range"; this.array[this.currentIndex] = value;}
+    public void setCurrentValue(T value)
+    {
+        assert this.array.length > 0: "List capacity exceeded";
+        // could change this to being append on elementCount == 0 for consistency with the other custom lists, but this also works
+        this.array[this.currentIndex] = value;
+        if (this.elementCount == 0) this.elementCount++;
+    }
 
     @Override
     public void clear() {this.elementCount = 0; this.currentIndex = 0;}
@@ -68,6 +74,8 @@ class CustomArrayList<T> implements CustomList<T>
     @Override
     public T remove()
     {
+        assert this.elementCount > 0 : "Index out of range";
+
         T element = this.array[this.currentIndex]; // Copy the element
 
         for (int i = this.currentIndex; i < this.elementCount - 1; i++) this.array[i] = this.array[i + 1]; // Shift them down
@@ -87,20 +95,24 @@ class CustomArrayList<T> implements CustomList<T>
         
         return toReturn;
     }
-
+    
     @Override
-    public void print()
+    public String toString()
     {
-        System.out.print("[");
+        // StringBuilder toReturn = new StringBuilder(this.elementCount * 3 + 2 - ((this.elementCount > 0)? 2 : 0));
+        StringBuilder toReturn = new StringBuilder(this.elementCount * 3 + ((this.elementCount > 0)? 0 : 2));
+        toReturn.append('[');
         if (this.elementCount > 0)
         {
-            System.out.print(this.array[0]);
+            toReturn.append(this.array[0]);
             for (int i = 1; i < this.elementCount; i++)
             {
-                System.out.print(", ");
-                System.out.print(this.array[i]);
+                toReturn.append(", ");
+                toReturn.append(this.array[i]);
             }
         }
-        System.out.print("]");
+        toReturn.append(']');
+
+        return toReturn.toString();
     }
 }

@@ -36,11 +36,13 @@ public class TestHarness
         
         customList.moveCurrentIndexToStart();
         boolean toReturn = true;
-        for (int i = 0; i < list.size(); i++)
+        for (int i = 0; i < list.size() - 1; i++)
         {
             if (customList.getCurrentValue() != list.get(i)) {toReturn = false; break;}
+            customList.moveCurrentIndexRight();
         }
         if (customListIndex != 0) customList.moveCurrentIndexTo(customListIndex);
+
         return toReturn;
     }
 
@@ -64,27 +66,35 @@ public class TestHarness
             {
                 int customListSize;
                 try {customListSize = customList.size();}
-                catch (Throwable _) {return TestCustomListResult.SUCCESS;}
+                catch (Throwable _) {return TestCustomListResult.FAIL;}
 
                 return (customListSize == list.size())? TestCustomListResult.SUCCESS : TestCustomListResult.FAIL;
             }
             case 1:
             {
+                // boolean listError = currentIndex[0] < 0 || ((list.size() > 0)? currentIndex[0] >= list.size() : currentIndex[0] != 0);
+                
                 int customListCurrentIndex;
                 try {customListCurrentIndex = customList.getCurrentIndex();}
+                // catch (Throwable _) {return (listError)? TestCustomListResult.ERROR : TestCustomListResult.FAIL;}
                 catch (Throwable _) {return TestCustomListResult.FAIL;}
-
+                
+                // return (!listError && customListCurrentIndex == currentIndex[0])? TestCustomListResult.SUCCESS : TestCustomListResult.FAIL;
                 return (customListCurrentIndex == currentIndex[0])? TestCustomListResult.SUCCESS : TestCustomListResult.FAIL;
             }
             case 2:
             {
-                boolean listError = functionInput < 0 || (functionInput >= list.size() && list.size() > 0);
+                boolean listError = functionInput < 0 || ((list.size() > 0)? functionInput >= list.size() : functionInput != 0);
 
                 try {customList.moveCurrentIndexTo(functionInput);} // this is kinda scuffed, not all indices will be checked with this implementation, fix maybe by looping through all valid?
                 catch (Throwable _) {return (listError)? TestCustomListResult.ERROR : TestCustomListResult.FAIL;}
+                if (listError) return TestCustomListResult.FAIL;
                 currentIndex[0] = functionInput;
+                // System.out.println(list.size());
+                // System.out.println(functionInput);
+                // System.out.println(customList.getCurrentIndex());
 
-                return (listError)? TestCustomListResult.FAIL : TestCustomListResult.SUCCESS;
+                return TestCustomListResult.SUCCESS;
             }
             case 3:
             {
@@ -98,13 +108,13 @@ public class TestHarness
             {
                 try {customList.moveCurrentIndexToEnd();}
                 catch (Throwable _) {return TestCustomListResult.FAIL;}
-                currentIndex[0] = list.size() - 1;
+                currentIndex[0] = Math.max(list.size() - 1, 0);
 
                 return TestCustomListResult.SUCCESS;
             }
             case 5:
             {
-                boolean listError = currentIndex[0] < 0;
+                boolean listError = currentIndex[0] <= 0;
 
                 try {customList.moveCurrentIndexLeft();}
                 catch (Throwable _) {return (listError)? TestCustomListResult.ERROR : TestCustomListResult.FAIL;}
@@ -114,30 +124,33 @@ public class TestHarness
             }
             case 6:
             {
-                boolean listError = (list.size() > 0)? currentIndex[0] >= list.size() : currentIndex[0] > 0;
+                boolean listError = (list.size() > 0)? currentIndex[0] >= list.size() - 1 : true;
 
                 try {customList.moveCurrentIndexRight();}
                 catch (Throwable _) {return (listError)? TestCustomListResult.ERROR : TestCustomListResult.FAIL;}
+                if (listError) return TestCustomListResult.FAIL;
                 currentIndex[0]++;
 
-                return (listError)? TestCustomListResult.FAIL : TestCustomListResult.SUCCESS;
+                return TestCustomListResult.SUCCESS;
             }
             case 7:
             {
-                boolean listError = currentIndex[0] < 0 || currentIndex[0] >= list.size();
+                boolean listError = list.size() == 0;
 
                 Integer customListCurrentValue;
                 try {customListCurrentValue = customList.getCurrentValue();}
                 catch (Throwable _) {return (listError)? TestCustomListResult.ERROR : TestCustomListResult.FAIL;}
+                if (listError) return TestCustomListResult.FAIL;
 
                 // note that this should never have an error because a branch will stop if it encounters an invalid index/any kind of error at all/any kind of discrepancy between customList and list
-                return (!listError && customListCurrentValue == list.get(currentIndex[0]))? TestCustomListResult.SUCCESS : TestCustomListResult.FAIL;
+                return (customListCurrentValue == list.get(currentIndex[0]))? TestCustomListResult.SUCCESS : TestCustomListResult.FAIL;
             }
             case 8:
             {
-                try {customList.setCurrentValue(functionInput);} // vague whether or not this should have a listError or just append a new element
-                catch (Throwable _) {return (list.size() == 0)? TestCustomListResult.ERROR : TestCustomListResult.FAIL;}
-                list.set(currentIndex[0], functionInput);
+                try {customList.setCurrentValue(functionInput);}
+                catch (Throwable _) {return TestCustomListResult.FAIL;}
+                if (list.size() > 0) list.set(currentIndex[0], functionInput);
+                else list.add(functionInput);
 
                 return TestCustomListResult.SUCCESS;
             }
@@ -171,9 +184,10 @@ public class TestHarness
 
                 try {customList.remove();}
                 catch (Throwable _) {return (listError)? TestCustomListResult.ERROR : TestCustomListResult.FAIL;}
+                if (listError) return TestCustomListResult.FAIL;
                 list.remove(currentIndex[0]);
 
-                return (listError)? TestCustomListResult.FAIL : TestCustomListResult.SUCCESS;
+                return TestCustomListResult.SUCCESS;
             }
             default:
             {
@@ -214,60 +228,80 @@ public class TestHarness
         ArrayList<CustomList<Integer>> customListLeaves = new ArrayList<>();
         ArrayList<ArrayList<Integer>> arrayListLeaves = new ArrayList<>();
         ArrayList<int[]> arrayListLeafCurrentIndices = new ArrayList<>();
+        ArrayList<int[]> functionHistories = new ArrayList<>();
+        ArrayList<int[]> argumentHistories = new ArrayList<>();
         try {customListLeaves.add(customListClass.getDeclaredConstructor().newInstance());}
         catch (Throwable _) {System.out.println("customListClass has no accessible parameterless constructor"); return false;}
         arrayListLeaves.add(new ArrayList<>());
         arrayListLeafCurrentIndices.add(new int[]{0});
-        for (int i = 0; i < depth; i++)
+        functionHistories.add(new int[]{});
+        argumentHistories.add(new int[]{});
+        for (int currentDepth = 0; currentDepth < depth; currentDepth++)
         {
+            // lowk make this a node class or something?
             ArrayList<CustomList<Integer>> newCustomListLeaves = new ArrayList<>();
             ArrayList<ArrayList<Integer>> newArrayListLeaves = new ArrayList<>();
             ArrayList<int[]> newArrayListLeafCurrentIndices = new ArrayList<>();
-            for (int j = 0; j < arrayListLeaves.size(); j++)
+            ArrayList<int[]> newFunctionHistories = new ArrayList<>();
+            ArrayList<int[]> newArgumentHistories = new ArrayList<>();
+            for (int currentLeafIndex = 0; currentLeafIndex < arrayListLeaves.size(); currentLeafIndex++)
             {
-                for (int k = 0; k < 13; k++)
+                for (int currentFunction = 0; currentFunction < 13; currentFunction++)
                 {
-                    CustomList<Integer> newCustomListLeaf = customListLeaves.get(j).copy();
-                    ArrayList<Integer> newArrayListLeaf = new ArrayList<>(arrayListLeaves.get(j));
-                    int[] newArrayListLeafCurrentIndex = new int[]{arrayListLeafCurrentIndices.get(j)[0]};
-                    
-                    switch (TestHarness.testCustomListMethod(newCustomListLeaf, newArrayListLeaf, newArrayListLeafCurrentIndex, k, i))
+                    for (int currentArgument = -1; currentArgument < arrayListLeaves.get(currentLeafIndex).size() + 1; currentArgument++)
                     {
-                        case TestCustomListResult.ERROR:
-                            continue;
-                        case TestCustomListResult.FAIL:
-                            System.out.println("Failed at state below");
-                            System.out.print("Custom list: ");
-                            newCustomListLeaf.println();
-                            System.out.println("ArrayList: " + newArrayListLeaf);
-                            System.out.println("Current index: " + newArrayListLeafCurrentIndex[0]);
-                            System.out.println("Function: " + k);
-                            System.out.println("Argument: " + i);
-                            System.out.println("Depth (starting at 0): " + i);
-                            return false;
-                        case TestCustomListResult.SUCCESS:
-                            if (!TestHarness.equals(newCustomListLeaf, newArrayListLeaf))
-                            {
-                                System.out.println("Lists were not equal at state below");
-                                System.out.print("Custom list: ");
-                                newCustomListLeaf.println();
+                        CustomList<Integer> newCustomListLeaf = customListLeaves.get(currentLeafIndex).copy();
+                        ArrayList<Integer> newArrayListLeaf = new ArrayList<>(arrayListLeaves.get(currentLeafIndex));
+                        int[] newArrayListLeafCurrentIndex = new int[]{arrayListLeafCurrentIndices.get(currentLeafIndex)[0]};
+
+                        int[] newFunctionHistory = new int[currentDepth + 1];
+                        System.arraycopy(functionHistories.get(currentLeafIndex), 0, newFunctionHistory, 0, currentDepth);
+                        newFunctionHistory[currentDepth] = currentFunction;
+                        
+                        int[] newArgumentHistory = new int[currentDepth + 1];
+                        System.arraycopy(argumentHistories.get(currentLeafIndex), 0, newArgumentHistory, 0, currentDepth);
+                        newArgumentHistory[currentDepth] = currentArgument;
+                        
+                        switch (TestHarness.testCustomListMethod(newCustomListLeaf, newArrayListLeaf, newArrayListLeafCurrentIndex, currentFunction, currentArgument))
+                        {
+                            case TestCustomListResult.ERROR:
+                                continue;
+                            case TestCustomListResult.FAIL:
+                                System.out.println("Failed at state below");
+                                System.out.println("Custom list: " + newCustomListLeaf);
                                 System.out.println("ArrayList: " + newArrayListLeaf);
                                 System.out.println("Current index: " + newArrayListLeafCurrentIndex[0]);
-                                System.out.println("Function: " + k);
-                                System.out.println("Argument: " + i);
-                                System.out.println("Depth (starting at 0): " + i);
+                                System.out.println("Current depth (starting at 0): " + currentDepth);
+                                System.out.println("Function history (first to last): " + newFunctionHistory);
+                                System.out.println("Argument history (first to last): " + newArgumentHistory);
                                 return false;
-                            }
-                    
-                            newCustomListLeaves.add(newCustomListLeaf);
-                            newArrayListLeaves.add(newArrayListLeaf);
-                            newArrayListLeafCurrentIndices.add(newArrayListLeafCurrentIndex);
+                            case TestCustomListResult.SUCCESS:
+                                if (!TestHarness.equals(newCustomListLeaf, newArrayListLeaf))
+                                {
+                                    System.out.println("Lists were not equal at state below");
+                                    System.out.println("Custom list: " + newCustomListLeaf);
+                                    System.out.println("ArrayList: " + newArrayListLeaf);
+                                    System.out.println("Current index: " + newArrayListLeafCurrentIndex[0]);
+                                    System.out.println("Current depth (starting at 0): " + currentDepth);
+                                    System.out.println("Function history (first to last): " + newFunctionHistory);
+                                    System.out.println("Argument history (first to last): " + newArgumentHistory);
+                                    return false;
+                                }
+                        
+                                newCustomListLeaves.add(newCustomListLeaf);
+                                newArrayListLeaves.add(newArrayListLeaf);
+                                newArrayListLeafCurrentIndices.add(newArrayListLeafCurrentIndex);
+                                newFunctionHistories.add(newFunctionHistory);
+                                newArgumentHistories.add(newArgumentHistory);
+                        }
                     }
                 }
             }
             customListLeaves = newCustomListLeaves;
             arrayListLeaves = newArrayListLeaves;
             arrayListLeafCurrentIndices = newArrayListLeafCurrentIndices;
+            functionHistories = newFunctionHistories;
+            argumentHistories = newArgumentHistories;
         }
         return true;
     }

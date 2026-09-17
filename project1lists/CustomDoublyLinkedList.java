@@ -93,12 +93,12 @@ class CustomDoublyLinkedList<T> implements CustomList<T>
 
         if (this.currentIndex >> 2 <= index)
         {
-            for (; this.currentIndex >= index; this.currentIndex--) this.currentLink = this.currentLink.previousLink;
+            for (; this.currentIndex > index; this.currentIndex--) this.currentLink = this.currentLink.previousLink;
         }
         else
         {
             this.currentLink = this.headLink;
-            for (this.currentIndex = 0; this.currentIndex <= index; this.currentIndex++) this.currentLink = this.currentLink.nextLink;
+            for (this.currentIndex = 0; this.currentIndex < index; this.currentIndex++) this.currentLink = this.currentLink.nextLink;
         }
     }
 
@@ -106,19 +106,19 @@ class CustomDoublyLinkedList<T> implements CustomList<T>
     public void moveCurrentIndexToStart() {this.currentLink = this.headLink; this.currentIndex = 0;}
 
     @Override
-    public void moveCurrentIndexToEnd() {this.currentLink = this.tailLink; this.currentIndex = this.elementCount - 1;}
+    public void moveCurrentIndexToEnd() {this.currentLink = this.tailLink; this.currentIndex = Math.max(this.elementCount - 1, 0);}
 
     @Override
     public void moveCurrentIndexLeft() {assert this.currentIndex != 0 : "Index out of range"; this.currentLink = this.currentLink.previousLink; this.currentIndex--;}
     
     @Override
-    public void moveCurrentIndexRight() {assert this.currentIndex != this.elementCount - 1 : "Index out of range"; this.currentLink = this.currentLink.nextLink; this.currentIndex++;}
+    public void moveCurrentIndexRight() {assert this.currentIndex != Math.max(this.elementCount - 1, 0) : "Index out of range"; this.currentLink = this.currentLink.nextLink; this.currentIndex++;}
 
     @Override
     public T getCurrentValue() {assert this.elementCount > 0 : "Index out of range"; return this.currentLink.value;}
 
     @Override
-    public void setCurrentValue(T value) {assert this.elementCount > 0 : "Index out of range"; this.currentLink.value = value;}
+    public void setCurrentValue(T value) {if (this.elementCount > 0) this.currentLink.value = value; else this.append(value);}
 
     @Override
     public void clear()
@@ -207,14 +207,21 @@ class CustomDoublyLinkedList<T> implements CustomList<T>
     }
 
     @Override
-    public void print()
+    public String toString()
     {
-        System.out.print("[");
+        StringBuilder toReturn = new StringBuilder(this.elementCount * 3 + ((this.elementCount > 0)? 0 : 2));
+        toReturn.append('[');
         if (this.elementCount > 0)
         {
-            System.out.print(this.headLink.value);
-            for (Link<T> tempLink = this.headLink.nextLink; tempLink != null; tempLink = tempLink.nextLink) System.out.print(", " + tempLink.value);
+            toReturn.append(this.headLink.value);
+            for (Link<T> tempLink = this.headLink.nextLink; tempLink != null; tempLink = tempLink.nextLink)
+            {
+                toReturn.append(", ");
+                toReturn.append(tempLink.value);
+            }
         }
-        System.out.print("]");
+        toReturn.append(']');
+
+        return toReturn.toString();
     }
 }

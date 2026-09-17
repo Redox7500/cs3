@@ -4,7 +4,7 @@ public class Main
 {
     public static void main(String[] args)
     {
-        System.out.println(TestHarness.testCustomList(CustomArrayList.class, 1));
+        System.out.println(TestHarness.testCustomList(CustomArrayList.class, 2));
         // CustomList<Integer> list = new CustomLinkedList<>();
         // list.insert(1);
         // list.insert(2);

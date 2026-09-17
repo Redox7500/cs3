@@ -1,7 +1,6 @@
 package project1lists;
 
 // add negative indices like in python maybe?
-// change print and println to the toString() thing? like ArrayList does apparently?
 /** List ADT */
 public interface CustomList<T>
 {
@@ -18,7 +17,7 @@ public interface CustomList<T>
     public default void moveCurrentIndexToStart() {this.moveCurrentIndexTo(0);}
 
     /** Set current index to one less than the size of the list */
-    public default void moveCurrentIndexToEnd() {this.moveCurrentIndexTo(this.size() - 1);}
+    public default void moveCurrentIndexToEnd() {this.moveCurrentIndexTo(Math.max(this.size() - 1, 0));}
 
     /** Move the current index one step left */
     public default void moveCurrentIndexLeft() {this.moveCurrentIndexTo(this.getCurrentIndex() - 1);}
@@ -53,11 +52,8 @@ public interface CustomList<T>
     /** @return A copy of this list as far down as its elements (but elements in the copied array point to the same place as corresponding elements in this array) */
     public CustomList<T> copy();
 
-    /** Print the values in the list, comma separated, between square brackets*/
-    public void print();
-
-    /** Print the values in the list, comma separated, between square brackets, followed by a newline */
-    public default void println() {this.print(); System.out.println();}
+    /** String of the values in the list, comma separated, between square brackets */
+    public String toString();
 
     /** Shaffer's name for my equivalent {@link #project1lists.CustomList.moveCurrentIndexToStart moveCurrentIndexToStart} method */
     public default void moveToStart() {this.moveCurrentIndexToStart();}

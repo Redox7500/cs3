@@ -99,7 +99,7 @@ class CustomLinkedList<T> implements CustomList<T>
     public void moveCurrentIndexToStart() {this.currentLink = this.headLink; this.currentIndex = 0;}
 
     @Override
-    public void moveCurrentIndexToEnd() {this.currentLink = this.tailLink; this.currentIndex = this.elementCount - 1;}
+    public void moveCurrentIndexToEnd() {this.currentLink = this.tailLink; this.currentIndex = Math.max(this.elementCount - 1, 0);}
 
     @Override
     public void moveCurrentIndexLeft()
@@ -112,13 +112,13 @@ class CustomLinkedList<T> implements CustomList<T>
     }
     
     @Override
-    public void moveCurrentIndexRight() {assert this.currentIndex != this.elementCount - 1 : "Index out of range"; this.currentLink = this.currentLink.nextLink; this.currentIndex++;}
+    public void moveCurrentIndexRight() {assert this.currentIndex != Math.max(this.elementCount - 1, 0) : "Index out of range"; this.currentLink = this.currentLink.nextLink; this.currentIndex++;}
 
     @Override
     public T getCurrentValue() {assert this.elementCount > 0 : "Index out of range"; return this.currentLink.nextLink.value;}
 
     @Override
-    public void setCurrentValue(T value) {assert this.elementCount > 0 : "Index out of range"; this.currentLink.nextLink.value = value;}
+    public void setCurrentValue(T value) {if (this.elementCount > 0) this.currentLink.nextLink.value = value; else this.append(value);}
 
     @Override
     public void clear()
@@ -190,14 +190,21 @@ class CustomLinkedList<T> implements CustomList<T>
     }
 
     @Override
-    public void print()
+    public String toString()
     {
-        System.out.print("[");
+        StringBuilder toReturn = new StringBuilder(this.elementCount * 3 + ((this.elementCount > 0)? 0 : 2));
+        toReturn.append('[');
         if (this.elementCount > 0)
         {
-            System.out.print(this.headLink.nextLink.value);
-            for (Link<T> tempLink = this.headLink.nextLink; tempLink.nextLink != null; ) System.out.print(", " + (tempLink = tempLink.nextLink).value);
+            toReturn.append(this.headLink.nextLink.value);
+            for (Link<T> tempLink = this.headLink.nextLink; tempLink.nextLink != null; )
+            {
+                toReturn.append(", ");
+                toReturn.append((tempLink = tempLink.nextLink).value);
+            }
         }
-        System.out.print("]");
+        toReturn.append(']');
+
+        return toReturn.toString();
     }
 }
