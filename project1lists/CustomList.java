@@ -1,6 +1,7 @@
 package project1lists;
 
 // add negative indices like in python maybe?
+// change print and println to the toString() thing? like ArrayList does apparently?
 /** List ADT */
 public interface CustomList<T>
 {

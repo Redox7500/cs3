@@ -89,7 +89,7 @@ class CustomLinkedList<T> implements CustomList<T>
     @Override
     public void moveCurrentIndexTo(int index)
     {
-        assert index >= 0 && index < this.elementCount : "Index out of range";
+        assert index >= 0 && ((this.elementCount > 0)? index < this.elementCount : index == 0) : "Index out of range";
 
         this.currentLink = this.headLink;
         for (this.currentIndex = 0; this.currentIndex < index; this.currentIndex++) this.currentLink = this.currentLink.nextLink;
@@ -183,8 +183,8 @@ class CustomLinkedList<T> implements CustomList<T>
     public CustomLinkedList<T> copy()
     {
         CustomLinkedList<T> toReturn = new CustomLinkedList<>();
-        for (Link<T> tempLink = this.headLink; tempLink != null; tempLink = tempLink.nextLink) toReturn.append(tempLink.value);
-        toReturn.moveCurrentIndexTo(this.currentIndex);
+        if (this.elementCount > 0) for (Link<T> tempLink = this.headLink; tempLink.nextLink != null; tempLink = tempLink.nextLink) toReturn.append(tempLink.nextLink.value);
+        if (this.currentIndex != 0) toReturn.moveCurrentIndexTo(this.currentIndex);
 
         return toReturn;
     }

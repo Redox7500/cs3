@@ -89,7 +89,7 @@ class CustomDoublyLinkedList<T> implements CustomList<T>
     @Override
     public void moveCurrentIndexTo(int index)
     {
-        assert index >= 0 && index < this.elementCount : "Index out of range";
+        assert index >= 0 && ((this.elementCount > 0)? index < this.elementCount : index == 0) : "Index out of range";
 
         if (this.currentIndex >> 2 <= index)
         {
@@ -201,7 +201,7 @@ class CustomDoublyLinkedList<T> implements CustomList<T>
     {
         CustomDoublyLinkedList<T> toReturn = new CustomDoublyLinkedList<>();
         for (Link<T> tempLink = this.headLink; tempLink != null; tempLink = tempLink.nextLink) toReturn.append(tempLink.value);
-        toReturn.moveCurrentIndexTo(this.currentIndex);
+        if (this.currentIndex != 0) toReturn.moveCurrentIndexTo(this.currentIndex);
 
         return toReturn;
     }
