@@ -9,8 +9,7 @@ class CustomDoublyLinkedList<E> implements CustomList<E, CustomDoublyLinkedList<
          * <p>
          * Note: Doubly linked free lists do not take advantage of the link's previousLink property, as there is no need.
         */
-        @SuppressWarnings("rawtypes")
-        private static Link freeList;
+        private static Link<?> freeList;
 
         /** Value for this node */
         private E value = null;
@@ -23,12 +22,12 @@ class CustomDoublyLinkedList<E> implements CustomList<E, CustomDoublyLinkedList<
 
         Link() {}
 
-        @SuppressWarnings({"rawtypes", "unchecked"})
+        @SuppressWarnings("unchecked")
         private static <E> Link<E> acquire()
         {
             if (freeList == null) return new Link<>();
             
-            Link toReturn = freeList;
+            Link<E> toReturn = (Link<E>)freeList;
             freeList = freeList.nextLink;
 
             return toReturn;
@@ -58,7 +57,7 @@ class CustomDoublyLinkedList<E> implements CustomList<E, CustomDoublyLinkedList<
         {
             this.value = null;
             this.previousLink = null;
-            this.nextLink = Link.freeList;
+            this.nextLink = (Link<E>)Link.freeList;
             Link.freeList = this;
         }
     }

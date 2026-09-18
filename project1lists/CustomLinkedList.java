@@ -6,8 +6,7 @@ class CustomLinkedList<E> implements CustomList<E, CustomLinkedList<E>>
     private static class Link<E>
     {
         /** Linked list of nodes that are not currently being used and can be reused */
-        @SuppressWarnings("rawtypes")
-        private static Link freeList;
+        private static Link<?> freeList;
 
         /** Value for this node */
         private E value = null;
@@ -17,12 +16,12 @@ class CustomLinkedList<E> implements CustomList<E, CustomLinkedList<E>>
 
         Link() {}
 
-        @SuppressWarnings({"rawtypes", "unchecked"})
+        @SuppressWarnings("unchecked")
         private static <E> Link<E> acquire()
         {
             if (freeList == null) return new Link<>();
             
-            Link toReturn = freeList;
+            Link<E> toReturn = (Link<E>)freeList;
             freeList = freeList.nextLink;
 
             return toReturn;
@@ -58,7 +57,7 @@ class CustomLinkedList<E> implements CustomList<E, CustomLinkedList<E>>
         private void release()
         {
             this.value = null;
-            this.nextLink = Link.freeList;
+            this.nextLink = (Link<E>)Link.freeList;
             Link.freeList = this;
         }
     }
