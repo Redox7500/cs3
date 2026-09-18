@@ -4,6 +4,6 @@ public class Main
 {
     public static void main(String[] args)
     {
-        System.out.println(TestHarness.testCustomList(() -> new CustomArrayList<Integer>(), 2));
+        System.out.println((TestHarness.testCustomList(() -> new CustomDoublyLinkedList<Integer>(), 3))? "great" : "terrible");
     }
 }

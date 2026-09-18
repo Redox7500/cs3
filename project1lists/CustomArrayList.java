@@ -1,10 +1,10 @@
 package project1lists;
 
 /** Array-based list implementation */
-class CustomArrayList<T> implements CustomList<T>
+class CustomArrayList<E> implements CustomList<E, CustomArrayList<E>>
 {
     /** Maximum amount of elements AList is instantiated to contain by default */
-    private static final int DEFAULT_SIZE = 10;
+    private static final int DEFAULT_SIZE = 16;
 
     /** Number of elements this list has */
     private int elementCount;
@@ -13,7 +13,7 @@ class CustomArrayList<T> implements CustomList<T>
     private int currentIndex;
 
     /** Array holding this instance's data */
-    private T[] array;
+    private E[] array;
 
     /** Create a new list object.
      * @param size Maximum amount of elements this instance should have
@@ -23,7 +23,7 @@ class CustomArrayList<T> implements CustomList<T>
     {
         this.elementCount = 0;
         this.currentIndex = 0;
-        this.array = (T[])new Object[size];
+        this.array = (E[])new Object[size];
     }
 
     /** Create a list with the default capacity. */
@@ -39,22 +39,16 @@ class CustomArrayList<T> implements CustomList<T>
     public void moveCurrentIndexTo(int index) {assert index >= 0 && ((this.elementCount > 0)? index < this.elementCount : index == 0) : "Index out of range"; this.currentIndex = index;}
 
     @Override
-    public T getCurrentValue() {assert this.elementCount > 0 : "Index out of range"; return this.array[this.currentIndex];}
+    public E getCurrentValue() {assert this.elementCount > 0 : "Index out of range"; return this.array[this.currentIndex];}
 
     @Override
-    public void setCurrentValue(T value)
-    {
-        assert this.array.length > 0: "List capacity exceeded";
-        // could change this to being append on elementCount == 0 for consistency with the other custom lists, but this also works
-        this.array[this.currentIndex] = value;
-        if (this.elementCount == 0) this.elementCount++;
-    }
+    public void setCurrentValue(E value) {assert this.array.length > 0: "List capacity exceeded"; if (this.elementCount != 0) this.array[currentIndex] = value; else this.append(value);}
 
     @Override
     public void clear() {this.elementCount = 0; this.currentIndex = 0;}
 
     @Override
-    public void insert(T value)
+    public void insert(E value)
     {
         assert this.elementCount + 1 < this.array.length : "List capacity exceeded";
 
@@ -64,7 +58,7 @@ class CustomArrayList<T> implements CustomList<T>
     }
 
     @Override
-    public void append(T value)
+    public void append(E value)
     {
         assert this.elementCount + 1 < this.array.length : "List capacity exceeded";
 
@@ -72,11 +66,11 @@ class CustomArrayList<T> implements CustomList<T>
     }
 
     @Override
-    public T remove()
+    public E remove()
     {
         assert this.elementCount > 0 : "Index out of range";
 
-        T element = this.array[this.currentIndex]; // Copy the element
+        E element = this.array[this.currentIndex]; // Copy the element
 
         for (int i = this.currentIndex; i < this.elementCount - 1; i++) this.array[i] = this.array[i + 1]; // Shift them down
         this.elementCount--; // Decrement size
@@ -86,10 +80,10 @@ class CustomArrayList<T> implements CustomList<T>
     }
 
     @Override
-    public CustomArrayList<T> copy()
+    public CustomArrayList<E> copy()
     {
         int length = this.array.length;
-        CustomArrayList<T> toReturn = new CustomArrayList<>(length);
+        CustomArrayList<E> toReturn = new CustomArrayList<>(length);
         System.arraycopy(this.array, 0, toReturn.array, 0, length);
         toReturn.moveCurrentIndexTo(this.currentIndex);
         

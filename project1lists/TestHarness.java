@@ -194,7 +194,7 @@ public class TestHarness
         }
     }
 
-    private static class State<T extends CustomList<Integer>>
+    private static class State<T extends CustomList<Integer, T>>
     {
         private T customList;
         private ArrayList<Integer> arrayList;
@@ -211,10 +211,9 @@ public class TestHarness
             this.argumentHistory = new int[0];
         }
 
-        @SuppressWarnings("unchecked")
         private State(State<T> previousState, int function, int argument)
         {
-            this.customList = (T)previousState.customList.copy();
+            this.customList = previousState.customList.copy();
             this.arrayList = new ArrayList<>(previousState.arrayList);
             this.arrayListCurrentIndex = previousState.arrayListCurrentIndex;
 
@@ -284,7 +283,7 @@ public class TestHarness
                         case 2:
                             firstArgument = -1;
                             lastArgument = this.arrayList.size();
-                            argumentStep = Math.max(this.arrayList.size() / 4, 1); // The larger that 4 is, the more indices are checked (for moveCurrentIndexTo)
+                            // argumentStep = Math.max(this.arrayList.size() / 4, 1); // The larger that 4 is, the more indices are checked (for moveCurrentIndexTo)
                         case 8, 10, 11:
                             firstArgument = lastArgument = this.functionHistory.length;
                     }
@@ -325,7 +324,7 @@ public class TestHarness
      * @param depth How many layers deep every function is applied (making a new layer) and the behavior tested
      * @return A boolean representing whether or not the customListClass behaves as expected (compared to the builtin {@link java.util.ArrayList ArrayList}) <!-- this link doesn't work for some reason -->
      */
-    public static <T extends CustomList<Integer>> boolean testCustomList(Supplier<T> constructor, int depth)
+    public static <T extends CustomList<Integer, T>> boolean testCustomList(Supplier<T> constructor, int depth)
     {
         ArrayList<State<T>> leaves = new ArrayList<>();
         leaves.add(new State<>(constructor));

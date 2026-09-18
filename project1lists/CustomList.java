@@ -2,7 +2,7 @@ package project1lists;
 
 // add negative indices like in python maybe?
 /** List ADT */
-public interface CustomList<T>
+public interface CustomList<E, T extends CustomList<E, T>> // all this for the copy function is wild
 {
     /** @return The number of elements in the list */
     public int size();
@@ -26,10 +26,10 @@ public interface CustomList<T>
     public default void moveCurrentIndexRight() {this.moveCurrentIndexTo(this.getCurrentIndex() + 1);}
 
     /** @return The value of the list at the current index */
-    public T getCurrentValue();
+    public E getCurrentValue();
 
     /** @param value The value to set the list at the current index to */
-    public void setCurrentValue(T value);
+    public void setCurrentValue(E value);
 
     /** Remove all contents from the list, so it is once again empty. The client is responsible for reclaiming storage used by the list elements. */
     public void clear();
@@ -37,20 +37,20 @@ public interface CustomList<T>
     /** Insert an element at the current location with the specified value. The client is responsible for ensuring that the list’s capacity is not exceeded.
      * @param value The value to be inserted
      */
-    public void insert(T value);
+    public void insert(E value);
 
     /** Append an element at the end of the list with the specified value. The client is responsible for ensuring that the list’s capacity is not exceeded.
      * @param value The value of the element to be appended
      */
-    public void append(T value);
+    public void append(E value);
 
     /** Remove the element at the current index and return its value
      * @return The value of the element that was removed
      */
-    public T remove();
+    public E remove();
 
     /** @return A copy of this list as far down as its elements (but elements in the copied array point to the same place as corresponding elements in this array) */
-    public CustomList<T> copy();
+    public T copy();
 
     /** String of the values in the list, comma separated, between square brackets */
     public String toString();
@@ -76,5 +76,5 @@ public interface CustomList<T>
     public default void moveToPos(int pos) {this.moveCurrentIndexTo(pos);}
 
     /** Shaffer's name for my equivalent {@link #project1lists.CustomList.getCurrentValue getCurrentValue} method */
-    public default T getValue() {return this.getCurrentValue();}
+    public default E getValue() {return this.getCurrentValue();}
 }

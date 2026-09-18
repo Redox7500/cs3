@@ -1,9 +1,9 @@
 package project1lists;
 
 /** Linked list implementation */
-class CustomDoublyLinkedList<T> implements CustomList<T>
+class CustomDoublyLinkedList<E> implements CustomList<E, CustomDoublyLinkedList<E>>
 {
-    private static class Link<T>
+    private static class Link<E>
     {
         /** Linked list of nodes that are not currently being used and can be reused
          * <p>
@@ -13,18 +13,18 @@ class CustomDoublyLinkedList<T> implements CustomList<T>
         private static Link freeList;
 
         /** Value for this node */
-        private T value = null;
+        private E value = null;
 
         /** Pointer to the previous node in the list */
-        private Link<T> previousLink = null;
+        private Link<E> previousLink = null;
 
         /** Pointer to next node in list */
-        private Link<T> nextLink = null;
+        private Link<E> nextLink = null;
 
         Link() {}
 
         @SuppressWarnings({"rawtypes", "unchecked"})
-        private static <T> Link<T> acquire()
+        private static <E> Link<E> acquire()
         {
             if (freeList == null) return new Link<>();
             
@@ -34,18 +34,18 @@ class CustomDoublyLinkedList<T> implements CustomList<T>
             return toReturn;
         }
 
-        private static <T> Link<T> acquire(T value)
+        private static <E> Link<E> acquire(E value)
         {
-            Link<T> toReturn = Link.acquire();
+            Link<E> toReturn = Link.acquire();
             toReturn.value = value;
             toReturn.nextLink = null;
 
             return toReturn;
         }
 
-        private static <T> Link<T> acquire(T value, Link<T> previousLink, Link<T> nextLink)
+        private static <E> Link<E> acquire(E value, Link<E> previousLink, Link<E> nextLink)
         {
-            Link<T> toReturn = Link.acquire();
+            Link<E> toReturn = Link.acquire();
             toReturn.value = value;
             toReturn.previousLink = previousLink;
             toReturn.nextLink = nextLink;
@@ -64,13 +64,13 @@ class CustomDoublyLinkedList<T> implements CustomList<T>
     }
 
     /** Pointer to first link */
-    private Link<T> headLink = null;
+    private Link<E> headLink = null;
 
     /** Pointer to second to last link */
-    private Link<T> tailLink = null;
+    private Link<E> tailLink = null;
 
     /** Pointer to current link */
-    private Link<T> currentLink = null;
+    private Link<E> currentLink = null;
 
     /** Index of the current link in the list */
     private int currentIndex = 0;
@@ -91,7 +91,13 @@ class CustomDoublyLinkedList<T> implements CustomList<T>
     {
         assert index >= 0 && ((this.elementCount > 0)? index < this.elementCount : index == 0) : "Index out of range";
 
-        if (this.currentIndex >> 2 <= index)
+        // System.out.println(this.currentIndex);
+        // System.out.println(this.currentIndex - index);
+        if (this.currentIndex < index)
+        {
+            for (; this.currentIndex < index; this.currentIndex++) this.currentLink = this.currentLink.nextLink;
+        }
+        else if (this.currentIndex >> 1 < index)
         {
             for (; this.currentIndex > index; this.currentIndex--) this.currentLink = this.currentLink.previousLink;
         }
@@ -115,22 +121,22 @@ class CustomDoublyLinkedList<T> implements CustomList<T>
     public void moveCurrentIndexRight() {assert this.currentIndex != Math.max(this.elementCount - 1, 0) : "Index out of range"; this.currentLink = this.currentLink.nextLink; this.currentIndex++;}
 
     @Override
-    public T getCurrentValue() {assert this.elementCount > 0 : "Index out of range"; return this.currentLink.value;}
+    public E getCurrentValue() {assert this.elementCount > 0 : "Index out of range"; return this.currentLink.value;}
 
     @Override
-    public void setCurrentValue(T value) {if (this.elementCount > 0) this.currentLink.value = value; else this.append(value);}
+    public void setCurrentValue(E value) {if (this.elementCount > 0) this.currentLink.value = value; else this.append(value);}
 
     @Override
     public void clear()
     {
-        for (Link<T> tempLink = this.headLink; tempLink != null; tempLink = tempLink.nextLink) tempLink.release();
+        for (Link<E> tempLink = this.headLink; tempLink != null; tempLink = tempLink.nextLink) tempLink.release();
         this.headLink = this.currentLink = this.tailLink = null; // Drop access to links
         this.currentIndex = 0;
         this.elementCount = 0;
     }
 
     @Override
-    public void insert(T value)
+    public void insert(E value)
     {
         if (this.elementCount == 0)
         {
@@ -154,7 +160,7 @@ class CustomDoublyLinkedList<T> implements CustomList<T>
     }
     
     @Override
-    public void append(T value)
+    public void append(E value)
     {
         if (this.elementCount == 0)
         {
@@ -169,14 +175,14 @@ class CustomDoublyLinkedList<T> implements CustomList<T>
     }
     
     @Override
-    public T remove()
+    public E remove()
     {
         assert this.elementCount > 0 : "Index out of range";
         
-        T value = this.currentLink.value; // Remember value
+        E value = this.currentLink.value; // Remember value
 
-        Link<T> currentPreviousLink = this.currentLink.previousLink;
-        Link<T> currentNextLink = this.currentLink.nextLink;
+        Link<E> currentPreviousLink = this.currentLink.previousLink;
+        Link<E> currentNextLink = this.currentLink.nextLink;
         this.currentLink.release();
         if (this.currentLink != this.headLink) currentPreviousLink.nextLink = currentNextLink;
         if (this.currentLink != this.tailLink)
@@ -197,10 +203,10 @@ class CustomDoublyLinkedList<T> implements CustomList<T>
     }
 
     @Override
-    public CustomDoublyLinkedList<T> copy()
+    public CustomDoublyLinkedList<E> copy()
     {
-        CustomDoublyLinkedList<T> toReturn = new CustomDoublyLinkedList<>();
-        for (Link<T> tempLink = this.headLink; tempLink != null; tempLink = tempLink.nextLink) toReturn.append(tempLink.value);
+        CustomDoublyLinkedList<E> toReturn = new CustomDoublyLinkedList<>();
+        for (Link<E> tempLink = this.headLink; tempLink != null; tempLink = tempLink.nextLink) toReturn.append(tempLink.value);
         if (this.currentIndex != 0) toReturn.moveCurrentIndexTo(this.currentIndex);
 
         return toReturn;
@@ -214,7 +220,7 @@ class CustomDoublyLinkedList<T> implements CustomList<T>
         if (this.elementCount > 0)
         {
             toReturn.append(this.headLink.value);
-            for (Link<T> tempLink = this.headLink.nextLink; tempLink != null; tempLink = tempLink.nextLink)
+            for (Link<E> tempLink = this.headLink.nextLink; tempLink != null; tempLink = tempLink.nextLink)
             {
                 toReturn.append(", ");
                 toReturn.append(tempLink.value);

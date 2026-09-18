@@ -1,24 +1,24 @@
 package project1lists;
 
 /** Linked list implementation */
-class CustomLinkedList<T> implements CustomList<T>
+class CustomLinkedList<E> implements CustomList<E, CustomLinkedList<E>>
 {
-    private static class Link<T>
+    private static class Link<E>
     {
         /** Linked list of nodes that are not currently being used and can be reused */
         @SuppressWarnings("rawtypes")
         private static Link freeList;
 
         /** Value for this node */
-        private T value = null;
+        private E value = null;
 
         /** Pointer to next node in list */
-        private Link<T> nextLink = null;
+        private Link<E> nextLink = null;
 
         Link() {}
 
         @SuppressWarnings({"rawtypes", "unchecked"})
-        private static <T> Link<T> acquire()
+        private static <E> Link<E> acquire()
         {
             if (freeList == null) return new Link<>();
             
@@ -28,26 +28,26 @@ class CustomLinkedList<T> implements CustomList<T>
             return toReturn;
         }
 
-        private static <T> Link<T> acquire(boolean looping)
+        private static <E> Link<E> acquire(boolean looping)
         {
-            Link<T> toReturn = Link.acquire();
+            Link<E> toReturn = Link.acquire();
             if (looping) toReturn.nextLink = toReturn;
 
             return toReturn;
         }
 
-        private static <T> Link<T> acquire(T value)
+        private static <E> Link<E> acquire(E value)
         {
-            Link<T> toReturn = Link.acquire();
+            Link<E> toReturn = Link.acquire();
             toReturn.value = value;
             toReturn.nextLink = null;
 
             return toReturn;
         }
 
-        private static <T> Link<T> acquire(T value, Link<T> nextLink)
+        private static <E> Link<E> acquire(E value, Link<E> nextLink)
         {
-            Link<T> toReturn = Link.acquire();
+            Link<E> toReturn = Link.acquire();
             toReturn.value = value;
             toReturn.nextLink = nextLink;
 
@@ -64,13 +64,13 @@ class CustomLinkedList<T> implements CustomList<T>
     }
 
     /** Pointer to first link */
-    private final Link<T> headLink = Link.acquire(true);
+    private final Link<E> headLink = Link.acquire(true);
 
     /** Pointer to second to last link */
-    private Link<T> tailLink = this.headLink;
+    private Link<E> tailLink = this.headLink;
 
     /** Pointer to current link */
-    private Link<T> currentLink = this.headLink;
+    private Link<E> currentLink = this.headLink;
 
     /** Index of the current link in the list */
     private int currentIndex = 0;
@@ -115,22 +115,22 @@ class CustomLinkedList<T> implements CustomList<T>
     public void moveCurrentIndexRight() {assert this.currentIndex != Math.max(this.elementCount - 1, 0) : "Index out of range"; this.currentLink = this.currentLink.nextLink; this.currentIndex++;}
 
     @Override
-    public T getCurrentValue() {assert this.elementCount > 0 : "Index out of range"; return this.currentLink.nextLink.value;}
+    public E getCurrentValue() {assert this.elementCount > 0 : "Index out of range"; return this.currentLink.nextLink.value;}
 
     @Override
-    public void setCurrentValue(T value) {if (this.elementCount > 0) this.currentLink.nextLink.value = value; else this.append(value);}
+    public void setCurrentValue(E value) {if (this.elementCount > 0) this.currentLink.nextLink.value = value; else this.append(value);}
 
     @Override
     public void clear()
     {
-        for (Link<T> tempLink = this.headLink; tempLink != null; tempLink = tempLink.nextLink) tempLink.release();
+        for (Link<E> tempLink = this.headLink; tempLink != null; tempLink = tempLink.nextLink) tempLink.release();
         this.headLink.nextLink = this.headLink; // Drop access to links
         this.currentIndex = 0;
         this.elementCount = 0;
     }
 
     @Override
-    public void insert(T value)
+    public void insert(E value)
     {
         if (this.elementCount == 0)
         {
@@ -145,7 +145,7 @@ class CustomLinkedList<T> implements CustomList<T>
     }
     
     @Override
-    public void append(T value)
+    public void append(E value)
     {
         this.tailLink = this.tailLink.nextLink;
         this.tailLink.nextLink = Link.acquire(value);
@@ -153,13 +153,13 @@ class CustomLinkedList<T> implements CustomList<T>
     }
     
     @Override
-    public T remove()
+    public E remove()
     {
         assert this.elementCount > 0 : "Index out of range";
         
-        T value = this.currentLink.nextLink.value; // Remember value
+        E value = this.currentLink.nextLink.value; // Remember value
 
-        Link<T> currentNextLink = this.currentLink.nextLink;
+        Link<E> currentNextLink = this.currentLink.nextLink;
         this.currentLink.nextLink = currentNextLink.nextLink; // Remove from list
         currentNextLink.release();
         if (this.currentLink == this.tailLink) // Removed last
@@ -180,10 +180,10 @@ class CustomLinkedList<T> implements CustomList<T>
     }
 
     @Override
-    public CustomLinkedList<T> copy()
+    public CustomLinkedList<E> copy()
     {
-        CustomLinkedList<T> toReturn = new CustomLinkedList<>();
-        if (this.elementCount > 0) for (Link<T> tempLink = this.headLink; tempLink.nextLink != null; tempLink = tempLink.nextLink) toReturn.append(tempLink.nextLink.value);
+        CustomLinkedList<E> toReturn = new CustomLinkedList<>();
+        if (this.elementCount > 0) for (Link<E> tempLink = this.headLink; tempLink.nextLink != null; tempLink = tempLink.nextLink) toReturn.append(tempLink.nextLink.value);
         if (this.currentIndex != 0) toReturn.moveCurrentIndexTo(this.currentIndex);
 
         return toReturn;
@@ -197,7 +197,7 @@ class CustomLinkedList<T> implements CustomList<T>
         if (this.elementCount > 0)
         {
             toReturn.append(this.headLink.nextLink.value);
-            for (Link<T> tempLink = this.headLink.nextLink; tempLink.nextLink != null; )
+            for (Link<E> tempLink = this.headLink.nextLink; tempLink.nextLink != null; )
             {
                 toReturn.append(", ");
                 toReturn.append((tempLink = tempLink.nextLink).value);
