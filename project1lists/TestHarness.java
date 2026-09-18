@@ -20,6 +20,21 @@ public class TestHarness
         "append",
         "remove"
     };
+    private static final boolean[] functionsTakeArguments = new boolean[]{
+        false,
+        false,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        true,
+        true,
+        false
+    };
 
     /** Return type of testCustomListMethod */
     private static enum TestCustomListResult
@@ -216,36 +231,65 @@ public class TestHarness
 
         private boolean isValid()
         {
-            if (customList.size() != arrayList.size() || customList.getCurrentIndex() != this.arrayListCurrentIndex) return false;
-
-            int customListIndex = customList.getCurrentIndex();
-            
-            customList.moveCurrentIndexToStart();
-            boolean toReturn = true;
-            for (int i = 0; i < arrayList.size() - 1; i++)
+            try
             {
-                if (customList.getCurrentValue() != arrayList.get(i)) {toReturn = false; break;}
-                customList.moveCurrentIndexRight();
-            }
-            if (customListIndex != 0) customList.moveCurrentIndexTo(customListIndex);
+                if (customList.size() != arrayList.size() || customList.getCurrentIndex() != this.arrayListCurrentIndex) return false;
 
-            return toReturn;
+                int customListIndex = customList.getCurrentIndex();
+                
+                customList.moveCurrentIndexToStart();
+                boolean toReturn = true;
+                for (int i = 0; i < arrayList.size() - 1; i++)
+                {
+                    if (customList.getCurrentValue() != arrayList.get(i)) {toReturn = false; break;}
+                    customList.moveCurrentIndexRight();
+                }
+                if (customListIndex != 0) customList.moveCurrentIndexTo(customListIndex);
+
+                return toReturn;
+            }
+            catch (Throwable _)
+            {
+                return false; // maybe i should actually say something here? idk, also erroring on the moveCurrentIndexTo would be funny and hard to explain i guess
+            }
         }
 
         private void printInfo()
         {
             System.out.println("Custom list: " + this.customList);
-            System.out.println("ArrayList: " + this.arrayList);
-            System.out.println("Current index: " + this.arrayListCurrentIndex);
-            System.out.println("Function history (first to most recent): ");
-            for (int i = 0; i < this.functionHistory.length; i++) System.out.println("\t" + TestHarness.functionNames[this.functionHistory[i]] + "(" + this.argumentHistory[i] + ")");
+            System.out.println("ArrayList:   " + this.arrayList);
+            System.out.print("Custom list current index: ");
+            try {System.out.println(this.customList.getCurrentIndex());}
+            catch (Throwable error) {error.printStackTrace();}
+            System.out.println("ArrayList current index:   " + this.arrayListCurrentIndex);
+            System.out.println("Function history (most recent at the bottom): ");
+            for (int i = 0; i < this.functionHistory.length; i++)
+            {
+                int function = this.functionHistory[i];
+                System.out.println("\t" + TestHarness.functionNames[function] + "(" + ((TestHarness.functionsTakeArguments[function])? this.argumentHistory[i] : "") + ")");
+            }
         }
 
         private boolean addLeaves(ArrayList<State<T>> leaves)
         {
             for (int currentFunction = 0; currentFunction < 13; currentFunction++)
             {
-                for (int currentArgument = -1; currentArgument < this.arrayList.size() + 1; currentArgument++)
+                int firstArgument = 0;
+                int lastArgument = 0;
+                int argumentStep = 1;
+                if (TestHarness.functionsTakeArguments[currentFunction])
+                {
+                    switch (currentFunction)
+                    {
+                        case 2:
+                            firstArgument = -1;
+                            lastArgument = this.arrayList.size();
+                            argumentStep = Math.max(this.arrayList.size() / 4, 1); // The larger that 4 is, the more indices are checked (for moveCurrentIndexTo)
+                        case 8, 10, 11:
+                            firstArgument = lastArgument = this.functionHistory.length;
+                    }
+                }
+                for (int currentArgument = firstArgument; currentArgument < lastArgument + 1; currentArgument += argumentStep)
                 {
                     State<T> newState = new State<>(this, currentFunction, currentArgument);
                     
