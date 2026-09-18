@@ -2,10 +2,25 @@ package project1lists;
 
 import java.util.ArrayList;
 import java.util.function.Supplier;
-import java.util.Arrays;
 
 public class TestHarness
 {
+    private static final String[] functionNames = new String[]{
+        "size",
+        "getCurrentIndex",
+        "moveCurrentIndexTo",
+        "moveCurrentIndexToStart",
+        "moveCurrentIndexToEnd",
+        "moveCurrentIndexLeft",
+        "moveCurrentIndexRight",
+        "getCurrentValue",
+        "setCurrentValue",
+        "clear",
+        "insert",
+        "append",
+        "remove"
+    };
+
     /** Return type of testCustomListMethod */
     private static enum TestCustomListResult
     {
@@ -110,7 +125,7 @@ public class TestHarness
                 try {customListCurrentValue = state.customList.getCurrentValue();}
                 catch (Throwable _) {return (listError)? TestCustomListResult.ERROR : TestCustomListResult.FAIL;}
                 if (listError) return TestCustomListResult.FAIL;
-                
+
                 return (customListCurrentValue == state.arrayList.get(state.arrayListCurrentIndex))? TestCustomListResult.SUCCESS : TestCustomListResult.FAIL;
             }
             case 8:
@@ -222,8 +237,8 @@ public class TestHarness
             System.out.println("Custom list: " + this.customList);
             System.out.println("ArrayList: " + this.arrayList);
             System.out.println("Current index: " + this.arrayListCurrentIndex);
-            System.out.println("Function history (first to most recent): " + Arrays.toString(this.functionHistory));
-            System.out.println("Argument history (first to most recent): " + Arrays.toString(this.argumentHistory));
+            System.out.println("Function history (first to most recent): ");
+            for (int i = 0; i < this.functionHistory.length; i++) System.out.println("\t" + TestHarness.functionNames[this.functionHistory[i]] + "(" + this.argumentHistory[i] + ")");
         }
 
         private boolean addLeaves(ArrayList<State<T>> leaves)
