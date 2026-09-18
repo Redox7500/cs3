@@ -19,31 +19,6 @@ public class TestHarness
         ERROR
     }
 
-    // /** Tests if customList and list have the same size and the same elements in the same order
-    //  * <p>
-    //  * Note: This function will not reset the current index of customList
-    //  * @param customList An instance of an implementation of CustomList to compare
-    //  * @param list An instance of an implementation of List to compare
-    //  * @return A boolean representing whether or not customList and list have the same size and the same elements in the same order
-    //  */
-    // private static <T> boolean equals(CustomList<T> customList, List<T> list)
-    // {
-    //     if (customList.size() != list.size()) return false;
-
-    //     int customListIndex = customList.getCurrentIndex();
-        
-    //     customList.moveCurrentIndexToStart();
-    //     boolean toReturn = true;
-    //     for (int i = 0; i < list.size() - 1; i++)
-    //     {
-    //         if (customList.getCurrentValue() != list.get(i)) {toReturn = false; break;}
-    //         customList.moveCurrentIndexRight();
-    //     }
-    //     if (customListIndex != 0) customList.moveCurrentIndexTo(customListIndex);
-
-    //     return toReturn;
-    // }
-
     /** Tests if customList and list behave the same when the specified function is called
      * <p>
      * Note: This function only works with Integer lists because generating random numbers for them is easy and there's really no purpose to add other types; they should all work the same (also Integers make it so that functionInput works for both values and indices)
@@ -73,27 +48,20 @@ public class TestHarness
             }
             case 1:
             {
-                // boolean listError = currentIndex[0] < 0 || ((list.size() > 0)? currentIndex[0] >= list.size() : currentIndex[0] != 0);
-                
                 int customListCurrentIndex;
                 try {customListCurrentIndex = state.customList.getCurrentIndex();}
-                // catch (Throwable _) {return (listError)? TestCustomListResult.ERROR : TestCustomListResult.FAIL;}
                 catch (Throwable _) {return TestCustomListResult.FAIL;}
                 
-                // return (!listError && customListCurrentIndex == currentIndex[0])? TestCustomListResult.SUCCESS : TestCustomListResult.FAIL;
                 return (customListCurrentIndex == state.arrayListCurrentIndex)? TestCustomListResult.SUCCESS : TestCustomListResult.FAIL;
             }
             case 2:
             {
                 boolean listError = argument < 0 || ((state.arrayList.size() > 0)? argument >= state.arrayList.size() : argument != 0);
 
-                try {state.customList.moveCurrentIndexTo(argument);} // this is kinda scuffed, not all indices will be checked with this implementation, fix maybe by looping through all valid?
+                try {state.customList.moveCurrentIndexTo(argument);}
                 catch (Throwable _) {return (listError)? TestCustomListResult.ERROR : TestCustomListResult.FAIL;}
                 if (listError) return TestCustomListResult.FAIL;
                 state.arrayListCurrentIndex = argument;
-                // System.out.println(list.size());
-                // System.out.println(functionInput);
-                // System.out.println(customList.getCurrentIndex());
 
                 return TestCustomListResult.SUCCESS;
             }
@@ -142,8 +110,7 @@ public class TestHarness
                 try {customListCurrentValue = state.customList.getCurrentValue();}
                 catch (Throwable _) {return (listError)? TestCustomListResult.ERROR : TestCustomListResult.FAIL;}
                 if (listError) return TestCustomListResult.FAIL;
-
-                // note that this should never have an error because a branch will stop if it encounters an invalid index/any kind of error at all/any kind of discrepancy between customList and list
+                
                 return (customListCurrentValue == state.arrayList.get(state.arrayListCurrentIndex))? TestCustomListResult.SUCCESS : TestCustomListResult.FAIL;
             }
             case 8:
@@ -290,52 +257,6 @@ public class TestHarness
             }
 
             return true;
-            // for ()
-            // State toReturn = new State(this);
-            // CustomList<Integer> newCustomList = this.customList.copy();
-            // ArrayList<Integer> newArrayList = new ArrayList<>(this.arrayList);
-            // int[] newArrayListCurrentIndex = new int[]{this.arrayListCurrentIndex[0]};
-
-            // int[] newFunctionHistory = new int[this.functionHistory.length + 1];
-            // System.arraycopy(this.functionHistory, 0, newFunctionHistory, 0, this.functionHistory.length);
-            // newFunctionHistory[this.functionHistory.length] = function;
-            
-            // int[] newArgumentHistory = new int[this.argumentHistory.length + 1];
-            // System.arraycopy(this.argumentHistory, 0, newArgumentHistory, 0, this.argumentHistory.length);
-            // newArgumentHistory[this.argumentHistory.length] = argument;
-            
-            // switch (TestHarness.testCustomListMethod(newCustomList, newArrayList, newArrayListCurrentIndex, function, argument))
-            // {
-            //     case TestCustomListResult.ERROR:
-            //         return null;
-            //     case TestCustomListResult.FAIL:
-            //         System.out.println("Failed at state below");
-            //         System.out.println("Custom list: " + newCustomList);
-            //         System.out.println("ArrayList: " + newArrayList);
-            //         System.out.println("Current index: " + newArrayListCurrentIndex[0]);
-            //         System.out.println("Function history (first to last): " + newFunctionHistory);
-            //         System.out.println("Argument history (first to last): " + newArgumentHistory);
-            //         return new State(this);
-            //     case TestCustomListResult.SUCCESS:
-            //         if (!TestHarness.equals(newCustomList, newArrayList))
-            //         {
-            //             System.out.println("Lists were not equal at state below");
-            //             System.out.println("Custom list: " + newCustomList);
-            //             System.out.println("ArrayList: " + newArrayList);
-            //             System.out.println("Current index: " + newArrayListCurrentIndex[0]);
-            //             System.out.println("Function history (first to last): " + newFunctionHistory);
-            //             System.out.println("Argument history (first to last): " + newArgumentHistory);
-            //             return null;
-            //         }
-
-            //         return new State();
-            
-            //         newCustomListLeaves.add(newCustomListLeaf);
-            //         newArrayListLeaves.add(newArrayListLeaf);
-            //         newArrayListLeafCurrentIndices.add(newArrayListLeafCurrentIndex);
-            //         newFunctionHistories.add(newFunctionHistory);
-            //         newArgumentHistories.add(newArgumentHistory);
-            // }
         }
     }
 
@@ -357,84 +278,5 @@ public class TestHarness
             leaves = newLeaves;
         }
         return true;
-        // ArrayList<CustomList<Integer>> customListLeaves = new ArrayList<>();
-        // ArrayList<ArrayList<Integer>> arrayListLeaves = new ArrayList<>();
-        // ArrayList<int[]> arrayListLeafCurrentIndices = new ArrayList<>();
-        // ArrayList<int[]> functionHistories = new ArrayList<>();
-        // ArrayList<int[]> argumentHistories = new ArrayList<>();
-        // try {customListLeaves.add(customListClass.getDeclaredConstructor().newInstance());}
-        // catch (Throwable _) {System.out.println("customListClass has no accessible parameterless constructor"); return false;}
-        // arrayListLeaves.add(new ArrayList<>());
-        // arrayListLeafCurrentIndices.add(new int[]{0});
-        // functionHistories.add(new int[]{});
-        // argumentHistories.add(new int[]{});
-        // for (int currentDepth = 0; currentDepth < depth; currentDepth++)
-        // {
-        //     // lowk make this a node class or something?
-        //     ArrayList<CustomList<Integer>> newCustomListLeaves = new ArrayList<>();
-        //     ArrayList<ArrayList<Integer>> newArrayListLeaves = new ArrayList<>();
-        //     ArrayList<int[]> newArrayListLeafCurrentIndices = new ArrayList<>();
-        //     ArrayList<int[]> newFunctionHistories = new ArrayList<>();
-        //     ArrayList<int[]> newArgumentHistories = new ArrayList<>();
-        //     for (int currentLeafIndex = 0; currentLeafIndex < arrayListLeaves.size(); currentLeafIndex++)
-        //     {
-        //         for (int currentFunction = 0; currentFunction < 13; currentFunction++)
-        //         {
-        //             for (int currentArgument = -1; currentArgument < arrayListLeaves.get(currentLeafIndex).size() + 1; currentArgument++)
-        //             {
-        //                 CustomList<Integer> newCustomListLeaf = customListLeaves.get(currentLeafIndex).copy();
-        //                 ArrayList<Integer> newArrayListLeaf = new ArrayList<>(arrayListLeaves.get(currentLeafIndex));
-        //                 int[] newArrayListLeafCurrentIndex = new int[]{arrayListLeafCurrentIndices.get(currentLeafIndex)[0]};
-
-        //                 int[] newFunctionHistory = new int[currentDepth + 1];
-        //                 System.arraycopy(functionHistories.get(currentLeafIndex), 0, newFunctionHistory, 0, currentDepth);
-        //                 newFunctionHistory[currentDepth] = currentFunction;
-                        
-        //                 int[] newArgumentHistory = new int[currentDepth + 1];
-        //                 System.arraycopy(argumentHistories.get(currentLeafIndex), 0, newArgumentHistory, 0, currentDepth);
-        //                 newArgumentHistory[currentDepth] = currentArgument;
-                        
-        //                 switch (TestHarness.testCustomListMethod(newCustomListLeaf, newArrayListLeaf, newArrayListLeafCurrentIndex, currentFunction, currentArgument))
-        //                 {
-        //                     case TestCustomListResult.ERROR:
-        //                         continue;
-        //                     case TestCustomListResult.FAIL:
-        //                         System.out.println("Failed at state below");
-        //                         System.out.println("Custom list: " + newCustomListLeaf);
-        //                         System.out.println("ArrayList: " + newArrayListLeaf);
-        //                         System.out.println("Current index: " + newArrayListLeafCurrentIndex[0]);
-        //                         System.out.println("Current depth (starting at 0): " + currentDepth);
-        //                         System.out.println("Function history (first to last): " + newFunctionHistory);
-        //                         System.out.println("Argument history (first to last): " + newArgumentHistory);
-        //                         return false;
-        //                     case TestCustomListResult.SUCCESS:
-        //                         if (!TestHarness.equals(newCustomListLeaf, newArrayListLeaf))
-        //                         {
-        //                             System.out.println("Lists were not equal at state below");
-        //                             System.out.println("Custom list: " + newCustomListLeaf);
-        //                             System.out.println("ArrayList: " + newArrayListLeaf);
-        //                             System.out.println("Current index: " + newArrayListLeafCurrentIndex[0]);
-        //                             System.out.println("Current depth (starting at 0): " + currentDepth);
-        //                             System.out.println("Function history (first to last): " + newFunctionHistory);
-        //                             System.out.println("Argument history (first to last): " + newArgumentHistory);
-        //                             return false;
-        //                         }
-                        
-        //                         newCustomListLeaves.add(newCustomListLeaf);
-        //                         newArrayListLeaves.add(newArrayListLeaf);
-        //                         newArrayListLeafCurrentIndices.add(newArrayListLeafCurrentIndex);
-        //                         newFunctionHistories.add(newFunctionHistory);
-        //                         newArgumentHistories.add(newArgumentHistory);
-        //                 }
-        //             }
-        //         }
-        //     }
-        //     customListLeaves = newCustomListLeaves;
-        //     arrayListLeaves = newArrayListLeaves;
-        //     arrayListLeafCurrentIndices = newArrayListLeafCurrentIndices;
-        //     functionHistories = newFunctionHistories;
-        //     argumentHistories = newArgumentHistories;
-        // }
-        // return true;
     }
 }

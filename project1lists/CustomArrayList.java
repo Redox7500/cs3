@@ -99,7 +99,6 @@ class CustomArrayList<T> implements CustomList<T>
     @Override
     public String toString()
     {
-        // StringBuilder toReturn = new StringBuilder(this.elementCount * 3 + 2 - ((this.elementCount > 0)? 2 : 0));
         StringBuilder toReturn = new StringBuilder(this.elementCount * 3 + ((this.elementCount > 0)? 0 : 2));
         toReturn.append('[');
         if (this.elementCount > 0)
