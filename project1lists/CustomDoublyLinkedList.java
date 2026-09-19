@@ -90,8 +90,6 @@ class CustomDoublyLinkedList<E> implements CustomList<E, CustomDoublyLinkedList<
     {
         assert index >= 0 && ((this.elementCount > 0)? index < this.elementCount : index == 0) : "Index out of range";
 
-        // System.out.println(this.currentIndex);
-        // System.out.println(this.currentIndex - index);
         if (this.currentIndex < index)
         {
             for (; this.currentIndex < index; this.currentIndex++) this.currentLink = this.currentLink.nextLink;
@@ -195,6 +193,7 @@ class CustomDoublyLinkedList<E> implements CustomList<E, CustomDoublyLinkedList<
             this.currentLink = currentPreviousLink;
             this.tailLink = this.currentLink;
             if (this.elementCount == 1) this.headLink = null;
+            else this.currentIndex--;
         }
         this.elementCount--;
 

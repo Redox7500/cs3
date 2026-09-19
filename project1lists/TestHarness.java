@@ -158,6 +158,7 @@ public class TestHarness
                 try {state.customList.clear();}
                 catch (Throwable _) {return ErrorTestResult.CUSTOM_LIST;}
                 state.arrayList.clear();
+                state.arrayListCurrentIndex = 0;
 
                 return ErrorTestResult.NONE;
             }
@@ -185,6 +186,7 @@ public class TestHarness
                 catch (Throwable _) {return (arrayListError)? ErrorTestResult.BOTH : ErrorTestResult.CUSTOM_LIST;}
                 if (arrayListError) return ErrorTestResult.ARRAY_LIST;
                 state.arrayList.remove(state.arrayListCurrentIndex);
+                if (state.arrayListCurrentIndex == state.arrayList.size() && state.arrayList.size() > 0) state.arrayListCurrentIndex--;
 
                 return ErrorTestResult.NONE;
             }
@@ -248,7 +250,7 @@ public class TestHarness
                     if (customList.getCurrentValue() != arrayList.get(i)) {toReturn = false; break;}
                     customList.moveCurrentIndexRight();
                 }
-                if (customListIndex != 0) customList.moveCurrentIndexTo(customListIndex);
+                customList.moveCurrentIndexTo(customListIndex); // if this errors i don't even know dude
 
                 return toReturn;
             }
@@ -276,7 +278,8 @@ public class TestHarness
             {
                 error.printStackTrace();
             }
-            System.out.println("ArrayList current value:   " + ((this.arrayList.size() > 0)? this.arrayList.get(this.arrayListCurrentIndex) : "N/A (empty list)"));
+            try {System.out.println("ArrayList current value:   " + ((this.arrayList.size() > 0)? this.arrayList.get(this.arrayListCurrentIndex) : "N/A (empty list)"));}
+            catch (Exception _) {}
             System.out.println("Function history (most recent at the bottom): ");
             for (int i = 0; i < this.functionHistory.length; i++)
             {
