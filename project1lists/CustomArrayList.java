@@ -82,10 +82,10 @@ class CustomArrayList<E> implements CustomList<E, CustomArrayList<E>>
     @Override
     public CustomArrayList<E> copy()
     {
-        int length = this.array.length;
-        CustomArrayList<E> toReturn = new CustomArrayList<>(length);
-        System.arraycopy(this.array, 0, toReturn.array, 0, length);
-        toReturn.moveCurrentIndexTo(this.currentIndex);
+        CustomArrayList<E> toReturn = new CustomArrayList<>(this.array.length);
+        System.arraycopy(this.array, 0, toReturn.array, 0, this.elementCount);
+        toReturn.elementCount = this.elementCount;
+        toReturn.currentIndex = this.currentIndex;
         
         return toReturn;
     }
