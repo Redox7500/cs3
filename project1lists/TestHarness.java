@@ -61,9 +61,9 @@ public class TestHarness
      * @param currentIndex A supplementary property of list that matches your customList's internal current index (as stated before, both instances should have the exact same values/state)
      * @param function The index of which function you would like to test. These indices are 0 based and go from the top to the bottom of the CustomList.java file.
      * @param functionInput (optional) The value to give to the function you chose, which will not be used if the function you chose has no inputs
-     * @return A ErrorTestResult stating the behavior of the customList relative to the list
+     * @return A TestHarness.ErrorTestResult stating the behavior of the customList relative to the list
      */
-    private static ErrorTestResult testErrors(State<?> state)
+    private static TestHarness.ErrorTestResult testErrors(State<?> state)
     {
         int function = state.functionHistory[state.functionHistory.length - 1];
 
@@ -75,131 +75,138 @@ public class TestHarness
             case 0:
             {
                 try {state.customList.size();}
-                catch (Throwable _) {return ErrorTestResult.CUSTOM_LIST;}
+                catch (Throwable _) {return TestHarness.ErrorTestResult.CUSTOM_LIST;}
 
-                return ErrorTestResult.NONE;
+                return TestHarness.ErrorTestResult.NONE;
             }
             case 1:
             {
                 try {state.customList.getCurrentIndex();}
-                catch (Throwable _) {return ErrorTestResult.CUSTOM_LIST;}
+                catch (Throwable _) {return TestHarness.ErrorTestResult.CUSTOM_LIST;}
                 
-                return ErrorTestResult.NONE;
+                return TestHarness.ErrorTestResult.NONE;
             }
             case 2:
             {
                 boolean arrayListError = argument < 0 || ((state.arrayList.size() > 0)? argument >= state.arrayList.size() : argument != 0);
 
                 try {state.customList.moveCurrentIndexTo(argument);}
-                catch (Throwable _) {return (arrayListError)? ErrorTestResult.BOTH : ErrorTestResult.CUSTOM_LIST;}
-                if (arrayListError) return ErrorTestResult.ARRAY_LIST;
+                catch (Throwable _) {return (arrayListError)? TestHarness.ErrorTestResult.BOTH : TestHarness.ErrorTestResult.CUSTOM_LIST;}
+                if (arrayListError) return TestHarness.ErrorTestResult.ARRAY_LIST;
                 state.arrayListCurrentIndex = argument;
 
-                return ErrorTestResult.NONE;
+                return TestHarness.ErrorTestResult.NONE;
             }
             case 3:
             {
                 try {state.customList.moveCurrentIndexToStart();}
-                catch (Throwable _) {return ErrorTestResult.CUSTOM_LIST;}
+                catch (Throwable _) {return TestHarness.ErrorTestResult.CUSTOM_LIST;}
                 state.arrayListCurrentIndex = 0;
 
-                return ErrorTestResult.NONE;
+                return TestHarness.ErrorTestResult.NONE;
             }
             case 4:
             {
                 try {state.customList.moveCurrentIndexToEnd();}
-                catch (Throwable _) {return ErrorTestResult.CUSTOM_LIST;}
+                catch (Throwable _) {return TestHarness.ErrorTestResult.CUSTOM_LIST;}
                 state.arrayListCurrentIndex = Math.max(state.arrayList.size() - 1, 0);
 
-                return ErrorTestResult.NONE;
+                return TestHarness.ErrorTestResult.NONE;
             }
             case 5:
             {
                 boolean arrayListError = state.arrayListCurrentIndex <= 0;
 
                 try {state.customList.moveCurrentIndexLeft();}
-                catch (Throwable _) {return (arrayListError)? ErrorTestResult.BOTH : ErrorTestResult.CUSTOM_LIST;}
-                if (arrayListError) return ErrorTestResult.ARRAY_LIST;
+                catch (Throwable _) {return (arrayListError)? TestHarness.ErrorTestResult.BOTH : TestHarness.ErrorTestResult.CUSTOM_LIST;}
+                if (arrayListError) return TestHarness.ErrorTestResult.ARRAY_LIST;
                 state.arrayListCurrentIndex--;
 
-                return ErrorTestResult.NONE;
+                return TestHarness.ErrorTestResult.NONE;
             }
             case 6:
             {
                 boolean arrayListError = (state.arrayList.size() > 0)? state.arrayListCurrentIndex >= state.arrayList.size() - 1 : true;
 
                 try {state.customList.moveCurrentIndexRight();}
-                catch (Throwable _) {return (arrayListError)? ErrorTestResult.BOTH : ErrorTestResult.CUSTOM_LIST;}
-                if (arrayListError) return ErrorTestResult.ARRAY_LIST;
+                catch (Throwable _) {return (arrayListError)? TestHarness.ErrorTestResult.BOTH : TestHarness.ErrorTestResult.CUSTOM_LIST;}
+                if (arrayListError) return TestHarness.ErrorTestResult.ARRAY_LIST;
                 state.arrayListCurrentIndex++;
 
-                return ErrorTestResult.NONE;
+                return TestHarness.ErrorTestResult.NONE;
             }
             case 7:
             {
                 boolean arrayListError = state.arrayList.size() == 0;
 
                 try {state.customList.getCurrentValue();}
-                catch (Throwable _) {return (arrayListError)? ErrorTestResult.BOTH : ErrorTestResult.CUSTOM_LIST;}
-                if (arrayListError) return ErrorTestResult.ARRAY_LIST;
+                catch (Throwable _) {return (arrayListError)? TestHarness.ErrorTestResult.BOTH : TestHarness.ErrorTestResult.CUSTOM_LIST;}
+                if (arrayListError) return TestHarness.ErrorTestResult.ARRAY_LIST;
 
-                return ErrorTestResult.NONE;
+                return TestHarness.ErrorTestResult.NONE;
             }
             case 8:
             {
                 try {state.customList.setCurrentValue(argument);}
-                catch (Throwable _) {return ErrorTestResult.CUSTOM_LIST;}
+                catch (Throwable _) {return TestHarness.ErrorTestResult.CUSTOM_LIST;}
                 if (state.arrayList.size() > 0) state.arrayList.set(state.arrayListCurrentIndex, argument);
                 else state.arrayList.add(argument);
 
-                return ErrorTestResult.NONE;
+                return TestHarness.ErrorTestResult.NONE;
             }
             case 9:
             {
                 try {state.customList.clear();}
-                catch (Throwable _) {return ErrorTestResult.CUSTOM_LIST;}
+                catch (Throwable _) {return TestHarness.ErrorTestResult.CUSTOM_LIST;}
                 state.arrayList.clear();
                 state.arrayListCurrentIndex = 0;
 
-                return ErrorTestResult.NONE;
+                return TestHarness.ErrorTestResult.NONE;
             }
             case 10:
             {
                 try {state.customList.insert(argument);}
-                catch (Throwable _) {return ErrorTestResult.CUSTOM_LIST;}
+                catch (Throwable _) {return TestHarness.ErrorTestResult.CUSTOM_LIST;}
                 state.arrayList.add(state.arrayListCurrentIndex, argument);
 
-                return ErrorTestResult.NONE;
+                return TestHarness.ErrorTestResult.NONE;
             }
             case 11:
             {
                 try {state.customList.append(argument);}
-                catch (Throwable _) {return ErrorTestResult.CUSTOM_LIST;}
+                catch (Throwable _) {return TestHarness.ErrorTestResult.CUSTOM_LIST;}
                 state.arrayList.add(argument);
 
-                return ErrorTestResult.NONE;
+                return TestHarness.ErrorTestResult.NONE;
             }
             case 12:
             {
                 boolean arrayListError = state.arrayList.size() == 0;
 
                 try {state.customList.remove();}
-                catch (Throwable _) {return (arrayListError)? ErrorTestResult.BOTH : ErrorTestResult.CUSTOM_LIST;}
-                if (arrayListError) return ErrorTestResult.ARRAY_LIST;
+                catch (Throwable _) {return (arrayListError)? TestHarness.ErrorTestResult.BOTH : TestHarness.ErrorTestResult.CUSTOM_LIST;}
+                if (arrayListError) return TestHarness.ErrorTestResult.ARRAY_LIST;
                 state.arrayList.remove(state.arrayListCurrentIndex);
                 if (state.arrayListCurrentIndex == state.arrayList.size() && state.arrayList.size() > 0) state.arrayListCurrentIndex--;
 
-                return ErrorTestResult.NONE;
+                return TestHarness.ErrorTestResult.NONE;
             }
             default:
             {
-                return ErrorTestResult.NONE; // This code should never be able to happen because of the assert above
+                return TestHarness.ErrorTestResult.NONE; // This code should never be able to happen because of the assert above
             }
         }
     }
 
     private static class State<T extends CustomList<Integer, T>>
     {
+        private enum Validity
+        {
+            VALID,
+            INVALID,
+            ERROR
+        }
+
         private T customList;
         private ArrayList<Integer> arrayList;
         private int arrayListCurrentIndex;
@@ -232,7 +239,7 @@ public class TestHarness
             this.argumentHistory[depth - 1] = argument;
         }
 
-        private boolean isValid()
+        private State.Validity isValid()
         {
             try
             {
@@ -240,24 +247,25 @@ public class TestHarness
                     customList.size() != arrayList.size() ||
                     customList.getCurrentIndex() != this.arrayListCurrentIndex ||
                     (customList.size() > 0 && arrayList.size() > 0 && customList.getCurrentValue() != this.arrayList.get(this.arrayListCurrentIndex))
-                ) return false;
+                ) return State.Validity.INVALID;
 
                 int customListIndex = customList.getCurrentIndex();
                 
                 customList.moveCurrentIndexToStart();
-                boolean toReturn = true;
+                State.Validity toReturn = State.Validity.VALID;
                 for (int i = 0; i < arrayList.size() - 1; i++)
                 {
-                    if (customList.getCurrentValue() != arrayList.get(i)) {toReturn = false; break;}
+                    if (customList.getCurrentValue() != arrayList.get(i)) {toReturn = State.Validity.INVALID; break;}
                     customList.moveCurrentIndexRight();
                 }
                 customList.moveCurrentIndexTo(customListIndex); // if this errors i don't even know dude
 
                 return toReturn;
             }
-            catch (Throwable _)
+            catch (Throwable error)
             {
-                return false; // maybe i should actually say something here? idk, also erroring on the moveCurrentIndexTo would be funny and hard to explain i guess
+                error.printStackTrace();
+                return State.Validity.ERROR;
             }
         }
 
@@ -279,8 +287,7 @@ public class TestHarness
             {
                 error.printStackTrace();
             }
-            try {System.out.println("ArrayList current value:   " + ((this.arrayList.size() > 0)? this.arrayList.get(this.arrayListCurrentIndex) : "N/A (empty list)"));}
-            catch (Exception _) {}
+            System.out.println("ArrayList current value:   " + ((this.arrayList.size() > 0)? this.arrayList.get(this.arrayListCurrentIndex) : "N/A (empty list)"));
             System.out.println("Function history (most recent at the bottom): ");
             for (int i = 0; i < this.functionHistory.length; i++)
             {
@@ -314,24 +321,31 @@ public class TestHarness
                     
                     switch (TestHarness.testErrors(newState))
                     {
-                        case ErrorTestResult.BOTH:
+                        case TestHarness.ErrorTestResult.BOTH:
                             continue;
-                        case ErrorTestResult.CUSTOM_LIST:
+                        case TestHarness.ErrorTestResult.CUSTOM_LIST:
                             System.out.println("Custom list had an error while ArrayList did not at state below");
                             newState.printInfo();
 
                             return false;
-                        case ErrorTestResult.ARRAY_LIST:
+                        case TestHarness.ErrorTestResult.ARRAY_LIST:
                             System.out.println("ArrayList had an error while custom list did not at state below");
-                        case ErrorTestResult.NONE:
-                            if (!newState.isValid())
+                        case TestHarness.ErrorTestResult.NONE:
+                            switch (newState.isValid())
                             {
-                                System.out.println("Lists were not equal at state below");
-                                newState.printInfo();
+                                case State.Validity.INVALID:
+                                    System.out.println("Lists were not equal at state below");
+                                    newState.printInfo();
 
-                                return false;
+                                    return false;
+                                case State.Validity.ERROR:
+                                    System.out.println("Error checking custom list's validity at state below");
+                                    newState.printInfo();
+
+                                    return false;
+                                case State.Validity.VALID:
+                                    leaves.addLast(newState);
                             }
-                            leaves.addLast(newState);
                     }
                 }
             }
