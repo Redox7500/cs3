@@ -253,10 +253,10 @@ public class TestHarness
                 
                 customList.moveCurrentIndexToStart();
                 State.Validity toReturn = State.Validity.VALID;
-                for (int i = 0; i < arrayList.size() - 1; i++)
+                for (int i = 0; i < arrayList.size(); i++)
                 {
                     if (customList.getCurrentValue() != arrayList.get(i)) {toReturn = State.Validity.INVALID; break;}
-                    customList.moveCurrentIndexRight();
+                    if (i < arrayList.size() - 1) customList.moveCurrentIndexRight();
                 }
                 customList.moveCurrentIndexTo(customListIndex); // if this errors i don't even know dude
 
@@ -318,7 +318,6 @@ public class TestHarness
                 for (int currentArgument = firstArgument; currentArgument < lastArgument + 1; currentArgument += argumentStep)
                 {
                     State<T> newState = new State<>(this, currentFunction, currentArgument);
-                    
                     switch (TestHarness.testErrors(newState))
                     {
                         case TestHarness.ErrorTestResult.BOTH:

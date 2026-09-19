@@ -88,7 +88,7 @@ class CustomDoublyLinkedList<E> implements CustomList<E, CustomDoublyLinkedList<
     @Override
     public void moveCurrentIndexTo(int index)
     {
-        assert index >= 0 && ((this.elementCount > 0)? index < this.elementCount : index == 0) : "Index out of range";
+        assert (this.elementCount > 0)? index >= 0 && index < this.elementCount : index == 0 : "Index out of range";
 
         if (this.currentIndex < index)
         {

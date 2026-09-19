@@ -36,7 +36,7 @@ class CustomArrayList<E> implements CustomList<E, CustomArrayList<E>>
     public int getCurrentIndex() {return this.currentIndex;}
 
     @Override
-    public void moveCurrentIndexTo(int index) {assert index >= 0 && ((this.elementCount > 0)? index < this.elementCount : index == 0) : "Index out of range"; this.currentIndex = index;}
+    public void moveCurrentIndexTo(int index) {assert (this.elementCount > 0)? index >= 0 && index < this.elementCount : index == 0 : "Index out of range"; this.currentIndex = index;}
 
     @Override
     public E getCurrentValue() {assert this.elementCount > 0 : "Index out of range"; return this.array[this.currentIndex];}

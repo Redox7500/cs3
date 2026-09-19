@@ -88,7 +88,7 @@ class CustomLinkedList<E> implements CustomList<E, CustomLinkedList<E>>
     @Override
     public void moveCurrentIndexTo(int index)
     {
-        assert index >= 0 && ((this.elementCount > 0)? index < this.elementCount : index == 0) : "Index out of range";
+        assert (this.elementCount > 0)? index >= 0 && index < this.elementCount : index == 0 : "Index out of range";
 
         this.currentLink = this.headLink;
         for (this.currentIndex = 0; this.currentIndex < index; this.currentIndex++) this.currentLink = this.currentLink.nextLink;
@@ -106,8 +106,8 @@ class CustomLinkedList<E> implements CustomList<E, CustomLinkedList<E>>
         assert this.currentIndex != 0 : "Index out of range";
 
         this.currentLink = this.headLink;
-        this.currentIndex--;
-        for (int i = 0; i < this.currentIndex - 1; i++) this.currentLink = this.currentLink.nextLink;
+        int targetIndex = this.currentIndex - 1;
+        for (this.currentIndex = 0; this.currentIndex < targetIndex; this.currentIndex++) this.currentLink = this.currentLink.nextLink;
     }
     
     @Override
@@ -122,7 +122,8 @@ class CustomLinkedList<E> implements CustomList<E, CustomLinkedList<E>>
     @Override
     public void clear()
     {
-        for (Link<E> tempLink = this.headLink; tempLink != null; tempLink = tempLink.nextLink) tempLink.release();
+        if (this.elementCount == 0) return;
+        for (Link<E> tempLink = this.headLink.nextLink; tempLink != null; tempLink = tempLink.nextLink) tempLink.release();
         this.headLink.nextLink = this.headLink; // Drop access to links
         this.currentIndex = 0;
         this.elementCount = 0;
