@@ -63,13 +63,13 @@ class CustomLinkedList<E> implements CustomList<E, CustomLinkedList<E>>
     }
 
     /** Pointer to first link */
-    private final Link<E> headLink = Link.acquire(true);
+    private final CustomLinkedList.Link<E> headLink = Link.acquire(true);
 
     /** Pointer to second to last link */
-    private Link<E> tailLink = this.headLink;
+    private CustomLinkedList.Link<E> tailLink = this.headLink;
 
     /** Pointer to current link */
-    private Link<E> currentLink = this.headLink;
+    private CustomLinkedList.Link<E> currentLink = this.headLink;
 
     /** Index of the current link in the list */
     private int currentIndex = 0;
@@ -123,7 +123,7 @@ class CustomLinkedList<E> implements CustomList<E, CustomLinkedList<E>>
     public void clear()
     {
         if (this.elementCount == 0) return;
-        for (Link<E> tempLink = this.headLink.nextLink; tempLink != null; tempLink = tempLink.nextLink) tempLink.release();
+        for (CustomLinkedList.Link<E> tempLink = this.headLink.nextLink; tempLink != null; tempLink = tempLink.nextLink) tempLink.release();
         this.headLink.nextLink = this.headLink; // Drop access to links
         this.currentIndex = 0;
         this.elementCount = 0;
@@ -159,7 +159,7 @@ class CustomLinkedList<E> implements CustomList<E, CustomLinkedList<E>>
         
         E value = this.currentLink.nextLink.value; // Remember value
 
-        Link<E> currentNextLink = this.currentLink.nextLink;
+        CustomLinkedList.Link<E> currentNextLink = this.currentLink.nextLink;
         this.currentLink.nextLink = currentNextLink.nextLink; // Remove from list
         currentNextLink.release();
         if (this.currentLink == this.tailLink) // Removed last
@@ -183,7 +183,7 @@ class CustomLinkedList<E> implements CustomList<E, CustomLinkedList<E>>
     public CustomLinkedList<E> copy()
     {
         CustomLinkedList<E> toReturn = new CustomLinkedList<>();
-        if (this.elementCount > 0) for (Link<E> tempLink = this.headLink; tempLink.nextLink != null; tempLink = tempLink.nextLink) toReturn.append(tempLink.nextLink.value);
+        if (this.elementCount > 0) for (CustomLinkedList.Link<E> tempLink = this.headLink; tempLink.nextLink != null; tempLink = tempLink.nextLink) toReturn.append(tempLink.nextLink.value);
         if (this.currentIndex != 0) toReturn.moveCurrentIndexTo(this.currentIndex);
 
         return toReturn;
@@ -197,7 +197,7 @@ class CustomLinkedList<E> implements CustomList<E, CustomLinkedList<E>>
         if (this.elementCount > 0)
         {
             toReturn.append(this.headLink.nextLink.value);
-            for (Link<E> tempLink = this.headLink.nextLink; tempLink.nextLink != null; )
+            for (CustomLinkedList.Link<E> tempLink = this.headLink.nextLink; tempLink.nextLink != null; )
             {
                 toReturn.append(", ");
                 toReturn.append((tempLink = tempLink.nextLink).value);

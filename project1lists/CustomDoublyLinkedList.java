@@ -63,13 +63,13 @@ class CustomDoublyLinkedList<E> implements CustomList<E, CustomDoublyLinkedList<
     }
 
     /** Pointer to first link */
-    private Link<E> headLink = null;
+    private CustomDoublyLinkedList.Link<E> headLink = null;
 
     /** Pointer to second to last link */
-    private Link<E> tailLink = null;
+    private CustomDoublyLinkedList.Link<E> tailLink = null;
 
     /** Pointer to current link */
-    private Link<E> currentLink = null;
+    private CustomDoublyLinkedList.Link<E> currentLink = null;
 
     /** Index of the current link in the list */
     private int currentIndex = 0;
@@ -126,7 +126,7 @@ class CustomDoublyLinkedList<E> implements CustomList<E, CustomDoublyLinkedList<
     @Override
     public void clear()
     {
-        for (Link<E> tempLink = this.headLink; tempLink != null; tempLink = tempLink.nextLink) tempLink.release();
+        for (CustomDoublyLinkedList.Link<E> tempLink = this.headLink; tempLink != null; tempLink = tempLink.nextLink) tempLink.release();
         this.headLink = this.currentLink = this.tailLink = null; // Drop access to links
         this.currentIndex = 0;
         this.elementCount = 0;
@@ -178,8 +178,8 @@ class CustomDoublyLinkedList<E> implements CustomList<E, CustomDoublyLinkedList<
         
         E value = this.currentLink.value; // Remember value
 
-        Link<E> currentPreviousLink = this.currentLink.previousLink;
-        Link<E> currentNextLink = this.currentLink.nextLink;
+        CustomDoublyLinkedList.Link<E> currentPreviousLink = this.currentLink.previousLink;
+        CustomDoublyLinkedList.Link<E> currentNextLink = this.currentLink.nextLink;
         this.currentLink.release();
         if (this.currentLink != this.headLink) currentPreviousLink.nextLink = currentNextLink;
         if (this.currentLink != this.tailLink)
@@ -204,7 +204,7 @@ class CustomDoublyLinkedList<E> implements CustomList<E, CustomDoublyLinkedList<
     public CustomDoublyLinkedList<E> copy()
     {
         CustomDoublyLinkedList<E> toReturn = new CustomDoublyLinkedList<>();
-        for (Link<E> tempLink = this.headLink; tempLink != null; tempLink = tempLink.nextLink) toReturn.append(tempLink.value);
+        for (CustomDoublyLinkedList.Link<E> tempLink = this.headLink; tempLink != null; tempLink = tempLink.nextLink) toReturn.append(tempLink.value);
         if (this.currentIndex != 0) toReturn.moveCurrentIndexTo(this.currentIndex);
 
         return toReturn;
@@ -218,7 +218,7 @@ class CustomDoublyLinkedList<E> implements CustomList<E, CustomDoublyLinkedList<
         if (this.elementCount > 0)
         {
             toReturn.append(this.headLink.value);
-            for (Link<E> tempLink = this.headLink.nextLink; tempLink != null; tempLink = tempLink.nextLink)
+            for (CustomDoublyLinkedList.Link<E> tempLink = this.headLink.nextLink; tempLink != null; tempLink = tempLink.nextLink)
             {
                 toReturn.append(", ");
                 toReturn.append(tempLink.value);
