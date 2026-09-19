@@ -3,38 +3,37 @@ package project1lists;
 import java.util.ArrayList;
 import java.util.ArrayDeque;
 import java.util.function.Supplier;
+import java.util.function.Function;
+import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 
 public class TestHarness
 {
-    private static final String[] functionNames = new String[]{
-        "size",
-        "getCurrentIndex",
-        "moveCurrentIndexTo",
-        "moveCurrentIndexToStart",
-        "moveCurrentIndexToEnd",
-        "moveCurrentIndexLeft",
-        "moveCurrentIndexRight",
-        "getCurrentValue",
-        "setCurrentValue",
-        "clear",
-        "insert",
-        "append",
-        "remove"
-    };
-    private static final boolean[] functionsTakeArguments = new boolean[]{
-        false,
-        false,
-        true,
-        false,
-        false,
-        false,
-        false,
-        false,
-        true,
-        false,
-        true,
-        true,
-        false
+    private sealed interface CustomListMethod
+    {
+        record CustomListRunnable        (String name, Consumer  <CustomList<?, ?>>          function) implements CustomListMethod {}
+        record CustomListValueConsumer<E>(String name, BiConsumer<CustomList<E, ?>, E>       function) implements CustomListMethod {}
+        record CustomListIndexConsumer   (String name, BiConsumer<CustomList<?, ?>, Integer> function) implements CustomListMethod {}
+        record CustomListValueSupplier<E>(String name, Function  <CustomList<E, ?>, E>       function) implements CustomListMethod {}
+        record CustomListIndexSupplier   (String name, Function  <CustomList<?, ?>, Integer> function) implements CustomListMethod {}
+
+        public String name();
+        public Object function();
+    }
+    private static final CustomListMethod[] customListMethods = new CustomListMethod[]{
+        new CustomListMethod.CustomListIndexSupplier  ("size",                    CustomList::size),
+        new CustomListMethod.CustomListIndexSupplier  ("getCurrentIndex",         CustomList::getCurrentIndex),
+        new CustomListMethod.CustomListIndexConsumer  ("moveCurrentIndexTo",      CustomList::moveCurrentIndexTo),
+        new CustomListMethod.CustomListRunnable       ("moveCurrentIndexToStart", CustomList::moveCurrentIndexToStart),
+        new CustomListMethod.CustomListRunnable       ("moveCurrentIndexToEnd",   CustomList::moveCurrentIndexToEnd),
+        new CustomListMethod.CustomListRunnable       ("moveCurrentIndexLeft",    CustomList::moveCurrentIndexLeft),
+        new CustomListMethod.CustomListRunnable       ("moveCurrentIndexRight",   CustomList::moveCurrentIndexRight),
+        new CustomListMethod.CustomListValueSupplier<>("getCurrentValue",         CustomList::getCurrentValue),
+        new CustomListMethod.CustomListValueConsumer<>("setCurrentValue",         CustomList::setCurrentValue),
+        new CustomListMethod.CustomListRunnable       ("clear",                   CustomList::clear),
+        new CustomListMethod.CustomListValueConsumer<>("insert",                  CustomList::insert),
+        new CustomListMethod.CustomListValueConsumer<>("append",                  CustomList::append),
+        new CustomListMethod.CustomListValueSupplier<>("remove",                  CustomList::remove)
     };
 
     /** Return type of testErrors */
@@ -292,7 +291,9 @@ public class TestHarness
             for (int i = 0; i < this.functionHistory.length; i++)
             {
                 int function = this.functionHistory[i];
-                System.out.println("\t" + TestHarness.functionNames[function] + "(" + ((TestHarness.functionsTakeArguments[function])? this.argumentHistory[i] : "") + ")");
+                System.out.print("\t" + TestHarness.customListMethods[function].name() + "(");
+                if (TestHarness.customListMethods[function].function() instanceof BiConsumer) System.out.print(this.argumentHistory[i]);
+                System.out.println(")");
             }
         }
 
@@ -303,7 +304,7 @@ public class TestHarness
                 int firstArgument = 0;
                 int lastArgument = 0;
                 int argumentStep = 1;
-                if (TestHarness.functionsTakeArguments[currentFunction])
+                if (TestHarness.customListMethods[currentFunction].function() instanceof BiConsumer)
                 {
                     switch (currentFunction)
                     {
