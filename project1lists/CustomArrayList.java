@@ -50,7 +50,7 @@ class CustomArrayList<E> implements CustomList<E, CustomArrayList<E>>
     @Override
     public void insert(E value)
     {
-        assert this.elementCount + 1 < this.array.length : "List capacity exceeded";
+        assert this.elementCount < this.array.length : "List capacity exceeded";
 
         for (int i = this.elementCount; i > this.currentIndex; i--) this.array[i] = this.array[i - 1]; // Shift elements up to make room
         this.array[this.currentIndex] = value;
@@ -60,7 +60,7 @@ class CustomArrayList<E> implements CustomList<E, CustomArrayList<E>>
     @Override
     public void append(E value)
     {
-        assert this.elementCount + 1 < this.array.length : "List capacity exceeded";
+        assert this.elementCount < this.array.length : "List capacity exceeded";
 
         this.array[this.elementCount++] = value;
     }
