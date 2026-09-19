@@ -1,6 +1,7 @@
 package project1lists;
 
 import java.util.ArrayList;
+import java.util.ArrayDeque;
 import java.util.function.Supplier;
 
 public class TestHarness
@@ -288,7 +289,7 @@ public class TestHarness
             }
         }
 
-        private boolean addLeaves(ArrayList<State<T>> leaves)
+        private boolean addLeaves(ArrayDeque<State<T>> leaves)
         {
             for (int currentFunction = 0; currentFunction < 13; currentFunction++)
             {
@@ -330,7 +331,7 @@ public class TestHarness
 
                                 return false;
                             }
-                            leaves.add(newState);
+                            leaves.addLast(newState);
                     }
                 }
             }
@@ -347,14 +348,14 @@ public class TestHarness
      */
     public static <T extends CustomList<Integer, T>> boolean testCustomList(Supplier<T> constructor, int depth)
     {
-        ArrayList<State<T>> leaves = new ArrayList<>();
+        ArrayDeque<State<T>> leaves = new ArrayDeque<>();
         leaves.add(new State<>(constructor));
 
         for (int i = 0; i < depth; i++)
         {
-            ArrayList<State<T>> newLeaves = new ArrayList<>();
-            for (State<T> leaf : leaves) if (!leaf.addLeaves(newLeaves)) return false;
-            leaves = newLeaves;
+            int leafCount = leaves.size();
+            System.out.println(leafCount);
+            for (int j = 0; j < leafCount; j++) if (!leaves.poll().addLeaves(leaves)) return false;
         }
         return true;
     }
