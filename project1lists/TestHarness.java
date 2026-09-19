@@ -60,7 +60,7 @@ public class TestHarness
      * @param list An instance of reliable code such as ArrayList that has the same values/state as your customList
      * @param currentIndex A supplementary property of list that matches your customList's internal current index (as stated before, both instances should have the exact same values/state)
      * @param function The index of which function you would like to test. These indices are 0 based and go from the top to the bottom of the CustomList.java file.
-     * @param functionInput (optional) The value to give to the function you chose, which will not be used if the function you chose has no inputs
+     * @param functionInput The value to give to the function you chose, which will not be used if the function you chose has no inputs
      * @return A TestHarness.ErrorTestResult stating the behavior of the customList relative to the list
      */
     private static TestHarness.ErrorTestResult testErrors(State<?> state)
