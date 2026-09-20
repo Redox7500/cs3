@@ -9,18 +9,7 @@ import java.util.function.BiConsumer;
 
 public class TestHarness
 {
-    private sealed interface CustomListMethod<T>
-    {
-        record CustomListRunnable        (String name, Consumer  <CustomList<?, ?>>          function) implements CustomListMethod<Consumer  <CustomList<?, ?>>> {}
-        record CustomListValueConsumer<E>(String name, BiConsumer<CustomList<E, ?>, E>       function) implements CustomListMethod<BiConsumer<CustomList<E, ?>, E>> {}
-        record CustomListIndexConsumer   (String name, BiConsumer<CustomList<?, ?>, Integer> function) implements CustomListMethod<BiConsumer<CustomList<?, ?>, Integer>> {}
-        record CustomListValueSupplier<E>(String name, Function  <CustomList<E, ?>, E>       function) implements CustomListMethod<Function  <CustomList<E, ?>, E>> {}
-        record CustomListIndexSupplier   (String name, Function  <CustomList<?, ?>, Integer> function) implements CustomListMethod<Function  <CustomList<?, ?>, Integer>> {}
-
-        public String name();
-        public T function();
-    }
-    private static final CustomListMethod<?>[] customListMethods = new CustomListMethod[]{
+    private static final CustomListMethod[] customListMethods = new CustomListMethod[]{
         new TestHarness.CustomListMethod.CustomListIndexSupplier  ("size",                    CustomList::size),
         new TestHarness.CustomListMethod.CustomListIndexSupplier  ("getCurrentIndex",         CustomList::getCurrentIndex),
         new TestHarness.CustomListMethod.CustomListIndexConsumer  ("moveCurrentIndexTo",      CustomList::moveCurrentIndexTo),
@@ -35,22 +24,6 @@ public class TestHarness
         new TestHarness.CustomListMethod.CustomListValueConsumer<>("append",                  CustomList::append),
         new TestHarness.CustomListMethod.CustomListValueSupplier<>("remove",                  CustomList::remove)
     };
-
-    /** Return type of testErrors */
-    private static enum ErrorTestResult
-    {
-        /** Returned by testErrors when neither state.customList nor state.arrayList produce errors */
-        NONE,
-
-        /** Returned by testErrors when both state.customList and state.arrayList produce an error (such as the current index being out of bounds) */
-        BOTH,
-
-        /** Returned by testErrors when state.customList produces an error but state.arrayList does not */
-        CUSTOM_LIST,
-
-        /** Returned by testErrors when state.arrayList produces an error but state.customList does not */
-        ARRAY_LIST,
-    }
 
     /** Tests if customList and list behave the same when the specified function is called
      * <p>
@@ -197,15 +170,28 @@ public class TestHarness
         }
     }
 
+    /** Test every method of the customListClass
+     * Note: This function also only works with an element type of Integer, see {@link project1lists.TestHarness.testErrors(CustomList, List, int, int, int) testErrors} for why
+     * @param customListClass The class to test the behavior of
+     * @param depth How many layers deep every function is applied (making a new layer) and the behavior tested
+     * @return A boolean representing whether or not the customListClass behaves as expected (compared to the builtin {@link java.util.ArrayList ArrayList}) <!-- this link doesn't work for some reason -->
+     */
+    public static <T extends CustomList<Integer, T>> boolean testCustomList(Supplier<T> constructor, int depth)
+    {
+        ArrayDeque<State<T>> leaves = new ArrayDeque<>();
+        leaves.add(new State<>(constructor));
+
+        for (int i = 0; i < depth; i++)
+        {
+            int leafCount = leaves.size();
+            System.out.println(leafCount);
+            for (int j = 0; j < leafCount; j++) if (!leaves.poll().addLeaves(leaves)) return false;
+        }
+        return true;
+    }
+
     private static class State<T extends CustomList<Integer, T>>
     {
-        private enum Validity
-        {
-            VALID,
-            INVALID,
-            ERROR
-        }
-
         private T customList;
         private ArrayList<Integer> arrayList;
         private int arrayListCurrentIndex;
@@ -345,25 +331,40 @@ public class TestHarness
 
             return true;
         }
+
+        private enum Validity
+        {
+            VALID,
+            INVALID,
+            ERROR
+        }
     }
 
-    /** Test every method of the customListClass
-     * Note: This function also only works with an element type of Integer, see {@link project1lists.TestHarness.testErrors(CustomList, List, int, int, int) testErrors} for why
-     * @param customListClass The class to test the behavior of
-     * @param depth How many layers deep every function is applied (making a new layer) and the behavior tested
-     * @return A boolean representing whether or not the customListClass behaves as expected (compared to the builtin {@link java.util.ArrayList ArrayList}) <!-- this link doesn't work for some reason -->
-     */
-    public static <T extends CustomList<Integer, T>> boolean testCustomList(Supplier<T> constructor, int depth)
+    private sealed interface CustomListMethod
     {
-        ArrayDeque<State<T>> leaves = new ArrayDeque<>();
-        leaves.add(new State<>(constructor));
+        record CustomListRunnable        (String name, Consumer  <CustomList<?, ?>>          function) implements CustomListMethod {}
+        record CustomListValueConsumer<E>(String name, BiConsumer<CustomList<E, ?>, E>       function) implements CustomListMethod {}
+        record CustomListIndexConsumer   (String name, BiConsumer<CustomList<?, ?>, Integer> function) implements CustomListMethod {}
+        record CustomListValueSupplier<E>(String name, Function  <CustomList<E, ?>, E>       function) implements CustomListMethod {}
+        record CustomListIndexSupplier   (String name, Function  <CustomList<?, ?>, Integer> function) implements CustomListMethod {}
 
-        for (int i = 0; i < depth; i++)
-        {
-            int leafCount = leaves.size();
-            System.out.println(leafCount);
-            for (int j = 0; j < leafCount; j++) if (!leaves.poll().addLeaves(leaves)) return false;
-        }
-        return true;
+        public String name();
+        public Object function();
+    }
+
+    /** Return type of testErrors */
+    private static enum ErrorTestResult
+    {
+        /** Returned by testErrors when neither state.customList nor state.arrayList produce errors */
+        NONE,
+
+        /** Returned by testErrors when both state.customList and state.arrayList produce an error (such as the current index being out of bounds) */
+        BOTH,
+
+        /** Returned by testErrors when state.customList produces an error but state.arrayList does not */
+        CUSTOM_LIST,
+
+        /** Returned by testErrors when state.arrayList produces an error but state.customList does not */
+        ARRAY_LIST,
     }
 }

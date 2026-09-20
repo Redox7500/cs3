@@ -3,65 +3,6 @@ package project1lists;
 /** Linked list implementation */
 class CustomDoublyLinkedList<E> implements CustomList<E, CustomDoublyLinkedList<E>>
 {
-    private static class Link<E>
-    {
-        /** Linked list of nodes that are not currently being used and can be reused
-         * <p>
-         * Note: Doubly linked free lists do not take advantage of the link's previousLink property, as there is no need.
-        */
-        private static Link<?> freeList;
-
-        /** Value for this node */
-        private E value = null;
-
-        /** Pointer to the previous node in the list */
-        private Link<E> previousLink = null;
-
-        /** Pointer to next node in list */
-        private Link<E> nextLink = null;
-
-        Link() {}
-
-        @SuppressWarnings("unchecked")
-        private static <E> Link<E> acquire()
-        {
-            if (freeList == null) return new Link<>();
-            
-            Link<E> toReturn = (Link<E>)freeList;
-            freeList = freeList.nextLink;
-
-            return toReturn;
-        }
-
-        private static <E> Link<E> acquire(E value)
-        {
-            Link<E> toReturn = Link.acquire();
-            toReturn.value = value;
-            toReturn.nextLink = null;
-
-            return toReturn;
-        }
-
-        private static <E> Link<E> acquire(E value, Link<E> previousLink, Link<E> nextLink)
-        {
-            Link<E> toReturn = Link.acquire();
-            toReturn.value = value;
-            toReturn.previousLink = previousLink;
-            toReturn.nextLink = nextLink;
-
-            return toReturn;
-        }
-
-        @SuppressWarnings("unchecked")
-        private void release()
-        {
-            this.value = null;
-            this.previousLink = null;
-            this.nextLink = (Link<E>)Link.freeList;
-            Link.freeList = this;
-        }
-    }
-
     /** Pointer to first link */
     private CustomDoublyLinkedList.Link<E> headLink = null;
 
@@ -78,50 +19,6 @@ class CustomDoublyLinkedList<E> implements CustomList<E, CustomDoublyLinkedList<
     private int elementCount = 0;
 
     CustomDoublyLinkedList() {}
-
-    @Override
-    public int size() {return this.elementCount;}
-
-    @Override
-    public int getCurrentIndex() {return this.currentIndex;}
-
-    @Override
-    public void moveCurrentIndexTo(int index)
-    {
-        assert (this.elementCount > 0)? index >= 0 && index < this.elementCount : index == 0 : "Index out of range";
-
-        if (this.currentIndex < index)
-        {
-            for (; this.currentIndex < index; this.currentIndex++) this.currentLink = this.currentLink.nextLink;
-        }
-        else if (this.currentIndex >> 1 < index)
-        {
-            for (; this.currentIndex > index; this.currentIndex--) this.currentLink = this.currentLink.previousLink;
-        }
-        else
-        {
-            this.currentLink = this.headLink;
-            for (this.currentIndex = 0; this.currentIndex < index; this.currentIndex++) this.currentLink = this.currentLink.nextLink;
-        }
-    }
-
-    @Override
-    public void moveCurrentIndexToStart() {this.currentLink = this.headLink; this.currentIndex = 0;}
-
-    @Override
-    public void moveCurrentIndexToEnd() {this.currentLink = this.tailLink; this.currentIndex = Math.max(this.elementCount - 1, 0);}
-
-    @Override
-    public void moveCurrentIndexLeft() {assert this.currentIndex != 0 : "Index out of range"; this.currentLink = this.currentLink.previousLink; this.currentIndex--;}
-    
-    @Override
-    public void moveCurrentIndexRight() {assert this.currentIndex != Math.max(this.elementCount - 1, 0) : "Index out of range"; this.currentLink = this.currentLink.nextLink; this.currentIndex++;}
-
-    @Override
-    public E getCurrentValue() {assert this.elementCount > 0 : "Index out of range"; return this.currentLink.value;}
-
-    @Override
-    public void setCurrentValue(E value) {if (this.elementCount > 0) this.currentLink.value = value; else this.append(value);}
 
     @Override
     public void clear()
@@ -201,6 +98,50 @@ class CustomDoublyLinkedList<E> implements CustomList<E, CustomDoublyLinkedList<
     }
 
     @Override
+    public E getCurrentValue() {assert this.elementCount > 0 : "Index out of range"; return this.currentLink.value;}
+
+    @Override
+    public void setCurrentValue(E value) {if (this.elementCount > 0) this.currentLink.value = value; else this.append(value);}
+
+    @Override
+    public int getCurrentIndex() {return this.currentIndex;}
+
+    @Override
+    public void moveCurrentIndexTo(int index)
+    {
+        assert (this.elementCount > 0)? index >= 0 && index < this.elementCount : index == 0 : "Index out of range";
+
+        if (this.currentIndex < index)
+        {
+            for (; this.currentIndex < index; this.currentIndex++) this.currentLink = this.currentLink.nextLink;
+        }
+        else if (this.currentIndex >> 1 < index)
+        {
+            for (; this.currentIndex > index; this.currentIndex--) this.currentLink = this.currentLink.previousLink;
+        }
+        else
+        {
+            this.currentLink = this.headLink;
+            for (this.currentIndex = 0; this.currentIndex < index; this.currentIndex++) this.currentLink = this.currentLink.nextLink;
+        }
+    }
+
+    @Override
+    public void moveCurrentIndexToStart() {this.currentLink = this.headLink; this.currentIndex = 0;}
+
+    @Override
+    public void moveCurrentIndexToEnd() {this.currentLink = this.tailLink; this.currentIndex = Math.max(this.elementCount - 1, 0);}
+
+    @Override
+    public void moveCurrentIndexLeft() {assert this.currentIndex != 0 : "Index out of range"; this.currentLink = this.currentLink.previousLink; this.currentIndex--;}
+    
+    @Override
+    public void moveCurrentIndexRight() {assert this.currentIndex != Math.max(this.elementCount - 1, 0) : "Index out of range"; this.currentLink = this.currentLink.nextLink; this.currentIndex++;}
+
+    @Override
+    public int size() {return this.elementCount;}
+
+    @Override
     public CustomDoublyLinkedList<E> copy()
     {
         CustomDoublyLinkedList<E> toReturn = new CustomDoublyLinkedList<>();
@@ -227,5 +168,64 @@ class CustomDoublyLinkedList<E> implements CustomList<E, CustomDoublyLinkedList<
         toReturn.append(']');
 
         return toReturn.toString();
+    }
+
+    private static class Link<E>
+    {
+        /** Linked list of nodes that are not currently being used and can be reused
+         * <p>
+         * Note: Doubly linked free lists do not take advantage of the link's previousLink property, as there is no need.
+        */
+        private static Link<?> freeList;
+
+        /** Value for this node */
+        private E value = null;
+
+        /** Pointer to the previous node in the list */
+        private Link<E> previousLink = null;
+
+        /** Pointer to next node in list */
+        private Link<E> nextLink = null;
+
+        Link() {}
+
+        @SuppressWarnings("unchecked")
+        private static <E> Link<E> acquire()
+        {
+            if (freeList == null) return new Link<>();
+            
+            Link<E> toReturn = (Link<E>)freeList;
+            freeList = freeList.nextLink;
+
+            return toReturn;
+        }
+
+        private static <E> Link<E> acquire(E value)
+        {
+            Link<E> toReturn = Link.acquire();
+            toReturn.value = value;
+            toReturn.nextLink = null;
+
+            return toReturn;
+        }
+
+        private static <E> Link<E> acquire(E value, Link<E> previousLink, Link<E> nextLink)
+        {
+            Link<E> toReturn = Link.acquire();
+            toReturn.value = value;
+            toReturn.previousLink = previousLink;
+            toReturn.nextLink = nextLink;
+
+            return toReturn;
+        }
+
+        @SuppressWarnings("unchecked")
+        private void release()
+        {
+            this.value = null;
+            this.previousLink = null;
+            this.nextLink = (Link<E>)Link.freeList;
+            Link.freeList = this;
+        }
     }
 }

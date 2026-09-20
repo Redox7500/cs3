@@ -4,65 +4,6 @@ package project1lists;
 /** Linked list implementation */
 class CustomLinkedList<E> implements CustomList<E, CustomLinkedList<E>>
 {
-    private static class Link<E>
-    {
-        /** Linked list of nodes that are not currently being used and can be reused */
-        private static Link<?> freeList;
-
-        /** Value for this node */
-        private E value = null;
-
-        /** Pointer to next node in list */
-        private Link<E> nextLink = null;
-
-        Link() {}
-
-        @SuppressWarnings("unchecked")
-        private static <E> Link<E> acquire()
-        {
-            if (freeList == null) return new Link<>();
-            
-            Link<E> toReturn = (Link<E>)freeList;
-            freeList = freeList.nextLink;
-
-            return toReturn;
-        }
-
-        private static <E> Link<E> acquire(boolean looping)
-        {
-            Link<E> toReturn = Link.acquire();
-            if (looping) toReturn.nextLink = toReturn;
-
-            return toReturn;
-        }
-
-        private static <E> Link<E> acquire(E value)
-        {
-            Link<E> toReturn = Link.acquire();
-            toReturn.value = value;
-            toReturn.nextLink = null;
-
-            return toReturn;
-        }
-
-        private static <E> Link<E> acquire(E value, Link<E> nextLink)
-        {
-            Link<E> toReturn = Link.acquire();
-            toReturn.value = value;
-            toReturn.nextLink = nextLink;
-
-            return toReturn;
-        }
-
-        @SuppressWarnings("unchecked")
-        private void release()
-        {
-            this.value = null;
-            this.nextLink = (Link<E>)Link.freeList;
-            Link.freeList = this;
-        }
-    }
-
     /** Pointer to first link */
     private final CustomLinkedList.Link<E> headLink = Link.acquire(true);
 
@@ -79,46 +20,6 @@ class CustomLinkedList<E> implements CustomList<E, CustomLinkedList<E>>
     private int elementCount = 0;
 
     CustomLinkedList() {}
-
-    @Override
-    public int size() {return this.elementCount;}
-
-    @Override
-    public int getCurrentIndex() {return this.currentIndex;}
-
-    @Override
-    public void moveCurrentIndexTo(int index)
-    {
-        assert (this.elementCount > 0)? index >= 0 && index < this.elementCount : index == 0 : "Index out of range";
-
-        this.currentLink = this.headLink;
-        for (this.currentIndex = 0; this.currentIndex < index; this.currentIndex++) this.currentLink = this.currentLink.nextLink;
-    }
-
-    @Override
-    public void moveCurrentIndexToStart() {this.currentLink = this.headLink; this.currentIndex = 0;}
-
-    @Override
-    public void moveCurrentIndexToEnd() {this.currentLink = this.tailLink; this.currentIndex = Math.max(this.elementCount - 1, 0);}
-
-    @Override
-    public void moveCurrentIndexLeft()
-    {
-        assert this.currentIndex != 0 : "Index out of range";
-
-        this.currentLink = this.headLink;
-        int targetIndex = this.currentIndex - 1;
-        for (this.currentIndex = 0; this.currentIndex < targetIndex; this.currentIndex++) this.currentLink = this.currentLink.nextLink;
-    }
-    
-    @Override
-    public void moveCurrentIndexRight() {assert this.currentIndex != Math.max(this.elementCount - 1, 0) : "Index out of range"; this.currentLink = this.currentLink.nextLink; this.currentIndex++;}
-
-    @Override
-    public E getCurrentValue() {assert this.elementCount > 0 : "Index out of range"; return this.currentLink.nextLink.value;}
-
-    @Override
-    public void setCurrentValue(E value) {if (this.elementCount > 0) this.currentLink.nextLink.value = value; else this.append(value);}
 
     @Override
     public void clear()
@@ -181,6 +82,46 @@ class CustomLinkedList<E> implements CustomList<E, CustomLinkedList<E>>
     }
 
     @Override
+    public E getCurrentValue() {assert this.elementCount > 0 : "Index out of range"; return this.currentLink.nextLink.value;}
+
+    @Override
+    public void setCurrentValue(E value) {if (this.elementCount > 0) this.currentLink.nextLink.value = value; else this.append(value);}
+
+    @Override
+    public int getCurrentIndex() {return this.currentIndex;}
+
+    @Override
+    public void moveCurrentIndexTo(int index)
+    {
+        assert (this.elementCount > 0)? index >= 0 && index < this.elementCount : index == 0 : "Index out of range";
+
+        this.currentLink = this.headLink;
+        for (this.currentIndex = 0; this.currentIndex < index; this.currentIndex++) this.currentLink = this.currentLink.nextLink;
+    }
+
+    @Override
+    public void moveCurrentIndexToStart() {this.currentLink = this.headLink; this.currentIndex = 0;}
+
+    @Override
+    public void moveCurrentIndexToEnd() {this.currentLink = this.tailLink; this.currentIndex = Math.max(this.elementCount - 1, 0);}
+
+    @Override
+    public void moveCurrentIndexLeft()
+    {
+        assert this.currentIndex != 0 : "Index out of range";
+
+        this.currentLink = this.headLink;
+        int targetIndex = this.currentIndex - 1;
+        for (this.currentIndex = 0; this.currentIndex < targetIndex; this.currentIndex++) this.currentLink = this.currentLink.nextLink;
+    }
+    
+    @Override
+    public void moveCurrentIndexRight() {assert this.currentIndex != Math.max(this.elementCount - 1, 0) : "Index out of range"; this.currentLink = this.currentLink.nextLink; this.currentIndex++;}
+
+    @Override
+    public int size() {return this.elementCount;}
+
+    @Override
     public CustomLinkedList<E> copy()
     {
         CustomLinkedList<E> toReturn = new CustomLinkedList<>();
@@ -207,5 +148,64 @@ class CustomLinkedList<E> implements CustomList<E, CustomLinkedList<E>>
         toReturn.append(']');
 
         return toReturn.toString();
+    }
+
+    private static class Link<E>
+    {
+        /** Linked list of nodes that are not currently being used and can be reused */
+        private static Link<?> freeList;
+
+        /** Value for this node */
+        private E value = null;
+
+        /** Pointer to next node in list */
+        private Link<E> nextLink = null;
+
+        Link() {}
+
+        @SuppressWarnings("unchecked")
+        private static <E> Link<E> acquire()
+        {
+            if (freeList == null) return new Link<>();
+            
+            Link<E> toReturn = (Link<E>)freeList;
+            freeList = freeList.nextLink;
+
+            return toReturn;
+        }
+
+        private static <E> Link<E> acquire(boolean looping)
+        {
+            Link<E> toReturn = Link.acquire();
+            if (looping) toReturn.nextLink = toReturn;
+
+            return toReturn;
+        }
+
+        private static <E> Link<E> acquire(E value)
+        {
+            Link<E> toReturn = Link.acquire();
+            toReturn.value = value;
+            toReturn.nextLink = null;
+
+            return toReturn;
+        }
+
+        private static <E> Link<E> acquire(E value, Link<E> nextLink)
+        {
+            Link<E> toReturn = Link.acquire();
+            toReturn.value = value;
+            toReturn.nextLink = nextLink;
+
+            return toReturn;
+        }
+
+        @SuppressWarnings("unchecked")
+        private void release()
+        {
+            this.value = null;
+            this.nextLink = (Link<E>)Link.freeList;
+            Link.freeList = this;
+        }
     }
 }

@@ -30,21 +30,6 @@ class CustomArrayList<E> implements CustomList<E, CustomArrayList<E>>
     CustomArrayList() {this(CustomArrayList.DEFAULT_SIZE);}
 
     @Override
-    public int size() {return this.elementCount;}
-    
-    @Override
-    public int getCurrentIndex() {return this.currentIndex;}
-
-    @Override
-    public void moveCurrentIndexTo(int index) {assert (this.elementCount > 0)? index >= 0 && index < this.elementCount : index == 0 : "Index out of range"; this.currentIndex = index;}
-
-    @Override
-    public E getCurrentValue() {assert this.elementCount > 0 : "Index out of range"; return this.array[this.currentIndex];}
-
-    @Override
-    public void setCurrentValue(E value) {assert this.array.length > 0: "List capacity exceeded"; if (this.elementCount != 0) this.array[currentIndex] = value; else this.append(value);}
-
-    @Override
     public void clear() {this.elementCount = 0; this.currentIndex = 0;}
 
     @Override
@@ -78,6 +63,21 @@ class CustomArrayList<E> implements CustomList<E, CustomArrayList<E>>
 
         return element;
     }
+
+    @Override
+    public E getCurrentValue() {assert this.elementCount > 0 : "Index out of range"; return this.array[this.currentIndex];}
+
+    @Override
+    public void setCurrentValue(E value) {assert this.array.length > 0: "List capacity exceeded"; if (this.elementCount != 0) this.array[currentIndex] = value; else this.append(value);}
+
+    @Override
+    public int getCurrentIndex() {return this.currentIndex;}
+
+    @Override
+    public void moveCurrentIndexTo(int index) {assert (this.elementCount > 0)? index >= 0 && index < this.elementCount : index == 0 : "Index out of range"; this.currentIndex = index;}
+
+    @Override
+    public int size() {return this.elementCount;}
 
     @Override
     public CustomArrayList<E> copy()
