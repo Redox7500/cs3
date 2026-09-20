@@ -9,31 +9,31 @@ import java.util.function.BiConsumer;
 
 public class TestHarness
 {
-    private sealed interface CustomListMethod
+    private sealed interface CustomListMethod<T>
     {
-        record CustomListRunnable        (String name, Consumer  <CustomList<?, ?>>          function) implements CustomListMethod {}
-        record CustomListValueConsumer<E>(String name, BiConsumer<CustomList<E, ?>, E>       function) implements CustomListMethod {}
-        record CustomListIndexConsumer   (String name, BiConsumer<CustomList<?, ?>, Integer> function) implements CustomListMethod {}
-        record CustomListValueSupplier<E>(String name, Function  <CustomList<E, ?>, E>       function) implements CustomListMethod {}
-        record CustomListIndexSupplier   (String name, Function  <CustomList<?, ?>, Integer> function) implements CustomListMethod {}
+        record CustomListRunnable        (String name, Consumer  <CustomList<?, ?>>          function) implements CustomListMethod<Consumer  <CustomList<?, ?>>> {}
+        record CustomListValueConsumer<E>(String name, BiConsumer<CustomList<E, ?>, E>       function) implements CustomListMethod<BiConsumer<CustomList<E, ?>, E>> {}
+        record CustomListIndexConsumer   (String name, BiConsumer<CustomList<?, ?>, Integer> function) implements CustomListMethod<BiConsumer<CustomList<?, ?>, Integer>> {}
+        record CustomListValueSupplier<E>(String name, Function  <CustomList<E, ?>, E>       function) implements CustomListMethod<Function  <CustomList<E, ?>, E>> {}
+        record CustomListIndexSupplier   (String name, Function  <CustomList<?, ?>, Integer> function) implements CustomListMethod<Function  <CustomList<?, ?>, Integer>> {}
 
         public String name();
-        public Object function();
+        public T function();
     }
-    private static final CustomListMethod[] customListMethods = new CustomListMethod[]{
-        new CustomListMethod.CustomListIndexSupplier  ("size",                    CustomList::size),
-        new CustomListMethod.CustomListIndexSupplier  ("getCurrentIndex",         CustomList::getCurrentIndex),
-        new CustomListMethod.CustomListIndexConsumer  ("moveCurrentIndexTo",      CustomList::moveCurrentIndexTo),
-        new CustomListMethod.CustomListRunnable       ("moveCurrentIndexToStart", CustomList::moveCurrentIndexToStart),
-        new CustomListMethod.CustomListRunnable       ("moveCurrentIndexToEnd",   CustomList::moveCurrentIndexToEnd),
-        new CustomListMethod.CustomListRunnable       ("moveCurrentIndexLeft",    CustomList::moveCurrentIndexLeft),
-        new CustomListMethod.CustomListRunnable       ("moveCurrentIndexRight",   CustomList::moveCurrentIndexRight),
-        new CustomListMethod.CustomListValueSupplier<>("getCurrentValue",         CustomList::getCurrentValue),
-        new CustomListMethod.CustomListValueConsumer<>("setCurrentValue",         CustomList::setCurrentValue),
-        new CustomListMethod.CustomListRunnable       ("clear",                   CustomList::clear),
-        new CustomListMethod.CustomListValueConsumer<>("insert",                  CustomList::insert),
-        new CustomListMethod.CustomListValueConsumer<>("append",                  CustomList::append),
-        new CustomListMethod.CustomListValueSupplier<>("remove",                  CustomList::remove)
+    private static final CustomListMethod<?>[] customListMethods = new CustomListMethod[]{
+        new TestHarness.CustomListMethod.CustomListIndexSupplier  ("size",                    CustomList::size),
+        new TestHarness.CustomListMethod.CustomListIndexSupplier  ("getCurrentIndex",         CustomList::getCurrentIndex),
+        new TestHarness.CustomListMethod.CustomListIndexConsumer  ("moveCurrentIndexTo",      CustomList::moveCurrentIndexTo),
+        new TestHarness.CustomListMethod.CustomListRunnable       ("moveCurrentIndexToStart", CustomList::moveCurrentIndexToStart),
+        new TestHarness.CustomListMethod.CustomListRunnable       ("moveCurrentIndexToEnd",   CustomList::moveCurrentIndexToEnd),
+        new TestHarness.CustomListMethod.CustomListRunnable       ("moveCurrentIndexLeft",    CustomList::moveCurrentIndexLeft),
+        new TestHarness.CustomListMethod.CustomListRunnable       ("moveCurrentIndexRight",   CustomList::moveCurrentIndexRight),
+        new TestHarness.CustomListMethod.CustomListValueSupplier<>("getCurrentValue",         CustomList::getCurrentValue),
+        new TestHarness.CustomListMethod.CustomListValueConsumer<>("setCurrentValue",         CustomList::setCurrentValue),
+        new TestHarness.CustomListMethod.CustomListRunnable       ("clear",                   CustomList::clear),
+        new TestHarness.CustomListMethod.CustomListValueConsumer<>("insert",                  CustomList::insert),
+        new TestHarness.CustomListMethod.CustomListValueConsumer<>("append",                  CustomList::append),
+        new TestHarness.CustomListMethod.CustomListValueSupplier<>("remove",                  CustomList::remove)
     };
 
     /** Return type of testErrors */
@@ -301,21 +301,32 @@ public class TestHarness
         {
             for (int currentFunction = 0; currentFunction < 13; currentFunction++)
             {
-                int firstArgument = 0;
-                int lastArgument = 0;
+                int firstArgument, lastArgument;
                 int argumentStep = 1;
-                if (TestHarness.customListMethods[currentFunction].function() instanceof BiConsumer)
+                switch (TestHarness.customListMethods[currentFunction])
                 {
-                    switch (currentFunction)
-                    {
-                        case 2:
-                            firstArgument = -1;
-                            lastArgument = this.arrayList.size();
-                            // argumentStep = Math.max(this.arrayList.size() / 4, 1); // The larger that 4 is, the more indices are checked (for moveCurrentIndexTo)
-                        case 8, 10, 11:
-                            firstArgument = lastArgument = this.functionHistory.length;
-                    }
+                    case TestHarness.CustomListMethod.CustomListIndexConsumer    _ -> {firstArgument = -1; lastArgument = this.arrayList.size();}
+                    case TestHarness.CustomListMethod.CustomListValueConsumer<?> _ -> firstArgument = lastArgument = this.functionHistory.length;
+                    default -> firstArgument = lastArgument = 0;
                 }
+                // System.out.println(currentFunction + " " + firstArgument + " " + lastArgument);
+                // if (TestHarness.customListMethods[currentFunction].function() instanceof BiConsumer)
+                // {
+                //     switch (currentFunction)
+                //     {
+                //         case 2:
+                //             // if (firstArgument != -1) System.out.println("1f");
+                //             // if (lastArgument != this.arrayList.size()) System.out.println("1l");
+                //             firstArgument = -1;
+                //             lastArgument = this.arrayList.size();
+                //             // argumentStep = Math.max(this.arrayList.size() / 4, 1); // The larger that 4 is, the more indices are checked (for moveCurrentIndexTo)
+                //         case 8, 10, 11:
+                //             System.out.println(currentFunction);
+                //             // if (firstArgument != this.functionHistory.length) System.out.println("2f");
+                //             // if (lastArgument != this.functionHistory.length) System.out.println("2l");
+                //             firstArgument = lastArgument = this.functionHistory.length;
+                //     }
+                // }
                 for (int currentArgument = firstArgument; currentArgument < lastArgument + 1; currentArgument += argumentStep)
                 {
                     State<T> newState = new State<>(this, currentFunction, currentArgument);
