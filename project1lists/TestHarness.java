@@ -305,28 +305,10 @@ public class TestHarness
                 int argumentStep = 1;
                 switch (TestHarness.customListMethods[currentFunction])
                 {
-                    case TestHarness.CustomListMethod.CustomListIndexConsumer    _ -> {firstArgument = -1; lastArgument = this.arrayList.size();}
+                    case TestHarness.CustomListMethod.CustomListIndexConsumer _ -> {firstArgument = -1; lastArgument = this.arrayList.size();}
                     case TestHarness.CustomListMethod.CustomListValueConsumer<?> _ -> firstArgument = lastArgument = this.functionHistory.length;
                     default -> firstArgument = lastArgument = 0;
                 }
-                // System.out.println(currentFunction + " " + firstArgument + " " + lastArgument);
-                // if (TestHarness.customListMethods[currentFunction].function() instanceof BiConsumer)
-                // {
-                //     switch (currentFunction)
-                //     {
-                //         case 2:
-                //             // if (firstArgument != -1) System.out.println("1f");
-                //             // if (lastArgument != this.arrayList.size()) System.out.println("1l");
-                //             firstArgument = -1;
-                //             lastArgument = this.arrayList.size();
-                //             // argumentStep = Math.max(this.arrayList.size() / 4, 1); // The larger that 4 is, the more indices are checked (for moveCurrentIndexTo)
-                //         case 8, 10, 11:
-                //             System.out.println(currentFunction);
-                //             // if (firstArgument != this.functionHistory.length) System.out.println("2f");
-                //             // if (lastArgument != this.functionHistory.length) System.out.println("2l");
-                //             firstArgument = lastArgument = this.functionHistory.length;
-                //     }
-                // }
                 for (int currentArgument = firstArgument; currentArgument < lastArgument + 1; currentArgument += argumentStep)
                 {
                     State<T> newState = new State<>(this, currentFunction, currentArgument);
