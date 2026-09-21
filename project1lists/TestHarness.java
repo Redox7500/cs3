@@ -11,8 +11,10 @@ import java.util.concurrent.Future;
 import java.util.concurrent.Executors;
 
 // change leaves thing to be recursion to save memory?
+/** Test harness to test CustomList implementations (specifically CustomList<Integer, ?> implementations) */
 public class TestHarness
 {
+    /** A list of all of the CustomListMethods to be tested */
     private static final CustomListMethod[] customListMethods = new CustomListMethod[]{
         new TestHarness.CustomListMethod.CustomListIndexSupplier  ("size",                    CustomList::size),
         new TestHarness.CustomListMethod.CustomListIndexSupplier  ("getCurrentIndex",         CustomList::getCurrentIndex),
@@ -29,6 +31,10 @@ public class TestHarness
         new TestHarness.CustomListMethod.CustomListValueSupplier<>("remove",                  CustomList::remove)
     };
 
+    /** Test the given CustomList(s) and print the outputs nicely
+     * @param constructors The constructors of the CustomList(s) you want to test
+     * @param names The names of the CustomList(s) you want to test (in the same order as the constructors)
+     */
     @SuppressWarnings("rawtypes")
     public static void testCustomLists(Supplier[] constructors, String[] names)
     {
@@ -235,12 +241,22 @@ public class TestHarness
         }
     }
 
+    /** Expresses a state that a CustomList and its corresponding ArrayList can be in, along with arrays to keep track of the function call and argument histories */
     private static class State<T extends CustomList<Integer, T>>
     {
+        /** The instance of the CustomList being tested that resulted after the functionHistory/argumentHistory */
         T customList;
+
+        /** An instance of ArrayList that resulted after the functionHistory/argumentHistory */
         ArrayList<Integer> arrayList;
+
+        /** A supplementary currentIndex for the ArrayList for it to completely mimic the CustomList */
         int arrayListCurrentIndex;
+
+        /** An array containing all of the function calls leading up to this state */
         int[] functionHistory;
+
+        /** An array containing all of the arguments used in the function calls leading up to this state */
         int[] argumentHistory;
 
         State(Supplier<T> constructor)
@@ -269,6 +285,9 @@ public class TestHarness
             this.argumentHistory[depth - 1] = argument;
         }
 
+        /** Test if this state's CustomList and ArrayList are equal (including the ArrayList's supplementary currentIndex)
+         * @return Whether or not this state's CustomList and ArrayList are equal
+         */
         State.Validity isValid()
         {
             try
@@ -299,6 +318,7 @@ public class TestHarness
             }
         }
 
+        /** Log all of the information of this State (with formatting to work with {@link #project1lists.TestHarness.testCustomLists testCustomLists}) */
         void printInfo()
         {
             System.out.print("\033[2KCustom list: ");
@@ -331,6 +351,10 @@ public class TestHarness
             System.out.print("\0338\033[" + (this.functionHistory.length + 5) + "A");
         }
 
+        /** Branch out from this state and add the new leaf states to leaves
+         * @param leaves The deque to add the new leaf states to
+         * @return A boolean representing whether any of the leaves had CustomLists that misbehaved or not
+         */
         boolean addLeaves(ArrayDeque<State<T>> leaves)
         {
             for (int currentFunction = 0; currentFunction < 13; currentFunction++)
@@ -380,6 +404,7 @@ public class TestHarness
             return true;
         }
 
+        /** Return type of {@link #project1lists.TestHarness.State.isValid isValid} */
         enum Validity
         {
             VALID,
@@ -388,12 +413,19 @@ public class TestHarness
         }
     }
 
+    /** Fancy spinning line character */
     private static class AsyncSpinner
     {
+        /** Character frames to play for animating the spinner */
         static final char[] frames = {'-', '\\', '|', '/'};
+
+        /** Thread to animate the spinner on (so that other operations can be run while the spinner is animating) */
         static ExecutorService executor;
+
+        /** Current task that animates the spinner (if null there is no spinner) */
         static Future<?> task;
 
+        /** Play AsyncSpinner.frames (should not be used outside of AsyncSpinner) */
         static void animate()
         {
             int frame = 0;
@@ -406,26 +438,46 @@ public class TestHarness
             }
         }
 
+        /** Start the spinner's animation (to be used outside) */
         static void start()
         {
             if (AsyncSpinner.executor == null) AsyncSpinner.executor = Executors.newSingleThreadExecutor();
             AsyncSpinner.task = executor.submit(AsyncSpinner::animate);
         }
 
+        /** End the spinner's animation */
         static void stop() {if (AsyncSpinner.task != null) AsyncSpinner.task.cancel(true);}
 
+        /** Completely kill the spinner's thread */
         static void kill() {if (AsyncSpinner.executor != null) AsyncSpinner.executor.shutdownNow();}
     }
 
+    /** An interface to combine all of the types of methods CustomLists have into a uniform function type (with names)
+     * <p>
+     * The CustomList is passed into the CustomListMethod.function() as the first argument.
+    */
     private sealed interface CustomListMethod
     {
+        /** A method of CustomList that has no inputs or outputs */
         record CustomListRunnable        (String name, Consumer  <CustomList<?, ?>>          function) implements CustomListMethod {}
+        
+        /** A method of CustomList that has a value as an input and no outputs */
         record CustomListValueConsumer<E>(String name, BiConsumer<CustomList<E, ?>, E>       function) implements CustomListMethod {}
+        
+        /** A method of CustomList that has an index as an input and no outputs */
         record CustomListIndexConsumer   (String name, BiConsumer<CustomList<?, ?>, Integer> function) implements CustomListMethod {}
+        
+        /** A method of CustomList that has no inputs and a value as an output */
         record CustomListValueSupplier<E>(String name, Function  <CustomList<E, ?>, E>       function) implements CustomListMethod {}
+        
+        /** A method of CustomList that has no inputs and an index as an output */
         record CustomListIndexSupplier   (String name, Function  <CustomList<?, ?>, Integer> function) implements CustomListMethod {}
 
+        /** Get the name of this CustomListMethod */
         public String name();
+
+        // change to be something that calls the function according to what type this CustomListMethod is so that i don't have to do isinstanceof checks for accept/apply calls?
+        /** Get the function of this CustomListMethod */
         public Object function();
     }
 
