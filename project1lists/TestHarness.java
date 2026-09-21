@@ -25,6 +25,26 @@ public class TestHarness
         new TestHarness.CustomListMethod.CustomListValueSupplier<>("remove",                  CustomList::remove)
     };
 
+    /** Test every method of the customListClass
+     * Note: This function also only works with an element type of Integer, see {@link project1lists.TestHarness.testErrors(CustomList, List, int, int, int) testErrors} for why
+     * @param customListClass The class to test the behavior of
+     * @param depth How many layers deep every function is applied (making a new layer) and the behavior tested
+     * @return A boolean representing whether or not the customListClass behaves as expected (compared to the builtin {@link java.util.ArrayList ArrayList}) <!-- this link doesn't work for some reason -->
+     */
+    public static <T extends CustomList<Integer, T>> boolean testCustomList(Supplier<T> constructor, int depth)
+    {
+        ArrayDeque<State<T>> leaves = new ArrayDeque<>();
+        leaves.add(new State<>(constructor));
+
+        for (int i = 0; i < depth; i++)
+        {
+            int leafCount = leaves.size();
+            // System.out.println(leafCount);
+            for (int j = 0; j < leafCount; j++) if (!leaves.poll().addLeaves(leaves)) return false;
+        }
+        return true;
+    }
+
     /** Tests if customList and list behave the same when the specified function is called
      * <p>
      * Note: This function only works with Integer lists because generating random numbers for them is easy and there's really no purpose to add other types; they should all work the same (also Integers make it so that functionInput works for both values and indices)
@@ -170,35 +190,15 @@ public class TestHarness
         }
     }
 
-    /** Test every method of the customListClass
-     * Note: This function also only works with an element type of Integer, see {@link project1lists.TestHarness.testErrors(CustomList, List, int, int, int) testErrors} for why
-     * @param customListClass The class to test the behavior of
-     * @param depth How many layers deep every function is applied (making a new layer) and the behavior tested
-     * @return A boolean representing whether or not the customListClass behaves as expected (compared to the builtin {@link java.util.ArrayList ArrayList}) <!-- this link doesn't work for some reason -->
-     */
-    public static <T extends CustomList<Integer, T>> boolean testCustomList(Supplier<T> constructor, int depth)
-    {
-        ArrayDeque<State<T>> leaves = new ArrayDeque<>();
-        leaves.add(new State<>(constructor));
-
-        for (int i = 0; i < depth; i++)
-        {
-            int leafCount = leaves.size();
-            System.out.println(leafCount);
-            for (int j = 0; j < leafCount; j++) if (!leaves.poll().addLeaves(leaves)) return false;
-        }
-        return true;
-    }
-
     private static class State<T extends CustomList<Integer, T>>
     {
-        private T customList;
-        private ArrayList<Integer> arrayList;
-        private int arrayListCurrentIndex;
-        private int[] functionHistory;
-        private int[] argumentHistory;
+        T customList;
+        ArrayList<Integer> arrayList;
+        int arrayListCurrentIndex;
+        int[] functionHistory;
+        int[] argumentHistory;
 
-        private State(Supplier<T> constructor)
+        State(Supplier<T> constructor)
         {
             this.customList = constructor.get();
             this.arrayList = new ArrayList<>();
@@ -207,7 +207,7 @@ public class TestHarness
             this.argumentHistory = new int[0];
         }
 
-        private State(State<T> previousState, int function, int argument)
+        State(State<T> previousState, int function, int argument)
         {
             this.customList = previousState.customList.copy();
             this.arrayList = new ArrayList<>(previousState.arrayList);
@@ -224,7 +224,7 @@ public class TestHarness
             this.argumentHistory[depth - 1] = argument;
         }
 
-        private State.Validity isValid()
+        State.Validity isValid()
         {
             try
             {
@@ -254,36 +254,39 @@ public class TestHarness
             }
         }
 
-        private void printInfo()
+        void printInfo()
         {
-            System.out.println("Custom list: " + this.customList);
-            System.out.println("ArrayList:   " + this.arrayList);
-            System.out.print("Custom list current index: ");
+            System.out.print("\033[2KCustom list: ");
+            try {System.out.println(this.customList);}
+            catch (Throwable error) {System.out.println("Error: " + error.getMessage());}
+            System.out.println("\033[2KArrayList:   " + this.arrayList);
+            System.out.print("\033[2KCustom list current index: ");
             try {System.out.println(this.customList.getCurrentIndex());}
-            catch (Throwable error) {error.printStackTrace();}
-            System.out.println("ArrayList current index:   " + this.arrayListCurrentIndex);
-            System.out.print("Custom list current value: ");
-            try
+            catch (Throwable error) {System.out.println("Error: " + error.getMessage());}
+            System.out.println("\033[2KArrayList current index:   " + this.arrayListCurrentIndex);
+            System.out.print("\033[2KCustom list current value: ");
+            if (this.customList.size() > 0)
             {
-                if (this.customList.size() > 0) System.out.println(this.customList.getCurrentValue());
-                else System.out.println("N/A (empty list)");
+                try {System.out.println(this.customList.getCurrentValue());}
+                catch (Throwable error) {System.out.println("Error: " + error.getMessage());}
             }
-            catch (Throwable error)
+            else
             {
-                error.printStackTrace();
+                System.out.println("N/A (empty list)");
             }
-            System.out.println("ArrayList current value:   " + ((this.arrayList.size() > 0)? this.arrayList.get(this.arrayListCurrentIndex) : "N/A (empty list)"));
-            System.out.println("Function history (most recent at the bottom): ");
+            System.out.println("\033[2KArrayList current value:   " + ((this.arrayList.size() > 0)? this.arrayList.get(this.arrayListCurrentIndex) : "N/A (empty list)"));
+            System.out.println("\033[2KFunction history (most recent at the bottom): ");
             for (int i = 0; i < this.functionHistory.length; i++)
             {
                 int function = this.functionHistory[i];
-                System.out.print("\t" + TestHarness.customListMethods[function].name() + "(");
+                System.out.print("\033[2K\t" + TestHarness.customListMethods[function].name() + "(");
                 if (TestHarness.customListMethods[function].function() instanceof BiConsumer) System.out.print(this.argumentHistory[i]);
                 System.out.println(")");
             }
+            System.out.print("\0338\033[" + (this.functionHistory.length + 5) + "A");
         }
 
-        private boolean addLeaves(ArrayDeque<State<T>> leaves)
+        boolean addLeaves(ArrayDeque<State<T>> leaves)
         {
             for (int currentFunction = 0; currentFunction < 13; currentFunction++)
             {
@@ -303,22 +306,22 @@ public class TestHarness
                         case TestHarness.ErrorTestResult.BOTH:
                             continue;
                         case TestHarness.ErrorTestResult.CUSTOM_LIST:
-                            System.out.println("Custom list had an error while ArrayList did not at state below");
+                            System.out.println("Custom list had an error while ArrayList did not at state below\0337");
                             newState.printInfo();
 
                             return false;
                         case TestHarness.ErrorTestResult.ARRAY_LIST:
-                            System.out.println("ArrayList had an error while custom list did not at state below");
+                            System.out.println("ArrayList had an error while custom list did not at state below\0337");
                         case TestHarness.ErrorTestResult.NONE:
                             switch (newState.isValid())
                             {
                                 case State.Validity.INVALID:
-                                    System.out.println("Lists were not equal at state below");
+                                    System.out.println("Lists were not equal at state below\0337");
                                     newState.printInfo();
 
                                     return false;
                                 case State.Validity.ERROR:
-                                    System.out.println("Error checking custom list's validity at state below");
+                                    System.out.println("Error checking custom list's validity at state below\0337");
                                     newState.printInfo();
 
                                     return false;
@@ -332,7 +335,7 @@ public class TestHarness
             return true;
         }
 
-        private enum Validity
+        enum Validity
         {
             VALID,
             INVALID,
@@ -353,7 +356,7 @@ public class TestHarness
     }
 
     /** Return type of testErrors */
-    private static enum ErrorTestResult
+    private enum ErrorTestResult
     {
         /** Returned by testErrors when neither state.customList nor state.arrayList produce errors */
         NONE,
