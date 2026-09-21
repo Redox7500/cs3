@@ -1,6 +1,26 @@
 An explanation of the test harness
 
-My test harness is in `TestHarness`, whose static method `testCustomLists` is used by `Main.main` to do all of the testing. A lot of `TestHarness.testCustomLists` (and `TestHarness` in general) is just a bunch of formatting/making nice output stuff, but the actual testing in `TestHarness.testCustomLists` is done by `TestHarness.testCustomList`. This method itself doesn't have any substantial logic; what powers this method is `TestHarness.State.addLeaves` (yes, so much suspense, I know). `TestHarness.State` represents a state that a `CustomList` could be in, along with its (hopefully) matching `ArrayList`, and arrays telling us what method calls and arguments led to this state. (When I say "matching" `ArrayList`, what I mean is an `ArrayList` and an int representing its current index, which can mimic a `CustomList`—and because the behavior of `ArrayList` is known, it's perfect to compare the "unknown" behavior of a `CustomList` to.) I made this `TestHarness.State` class because, when you really think about it, all you probably want to do to test a class is basically search every state that can be reached (defined by the method and argument history arrays) and compare what the `CustomList` looks like and what the `ArrayList` looks like (or compare which methods produced errors for each). This is your standard tree (which I implemented terribly with an array of all of the current leaves instead of doing recursion which would save me tons of memory, but I only thought about that recently and don't feel like changing it right now). `TestHarness.testCustomList` goes through all of its current leaves, and for each leaf calls `TestHarness.State.addLeaves`, which tests every method* of the `CustomList` interface with all of its valid arguments** and creates a new leaf `TestHarness.State` for each scenario, appending it to the deque.
+My test harness is in `TestHarness`, whose static method `testCustomLists` is used by `Main.main` to do all of the testing. A lot of `TestHarness.testCustomLists` (and `TestHarness` in general) is just a bunch of formatting/making nice output stuff, but the actual testing in `TestHarness.testCustomLists` is done by `TestHarness.testCustomList`. This method itself doesn't have any substantial logic; what powers this method is `TestHarness.State.addLeaves` (yes, so much suspense, I know). `TestHarness.State` represents a state that a `CustomList` could be in, along with its (hopefully) matching `ArrayList`, and arrays telling us what method calls and arguments led to this state. (When I say "matching" `ArrayList`, what I mean is an `ArrayList` and an int representing its current index, which can mimic a `CustomList`—and because the behavior of `ArrayList` is known, it's perfect to compare the "unknown" behavior of a `CustomList` to.) I made this `TestHarness.State` class because, when you really think about it, all you probably want to do to test a class is basically search every state that can be reached (defined by the method and argument history arrays) and compare what the `CustomList` looks like and what the `ArrayList` looks like (or compare which methods produced errors for each). This is your standard tree (which I implemented terribly with an array of all of the current leaves instead of doing recursion which would save me tons of memory, but I only thought about that recently and don't feel like changing it right now). `TestHarness.testCustomList` goes through all of its current leaves `depth` times, and for each leaf calls `TestHarness.State.addLeaves`, which tests every method* of the `CustomList` interface with all of its valid arguments** and creates a new leaf `TestHarness.State` for each scenario, appending it to the deque.
+
+Now, looking at what you want me to test (at a minimum):
+
+1. Empty list
+2. List with one element
+3. List with two elements, curr pointing to head
+4. List with two elements, curr pointing to tail
+5. List with three elements, curr pointing to head
+6. List with three elements, curr pointing to mid
+7. List with three elements, curr pointing to tail
+
+All of these cases will be achieved at the third loop through the leaves (also known as `depth` 4). For example, to get to 6, you can follow these steps (or let the `TestHarness`):
+
+    append(0)
+    append(1)
+    append(2)
+    moveCurrentIndexTo(1)
+(If you really want, you can probably locate the `TestHarness.State` with `functionHistory` equal to `{11, 11, 11, 2}`.)
+
+I think that's it! Let me know if I missed something!
 
 *The methods being tested are: `clear`, `insert`, `append`, `remove`, `getCurrentValue`, `setCurrentValue`, `getCurrentIndex`, `moveCurrentIndexTo`, `moveCurrentIndexToStart`, `moveCurrentIndexToEnd`, `moveCurrentIndexLeft`, `moveCurrentIndexRight`, and `size`, which is basically all of the methods.
 
