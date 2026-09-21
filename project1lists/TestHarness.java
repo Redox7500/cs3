@@ -10,6 +10,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.Executors;
 
+// change leaves thing to be recursion to save memory?
 public class TestHarness
 {
     private static final CustomListMethod[] customListMethods = new CustomListMethod[]{
