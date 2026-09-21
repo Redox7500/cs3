@@ -163,11 +163,11 @@ class CustomLinkedList<E> implements CustomList<E, CustomLinkedList<E>>
 
         Link() {}
 
-        @SuppressWarnings("unchecked")
         private static <E> Link<E> acquire()
         {
             if (freeList == null) return new Link<>();
             
+            @SuppressWarnings("unchecked")
             Link<E> toReturn = (Link<E>)freeList;
             freeList = freeList.nextLink;
 

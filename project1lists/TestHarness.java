@@ -28,21 +28,10 @@ public class TestHarness
         new TestHarness.CustomListMethod.CustomListValueSupplier<>("remove",                  CustomList::remove)
     };
 
-    @SuppressWarnings("rawtypes") // i think that this is where it's supposed to go instead of at the top, i'll change that in the other files later
+    @SuppressWarnings("rawtypes")
     public static void testCustomLists(Supplier[] constructors, String[] names)
     {
         System.out.print("\033[?25l");
-
-        // Supplier[] constructors = new Supplier<?>[]{
-        //     () -> new CustomArrayList       <Integer>(),
-        //     () -> new CustomLinkedList      <Integer>(),
-        //     () -> new CustomDoublyLinkedList<Integer>()
-        // };
-        // String[] names = new String[]{
-        //     "CustomArrayList",
-        //     "CustomLinkedList",
-        //     "CustomDoublyLinkedList"
-        // };
 
         int customListCount = constructors.length;
         if (customListCount != names.length) return;
