@@ -95,8 +95,12 @@ class CustomLinkedList<E> implements CustomList<E, CustomLinkedList<E>>
     {
         assert (this.elementCount > 0)? index >= 0 && index < this.elementCount : index == 0 : "Index out of range";
 
-        this.currentLink = this.headLink;
-        for (this.currentIndex = 0; this.currentIndex < index; this.currentIndex++) this.currentLink = this.currentLink.nextLink;
+        if (index < this.currentIndex)
+        {
+            this.currentLink = this.headLink;
+            this.currentIndex = 0;
+        }
+        for (; this.currentIndex < index; this.currentIndex++) this.currentLink = this.currentLink.nextLink;
     }
 
     @Override
