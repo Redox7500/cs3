@@ -50,7 +50,29 @@ public interface CustomList<E, T extends CustomList<E, T>> // all this for the c
     public int size();
 
     /** @return A copy of this list as far down as its elements (but elements in the copied array point to the same place as corresponding elements in this array) */
-    public T copy();
+    public default T copy()
+    {
+        @SuppressWarnings("unchecked")
+        T toReturn = (T)new Object();
+
+        int size = this.size();
+        if (size == 0) return toReturn;
+
+        int currentIndex = this.getCurrentIndex();
+        this.moveCurrentIndexToStart();
+        for (int i = 0; ; i++)
+        {
+            toReturn.append(this.getCurrentValue());
+            if (i == size - 1) break;
+            this.moveCurrentIndexRight();
+        }
+        toReturn.append(this.getCurrentValue());
+        
+        this.moveCurrentIndexTo(currentIndex);
+        toReturn.moveCurrentIndexTo(currentIndex);
+
+        return toReturn;
+    }
 
     /** String of the values in the list, comma separated, between square brackets */
     public String toString();
