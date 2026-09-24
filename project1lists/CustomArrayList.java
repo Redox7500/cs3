@@ -1,7 +1,7 @@
 package project1lists;
 
 /** Array-based list implementation */
-class CustomArrayList<E> implements CustomList<E, CustomArrayList<E>>
+class CustomArrayList<E> extends DefaultCustomListImplementations<E, CustomArrayList<E>>
 {
     /** Maximum amount of elements AList is instantiated to contain by default */
     private static final int DEFAULT_SIZE = 16;
@@ -93,7 +93,7 @@ class CustomArrayList<E> implements CustomList<E, CustomArrayList<E>>
     @Override
     public String toString()
     {
-        StringBuilder toReturn = new StringBuilder(this.elementCount * 3 + ((this.elementCount > 0)? 0 : 2));
+        StringBuilder toReturn = new StringBuilder();
         toReturn.append('[');
         if (this.elementCount > 0)
         {

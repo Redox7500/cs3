@@ -5,101 +5,79 @@ package project1lists;
 public interface CustomList<E, T extends CustomList<E, T>> // all this for the copy function is wild
 {
     /** Remove all contents from the list, so it is once again empty. The client is responsible for reclaiming storage used by the list elements. */
-    public void clear();
+    void clear();
 
     /** Insert an element at the current location with the specified value. The client is responsible for ensuring that the list’s capacity is not exceeded.
      * @param value The value to be inserted
      */
-    public void insert(E value);
+    void insert(E value);
 
     /** Append an element at the end of the list with the specified value. The client is responsible for ensuring that the list’s capacity is not exceeded.
      * @param value The value of the element to be appended
      */
-    public void append(E value);
+    void append(E value);
 
     /** Remove the element at the current index and return its value
      * @return The value of the element that was removed
      */
-    public E remove();
+    E remove();
 
     /** @return The value of the list at the current index */
-    public E getCurrentValue();
+    E getCurrentValue();
 
     /** @param value The value to set the list at the current index to */
-    public void setCurrentValue(E value);
+    void setCurrentValue(E value);
 
     /** @return The current index */
-    public int getCurrentIndex();
+    int getCurrentIndex();
 
     /** @param index The index to make current */
-    public void moveCurrentIndexTo(int index);
+    void moveCurrentIndexTo(int index);
 
     /** Set current index to 0 */
-    public default void moveCurrentIndexToStart() {this.moveCurrentIndexTo(0);}
+    void moveCurrentIndexToStart();
 
     /** Set current index to one less than the size of the list */
-    public default void moveCurrentIndexToEnd() {this.moveCurrentIndexTo(Math.max(this.size() - 1, 0));}
+    void moveCurrentIndexToEnd();
 
     /** Move the current index one step left */
-    public default void moveCurrentIndexLeft() {this.moveCurrentIndexTo(this.getCurrentIndex() - 1);}
+    void moveCurrentIndexLeft();
 
     /** Move the current index one step right */
-    public default void moveCurrentIndexRight() {this.moveCurrentIndexTo(this.getCurrentIndex() + 1);}
+    void moveCurrentIndexRight();
 
     /** @return The number of elements in the list */
-    public int size();
+    int size();
 
     /** @return A copy of this list as far down as its elements (but elements in the copied array point to the same place as corresponding elements in this array) */
-    public default T copy()
-    {
-        @SuppressWarnings("unchecked")
-        T toReturn = (T)new Object();
-
-        int size = this.size();
-        if (size == 0) return toReturn;
-
-        int currentIndex = this.getCurrentIndex();
-        this.moveCurrentIndexToStart();
-        for (int i = 0; ; i++)
-        {
-            toReturn.append(this.getCurrentValue());
-            if (i == size - 1) break;
-            this.moveCurrentIndexRight();
-        }
-        toReturn.append(this.getCurrentValue());
-        
-        this.moveCurrentIndexTo(currentIndex);
-        toReturn.moveCurrentIndexTo(currentIndex);
-
-        return toReturn;
-    }
+    T copy();
 
     /** String of the values in the list, comma separated, between square brackets */
-    public String toString();
+    String toString();
 
     /** Shaffer's name for my equivalent {@link #project1lists.CustomList.moveCurrentIndexToStart moveCurrentIndexToStart()} method */
-    public default void moveToStart() {this.moveCurrentIndexToStart();}
+    default void moveToStart() {this.moveCurrentIndexToStart();}
 
     /** Shaffer's name for my equivalent {@link #project1lists.CustomList.moveCurrentIndexToEnd moveCurrentIndexToEnd()} method */
-    public default void moveToEnd() {this.moveCurrentIndexToEnd();}
+    default void moveToEnd() {this.moveCurrentIndexToEnd();}
 
     /** Shaffer's name for my equivalent {@link #project1lists.CustomList.moveCurrentIndexLeft moveCurrentIndexLeft()} method */
-    public default void prev() {this.moveCurrentIndexLeft();}
+    default void prev() {this.moveCurrentIndexLeft();}
 
     /** Shaffer's name for my equivalent {@link #project1lists.CustomList.moveCurrentIndexRight moveCurrentIndexRight()} method */
-    public default void next() {this.moveCurrentIndexRight();}
+    default void next() {this.moveCurrentIndexRight();}
 
     /** Shaffer's name for my equivalent {@link #project1lists.CustomList.size size()} method */
-    public default int length() {return this.size();}
+    default int length() {return this.size();}
 
     /** Shaffer's name for my equivalent {@link #project1lists.CustomList.getCurrentIndex getCurrentIndex()} method */
-    public default int currPos() {return this.getCurrentIndex();}
+    default int currPos() {return this.getCurrentIndex();}
 
     /** Shaffer's name for my equivalent {@link #project1lists.CustomList.moveCurrentIndexTo moveCurrentIndexTo()} method
      * @param pos The position to make current
     */
-    public default void moveToPos(int pos) {this.moveCurrentIndexTo(pos);}
+    default void moveToPos(int pos) {this.moveCurrentIndexTo(pos);}
 
     /** Shaffer's name for my equivalent {@link #project1lists.CustomList.getCurrentValue getCurrentValue()} method */
-    public default E getValue() {return this.getCurrentValue();}
+    default E getValue() {return this.getCurrentValue();}
 }

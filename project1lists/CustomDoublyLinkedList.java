@@ -154,7 +154,7 @@ class CustomDoublyLinkedList<E> implements CustomList<E, CustomDoublyLinkedList<
     @Override
     public String toString()
     {
-        StringBuilder toReturn = new StringBuilder(this.elementCount * 3 + ((this.elementCount > 0)? 0 : 2));
+        StringBuilder toReturn = new StringBuilder();
         toReturn.append('[');
         if (this.elementCount > 0)
         {
