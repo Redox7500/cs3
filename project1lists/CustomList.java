@@ -52,6 +52,12 @@ public interface CustomList<E, T extends CustomList<E, T>> // all this for the c
     /** @return A copy of this list as far down as its elements (but elements in the copied array point to the same place as corresponding elements in this array) */
     T copy();
 
+    /**
+     * @param otherList The list to compare this list to
+     * @return A boolean representing whether or not this list is equal to otherList (which includes the result of getCurrentIndex)
+     */
+    boolean equals(CustomList<E, ?> otherList);
+
     /** String of the values in the list, comma separated, between square brackets */
     String toString();
 

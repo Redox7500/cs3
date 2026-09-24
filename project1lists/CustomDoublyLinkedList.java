@@ -1,7 +1,7 @@
 package project1lists;
 
 /** Linked list implementation */
-class CustomDoublyLinkedList<E> implements CustomList<E, CustomDoublyLinkedList<E>>
+class CustomDoublyLinkedList<E> extends DefaultCustomListImplementations<E, CustomDoublyLinkedList<E>>
 {
     /** Pointer to first link */
     private CustomDoublyLinkedList.Link<E> headLink = null;
