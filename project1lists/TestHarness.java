@@ -176,7 +176,7 @@ public class TestHarness
             System.out.print("\0338\033[" + (this.functionHistory.length + 5) + "A");
         }
 
-        boolean evaluate()
+        State.Evaluation evaluate()
         {
             TestHarness.CustomListMethod<?> function = TestHarness.customListMethods[this.functionHistory[this.functionHistory.length - 1]];
             int argument = this.argumentHistory[this.argumentHistory.length - 1];
@@ -191,8 +191,10 @@ public class TestHarness
             try {arrayListWrapperResult = function.call(this.arrayListWrapper, argument);}
             catch (Throwable _) {arrayListWrapperError = true;}
 
-            boolean customListUncheckable = false;
-            boolean unequal = (customListResult == null)? arrayListWrapperResult != null : !customListResult.equals(arrayListWrapperResult);
+            if (customListError && arrayListWrapperError) return State.Evaluation.ERROR_BOTH;
+            if (customListError && !arrayListWrapperError) return State.Evaluation.ERROR_CUSTOM_LIST;
+            if (arrayListWrapperError && !customListError) return State.Evaluation.ERROR_ARRAY_LIST_WRAPPER;
+            if ((customListResult == null)? arrayListWrapperResult != null : !customListResult.equals(arrayListWrapperResult)) return State.Evaluation.UNEQUAL;
 
             int customListSize;
             int customListCurrentIndex;
@@ -201,65 +203,42 @@ public class TestHarness
             {
                 customListSize = customList.size();
                 customListCurrentIndex = customList.getCurrentIndex();
-                customListCurrentValue = customList.getCurrentValue();
+                customListCurrentValue = (customListSize == 0)? null : customList.getCurrentValue();
             }
             catch (Throwable _)
             {
-                customListUncheckable = true;
+                return State.Evaluation.INEVALUABLE_CUSTOM_LIST;
             }
             int arrayListWrapperSize = arrayListWrapper.size();
+            E arrayListWrapperCurrentValue = (arrayListWrapperSize == 0)? null : arrayListWrapper.getCurrentValue();
+
             if (
                 customListSize != arrayListWrapperSize ||
                 customListCurrentIndex != this.arrayListWrapper.getCurrentIndex() ||
-                (customListSize > 0 && arrayListWrapperSize > 0 && customListCurrentValue != this.arrayListWrapper.getCurrentValue())
-            )
-            {
-                unequal = true;
-                arrayListWrapperSize = 0; // only thing i could think of
-            }
-            else
-            {
-                int customListIndex = customList.getCurrentIndex();
-                
-                try {customList.moveCurrentIndexToStart();}
-                catch (Throwable _) {customListUncheckable = true; arrayListWrapperSize = 0;}
-                for (int i = 0; i < arrayListWrapperSize; i++)
-                {
-                    try {customListCurrentValue = customList.getCurrentValue();}
-                    catch (Throwable _) {customListUncheckable = true; break;}
-                    if (customListCurrentValue != arrayListWrapper.arrayList.get(i)) {unequal = true; break;}
-                    if (i < arrayListWrapperSize - 1)
-                    {
-                        try {customList.moveCurrentIndexRight();}
-                        catch (Throwable _) {customListUncheckable = true; break;}
-                    }
-                }
-                try {customList.moveCurrentIndexTo(customListIndex);} // if this errors i don't even know dude
-                catch (Throwable _) {customListUncheckable = true;}
-            }
+                customListCurrentValue != arrayListWrapperCurrentValue
+            ) return State.Evaluation.UNEQUAL;
+
+            int customListIndex;
+            try {customListIndex = customList.getCurrentIndex();}
+            catch (Throwable _) {return State.Evaluation.INEVALUABLE_CUSTOM_LIST;}
             
-            if (customListError && arrayListWrapperError) continue;
-            if (customListError && !arrayListWrapperError) 
+            try {customList.moveCurrentIndexToStart();}
+            catch (Throwable _) {return State.Evaluation.INEVALUABLE_CUSTOM_LIST;}
+            for (int i = 0; i < arrayListWrapperSize; i++)
             {
-                System.out.println("Custom list had an error while ArrayList did not at state below\0337");
-                newState.printInfo();
-
-                return false;
+                try {customListCurrentValue = customList.getCurrentValue();}
+                catch (Throwable _) {return State.Evaluation.INEVALUABLE_CUSTOM_LIST;}
+                if (customListCurrentValue != arrayListWrapper.arrayList.get(i)) {return State.Evaluation.UNEQUAL;}
+                if (i < arrayListWrapperSize - 1)
+                {
+                    try {customList.moveCurrentIndexRight();}
+                    catch (Throwable _) {return State.Evaluation.INEVALUABLE_CUSTOM_LIST;}
+                }
             }
-            if (arrayListWrapperError && !customListError)
-            {
-                System.out.println("ArrayList had an error while custom list did not at state below\0337");
-                newState.printInfo();
+            try {customList.moveCurrentIndexTo(customListIndex);} // if this errors i don't even know dude
+            catch (Throwable _) {return State.Evaluation.INEVALUABLE_CUSTOM_LIST;}
 
-                return false;
-            }
-            if ((customListResult == null)? arrayListWrapperResult != null : !customListResult.equals(arrayListWrapperResult))
-            {
-                System.out.println("Lists were not equal at state below\0337");
-                newState.printInfo();
-
-                return false;
-            }
+            return State.Evaluation.SUCCESS;
         }
 
         /** Branch out from this state and add the new leaf states to leaves
@@ -281,90 +260,117 @@ public class TestHarness
                 for (int currentArgument = firstArgument; currentArgument < lastArgument + 1; currentArgument += argumentStep)
                 {
                     State<E, T> newState = new State<>(this, currentFunction, currentArgument);
-                    TestHarness.CustomListMethod<?> function = TestHarness.customListMethods[newState.functionHistory[newState.functionHistory.length - 1]];
-                    int argument = newState.argumentHistory[newState.argumentHistory.length - 1];
-
-                    Object customListResult = null;
-                    Object arrayListWrapperResult = null;
-                    boolean customListError = false;
-                    boolean arrayListWrapperError = false;
-
-                    try {customListResult = function.call(newState.customList, argument);}
-                    catch (Throwable _) {customListError = true;}
-                    try {arrayListWrapperResult = function.call(newState.arrayListWrapper, argument);}
-                    catch (Throwable _) {arrayListWrapperError = true;}
-
-                    boolean customListUncheckable = false;
-                    boolean unequal = (customListResult == null)? arrayListWrapperResult != null : !customListResult.equals(arrayListWrapperResult);
-
-                    int customListSize;
-                    int customListCurrentIndex;
-                    E customListCurrentValue;
-                    try
+                    switch (newState.evaluate())
                     {
-                        customListSize = customList.size();
-                        customListCurrentIndex = customList.getCurrentIndex();
-                        customListCurrentValue = customList.getCurrentValue();
+                        case State.Evaluation.ERROR_BOTH:
+                            continue;
+                        case State.Evaluation.ERROR_CUSTOM_LIST:
+                            System.out.println("Custom list had an error while ArrayListWrapper did not at state below\0337");
+                            newState.printInfo();
+
+                            return false;
+                        case State.Evaluation.ERROR_ARRAY_LIST_WRAPPER:
+                            System.out.println("ArrayListWrapper had an error while custom list did not at state below\0337");
+                            newState.printInfo();
+
+                            return false;
+                        case State.Evaluation.INEVALUABLE_CUSTOM_LIST:
+                            System.out.println("Custom list had an error when being compared to ArrayListWrapper\0337");
+                            newState.printInfo();
+
+                            return false;
+                        case State.Evaluation.UNEQUAL:
+                            System.out.println("Lists were not equal at state below\0337");
+                            newState.printInfo();
+
+                            return false;
+                        case State.Evaluation.SUCCESS:
+                            leaves.addLast(newState);
                     }
-                    catch (Throwable _)
-                    {
-                        customListUncheckable = true;
-                    }
-                    int arrayListWrapperSize = arrayListWrapper.size();
-                    if (
-                        customListSize != arrayListWrapperSize ||
-                        customListCurrentIndex != this.arrayListWrapper.getCurrentIndex() ||
-                        (customListSize > 0 && arrayListWrapperSize > 0 && customListCurrentValue != this.arrayListWrapper.getCurrentValue())
-                    )
-                    {
-                        unequal = true;
-                        arrayListWrapperSize = 0; // only thing i could think of
-                    }
-                    else
-                    {
-                        int customListIndex = customList.getCurrentIndex();
+                    // TestHarness.CustomListMethod<?> function = TestHarness.customListMethods[newState.functionHistory[newState.functionHistory.length - 1]];
+                    // int argument = newState.argumentHistory[newState.argumentHistory.length - 1];
+
+                    // Object customListResult = null;
+                    // Object arrayListWrapperResult = null;
+                    // boolean customListError = false;
+                    // boolean arrayListWrapperError = false;
+
+                    // try {customListResult = function.call(newState.customList, argument);}
+                    // catch (Throwable _) {customListError = true;}
+                    // try {arrayListWrapperResult = function.call(newState.arrayListWrapper, argument);}
+                    // catch (Throwable _) {arrayListWrapperError = true;}
+
+                    // boolean customListUncheckable = false;
+                    // boolean unequal = (customListResult == null)? arrayListWrapperResult != null : !customListResult.equals(arrayListWrapperResult);
+
+                    // int customListSize;
+                    // int customListCurrentIndex;
+                    // E customListCurrentValue;
+                    // try
+                    // {
+                    //     customListSize = customList.size();
+                    //     customListCurrentIndex = customList.getCurrentIndex();
+                    //     customListCurrentValue = customList.getCurrentValue();
+                    // }
+                    // catch (Throwable _)
+                    // {
+                    //     customListUncheckable = true;
+                    // }
+                    // int arrayListWrapperSize = arrayListWrapper.size();
+                    // if (
+                    //     customListSize != arrayListWrapperSize ||
+                    //     customListCurrentIndex != this.arrayListWrapper.getCurrentIndex() ||
+                    //     (customListSize > 0 && arrayListWrapperSize > 0 && customListCurrentValue != this.arrayListWrapper.getCurrentValue())
+                    // )
+                    // {
+                    //     unequal = true;
+                    //     arrayListWrapperSize = 0; // only thing i could think of
+                    // }
+                    // else
+                    // {
+                    //     int customListIndex = customList.getCurrentIndex();
                         
-                        try {customList.moveCurrentIndexToStart();}
-                        catch (Throwable _) {customListUncheckable = true; arrayListWrapperSize = 0;}
-                        for (int i = 0; i < arrayListWrapperSize; i++)
-                        {
-                            try {customListCurrentValue = customList.getCurrentValue();}
-                            catch (Throwable _) {customListUncheckable = true; break;}
-                            if (customListCurrentValue != arrayListWrapper.arrayList.get(i)) {unequal = true; break;}
-                            if (i < arrayListWrapperSize - 1)
-                            {
-                                try {customList.moveCurrentIndexRight();}
-                                catch (Throwable _) {customListUncheckable = true; break;}
-                            }
-                        }
-                        try {customList.moveCurrentIndexTo(customListIndex);} // if this errors i don't even know dude
-                        catch (Throwable _) {customListUncheckable = true;}
-                    }
+                    //     try {customList.moveCurrentIndexToStart();}
+                    //     catch (Throwable _) {customListUncheckable = true; arrayListWrapperSize = 0;}
+                    //     for (int i = 0; i < arrayListWrapperSize; i++)
+                    //     {
+                    //         try {customListCurrentValue = customList.getCurrentValue();}
+                    //         catch (Throwable _) {customListUncheckable = true; break;}
+                    //         if (customListCurrentValue != arrayListWrapper.arrayList.get(i)) {unequal = true; break;}
+                    //         if (i < arrayListWrapperSize - 1)
+                    //         {
+                    //             try {customList.moveCurrentIndexRight();}
+                    //             catch (Throwable _) {customListUncheckable = true; break;}
+                    //         }
+                    //     }
+                    //     try {customList.moveCurrentIndexTo(customListIndex);} // if this errors i don't even know dude
+                    //     catch (Throwable _) {customListUncheckable = true;}
+                    // }
                     
-                    if (customListError && arrayListWrapperError) continue;
-                    if (customListError && !arrayListWrapperError) 
-                    {
-                        System.out.println("Custom list had an error while ArrayList did not at state below\0337");
-                        newState.printInfo();
+                    // if (customListError && arrayListWrapperError) continue;
+                    // if (customListError && !arrayListWrapperError) 
+                    // {
+                    //     System.out.println("Custom list had an error while ArrayList did not at state below\0337");
+                    //     newState.printInfo();
 
-                        return false;
-                    }
-                    if (arrayListWrapperError && !customListError)
-                    {
-                        System.out.println("ArrayList had an error while custom list did not at state below\0337");
-                        newState.printInfo();
+                    //     return false;
+                    // }
+                    // if (arrayListWrapperError && !customListError)
+                    // {
+                    //     System.out.println("ArrayList had an error while custom list did not at state below\0337");
+                    //     newState.printInfo();
 
-                        return false;
-                    }
-                    if ((customListResult == null)? arrayListWrapperResult != null : !customListResult.equals(arrayListWrapperResult))
-                    {
-                        System.out.println("Lists were not equal at state below\0337");
-                        newState.printInfo();
+                    //     return false;
+                    // }
+                    // if ((customListResult == null)? arrayListWrapperResult != null : !customListResult.equals(arrayListWrapperResult))
+                    // {
+                    //     System.out.println("Lists were not equal at state below\0337");
+                    //     newState.printInfo();
 
-                        return false;
-                    }
+                    //     return false;
+                    // }
 
-                    leaves.addLast(newState);
+                    // leaves.addLast(newState);
                 }
             }
 
@@ -379,13 +385,14 @@ public class TestHarness
         //     ERROR
         // }
 
-        enum Evaluate
+        enum Evaluation
         {
-            SUCCESS,
-            UNEQUAL,
             ERROR_BOTH,
             ERROR_CUSTOM_LIST,
-            ERROR_ARRAY_LIST_WRAPPER
+            ERROR_ARRAY_LIST_WRAPPER,
+            INEVALUABLE_CUSTOM_LIST,
+            UNEQUAL,
+            SUCCESS
         }
     }
 
@@ -393,7 +400,7 @@ public class TestHarness
 
     private static class ArrayListWrapper<E> extends DefaultCustomListImplementations<E, ArrayListWrapper<E>>
     {
-        ArrayList<E> arrayList;
+        ArrayList<E> arrayList = new ArrayList<>();
         int currentIndex = 0;
 
         ArrayListWrapper() {super();}
@@ -402,7 +409,7 @@ public class TestHarness
         public void clear() {this.arrayList.clear(); this.currentIndex = 0;}
 
         @Override
-        public void insert(E value) {if (this.arrayList.size() != 0) this.arrayList.add(this.currentIndex, value); else this.append(value);}
+        public void insert(E value) {if (this.size() != 0) this.arrayList.add(this.currentIndex, value); else this.append(value);}
 
         @Override
         public void append(E value) {this.arrayList.add(value);}
@@ -414,13 +421,13 @@ public class TestHarness
         public E getCurrentValue() {return this.arrayList.get(this.currentIndex);}
 
         @Override
-        public void setCurrentValue(E value) {if (this.arrayList.size() != 0) this.arrayList.set(this.currentIndex, value); else this.append(value);}
+        public void setCurrentValue(E value) {if (this.size() != 0) this.arrayList.set(this.currentIndex, value); else this.append(value);}
 
         @Override
         public int getCurrentIndex() {return this.currentIndex;}
 
         @Override
-        public void moveCurrentIndexTo(int index) {this.currentIndex = index;}
+        public void moveCurrentIndexTo(int index) {assert (this.size() > 0)? index >= 0 && index < this.size() : index == 0 : "Index out of range"; this.currentIndex = index;}
 
         @Override
         public int size() {return this.arrayList.size();}
@@ -429,7 +436,7 @@ public class TestHarness
         public ArrayListWrapper<E> copy()
         {
             ArrayListWrapper<E> toReturn = new ArrayListWrapper<>();
-            toReturn.arrayList = new ArrayList<>(this.arrayList); // i know this makes an extra array list shut up i'm lazy
+            if (this.size() != 0) toReturn.arrayList = new ArrayList<>(this.arrayList); // i know this makes an extra array list shut up i'm lazy
             toReturn.currentIndex = this.currentIndex;
 
             return toReturn;
