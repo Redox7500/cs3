@@ -9,14 +9,6 @@ import java.util.function.BiConsumer;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.Executors;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.ListIterator;
-import java.util.Spliterator;
-import java.util.List;
-import java.util.function.UnaryOperator;
-import java.util.Comparator;
-import java.util.function.Predicate;
 import java.util.Optional;
 
 // change leaves thing to be recursion to save memory?
@@ -211,19 +203,7 @@ public class TestHarness
                 return State.Evaluation.INEVALUABLE_CUSTOM_LIST;
             }
             int arrayListWrapperSize = arrayListWrapper.size();
-            // System.out.println("Function history (most recent at the bottom): ");
-            // for (int i = 0; i < this.functionHistory.length; i++)
-            // {
-            //     int f = this.functionHistory[i];
-            //     System.out.print("\t" + TestHarness.customListMethods[f].name() + "(");
-            //     if (TestHarness.customListMethods[f].function() instanceof BiConsumer) System.out.print(this.argumentHistory[i]);
-            //     System.out.println(")");
-            // }
             Optional<E> arrayListWrapperCurrentValue = (arrayListWrapperSize == 0)? Optional.empty() : Optional.of(arrayListWrapper.getCurrentValue());
-            // System.out.println(customListSize != arrayListWrapperSize);
-            // System.out.println(customListCurrentIndex);
-            // System.out.println(arrayListWrapper.getCurrentIndex());
-            // System.out.println(!customListCurrentValue.equals(arrayListWrapperCurrentValue));
             if (
                 customListSize != arrayListWrapperSize ||
                 customListCurrentIndex != this.arrayListWrapper.getCurrentIndex() ||
@@ -300,103 +280,11 @@ public class TestHarness
                         case State.Evaluation.SUCCESS:
                             leaves.addLast(newState);
                     }
-                    // TestHarness.CustomListMethod<?> function = TestHarness.customListMethods[newState.functionHistory[newState.functionHistory.length - 1]];
-                    // int argument = newState.argumentHistory[newState.argumentHistory.length - 1];
-
-                    // Object customListResult = null;
-                    // Object arrayListWrapperResult = null;
-                    // boolean customListError = false;
-                    // boolean arrayListWrapperError = false;
-
-                    // try {customListResult = function.call(newState.customList, argument);}
-                    // catch (Throwable _) {customListError = true;}
-                    // try {arrayListWrapperResult = function.call(newState.arrayListWrapper, argument);}
-                    // catch (Throwable _) {arrayListWrapperError = true;}
-
-                    // boolean customListUncheckable = false;
-                    // boolean unequal = (customListResult == null)? arrayListWrapperResult != null : !customListResult.equals(arrayListWrapperResult);
-
-                    // int customListSize;
-                    // int customListCurrentIndex;
-                    // E customListCurrentValue;
-                    // try
-                    // {
-                    //     customListSize = customList.size();
-                    //     customListCurrentIndex = customList.getCurrentIndex();
-                    //     customListCurrentValue = customList.getCurrentValue();
-                    // }
-                    // catch (Throwable _)
-                    // {
-                    //     customListUncheckable = true;
-                    // }
-                    // int arrayListWrapperSize = arrayListWrapper.size();
-                    // if (
-                    //     customListSize != arrayListWrapperSize ||
-                    //     customListCurrentIndex != this.arrayListWrapper.getCurrentIndex() ||
-                    //     (customListSize > 0 && arrayListWrapperSize > 0 && customListCurrentValue != this.arrayListWrapper.getCurrentValue())
-                    // )
-                    // {
-                    //     unequal = true;
-                    //     arrayListWrapperSize = 0; // only thing i could think of
-                    // }
-                    // else
-                    // {
-                    //     int customListIndex = customList.getCurrentIndex();
-                        
-                    //     try {customList.moveCurrentIndexToStart();}
-                    //     catch (Throwable _) {customListUncheckable = true; arrayListWrapperSize = 0;}
-                    //     for (int i = 0; i < arrayListWrapperSize; i++)
-                    //     {
-                    //         try {customListCurrentValue = customList.getCurrentValue();}
-                    //         catch (Throwable _) {customListUncheckable = true; break;}
-                    //         if (customListCurrentValue != arrayListWrapper.arrayList.get(i)) {unequal = true; break;}
-                    //         if (i < arrayListWrapperSize - 1)
-                    //         {
-                    //             try {customList.moveCurrentIndexRight();}
-                    //             catch (Throwable _) {customListUncheckable = true; break;}
-                    //         }
-                    //     }
-                    //     try {customList.moveCurrentIndexTo(customListIndex);} // if this errors i don't even know dude
-                    //     catch (Throwable _) {customListUncheckable = true;}
-                    // }
-                    
-                    // if (customListError && arrayListWrapperError) continue;
-                    // if (customListError && !arrayListWrapperError) 
-                    // {
-                    //     System.out.println("Custom list had an error while ArrayList did not at state below\0337");
-                    //     newState.printInfo();
-
-                    //     return false;
-                    // }
-                    // if (arrayListWrapperError && !customListError)
-                    // {
-                    //     System.out.println("ArrayList had an error while custom list did not at state below\0337");
-                    //     newState.printInfo();
-
-                    //     return false;
-                    // }
-                    // if ((customListResult == null)? arrayListWrapperResult != null : !customListResult.equals(arrayListWrapperResult))
-                    // {
-                    //     System.out.println("Lists were not equal at state below\0337");
-                    //     newState.printInfo();
-
-                    //     return false;
-                    // }
-
-                    // leaves.addLast(newState);
                 }
             }
 
             return true;
         }
-
-        // /** Return type of {@link #project1lists.TestHarness.State.isValid isValid} */
-        // enum Validity
-        // {
-        //     VALID,
-        //     INVALID,
-        //     ERROR
-        // }
 
         enum Evaluation
         {
@@ -408,8 +296,6 @@ public class TestHarness
             SUCCESS
         }
     }
-
-    private static class A<E> extends ArrayList<E> {}
 
     private static class ArrayListWrapper<E> extends DefaultCustomListImplementations<E, ArrayListWrapper<E>>
     {
@@ -454,58 +340,6 @@ public class TestHarness
 
             return toReturn;
         }
-
-        // boolean add(E value) {return this.arrayList.add(value);}
-
-        // void add(int index, E value) {this.arrayList.add(index, value);}
-
-        // boolean addAll(Collection<? extends E> collection) {return this.arrayList.addAll(collection);}
-
-        // boolean addAll(int index, Collection<? extends E> collection) {return this.arrayList.addAll(index, collection);}
-
-        // boolean contains(Object value) {return this.arrayList.contains(value);}
-
-        // void ensureCapacity(int minCapacity) {this.arrayList.ensureCapacity(minCapacity);}
-
-        // void forEach(Consumer<? super E> action) {this.arrayList.forEach(action);}
-
-        // E get(int index) {return this.arrayList.get(index);}
-
-        // int indexOf(Object value) {return this.arrayList.indexOf(value);}
-
-        // boolean isEmpty() {return this.arrayList.isEmpty();}
-
-        // Iterator<E> iterator() {return this.arrayList.iterator();}
-
-        // int lastIndexOf(Object value) {return this.arrayList.lastIndexOf(value);}
-
-        // ListIterator<E> listIterator() {return this.arrayList.listIterator();}
-
-        // ListIterator<E> listIterator(int index) {return this.arrayList.listIterator(index);}
-
-        // E remove(int index) {E toReturn = this.arrayList.remove(index); this.currentIndex = Math.min(this.currentIndex, this.arrayList.size() - 2); return toReturn;}
-
-        // boolean remove(Object value) {boolean toReturn = this.arrayList.remove(value); this.currentIndex = Math.min(this.currentIndex, this.arrayList.size() - 1); return toReturn;}
-
-        // boolean removeIf(Predicate<? super E> filter) {boolean toReturn = this.arrayList.removeIf(filter); this.currentIndex = Math.min(this.currentIndex, this.arrayList.size() - 1); return toReturn;}
-
-        // void replaceAll(UnaryOperator<E> operator) {this.arrayList.replaceAll(operator);}
-
-        // boolean retainAll(Collection<?> collection) {boolean toReturn = this.arrayList.retainAll(collection); this.currentIndex = Math.min(this.currentIndex, this.arrayList.size() - 2); return toReturn;}
-
-        // E set(int index, E value) {return this.arrayList.set(index, value);}
-
-        // void sort(Comparator<? super E> comparator) {this.arrayList.sort(comparator);}
-
-        // Spliterator<E> spliterator() {return this.arrayList.spliterator();}
-
-        // List<E> subList(int fromIndex, int toIndex) {return this.arrayList.subList(fromIndex, toIndex);}
-
-        // Object[] toArray() {return this.arrayList.toArray();}
-
-        // <T> T[] toArray(T[] array) {return this.arrayList.toArray(array);}
-
-        // void trimToSize() {this.arrayList.trimToSize();}
     }
 
     /** Fancy spinning line character */
@@ -568,7 +402,7 @@ public class TestHarness
         
         /** A method of CustomList that has a value as an input and no outputs */
         record CustomListValueConsumer<E>(String name, BiConsumer<CustomList<E, ?>, E> function) implements CustomListMethod<BiConsumer<CustomList<E, ?>, E>>
-        {public Object call(CustomList<?, ?> customList, Object argument) {this.function.accept((CustomList<E, ?>)customList, (E)argument); return null;}}
+        {@SuppressWarnings("unchecked") public Object call(CustomList<?, ?> customList, Object argument) {this.function.accept((CustomList<E, ?>)customList, (E)argument); return null;}}
         
         /** A method of CustomList that has an index as an input and no outputs */
         record CustomListIndexConsumer(String name, BiConsumer<CustomList<?, ?>, Integer> function) implements CustomListMethod<BiConsumer<CustomList<?, ?>, Integer>>
@@ -576,30 +410,10 @@ public class TestHarness
         
         /** A method of CustomList that has no inputs and a value as an output */
         record CustomListValueSupplier<E>(String name, Function<CustomList<E, ?>, E> function) implements CustomListMethod<Function<CustomList<E, ?>, E>>
-        {public Object call(CustomList<?, ?> customList, Object argument) {return this.function.apply((CustomList<E, ?>)customList);}}
+        {@SuppressWarnings("unchecked") public Object call(CustomList<?, ?> customList, Object argument) {return this.function.apply((CustomList<E, ?>)customList);}}
         
         /** A method of CustomList that has no inputs and an index as an output */
         record CustomListIndexSupplier(String name, Function<CustomList<?, ?>, Integer> function) implements CustomListMethod<Function<CustomList<?, ?>, Integer>>
         {public Integer call(CustomList<?, ?> customList, Object argument) {return this.function.apply(customList);}}
     }
-
-    // /** Return type of testErrors */
-    // private enum TestResult
-    // {
-    //     // /** Returned by testErrors when neither state.customList nor state.arrayList produce errors */
-    //     // NONE,
-
-    //     /** Returned by testErrors when both state.customList and state.arrayList produce an error (such as the current index being out of bounds) */
-    //     ERROR_BOTH,
-
-    //     /** Returned by testErrors when state.customList produces an error but state.arrayList does not */
-    //     ERROR_CUSTOM_LIST,
-
-    //     /** Returned by testErrors when state.arrayList produces an error but state.customList does not */
-    //     ERROR_ARRAY_LIST_WRAPPER,
-
-    //     UNEQUAL,
-
-    //     SUCCESS
-    // }
 }
