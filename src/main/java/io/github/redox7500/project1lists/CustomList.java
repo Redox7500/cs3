@@ -2,7 +2,7 @@ package io.github.redox7500.project1lists;
 
 // add negative indices like in python maybe?
 /** List ADT */
-public interface CustomList<E, T extends CustomList<E, T>> // all this for the copy function is wild
+public interface CustomList<E> extends Copyable<CustomList<E>> // all this for the copy function is wild
 {
     /** Remove all contents from the list, so it is once again empty. The client is responsible for reclaiming storage used by the list elements. */
     void clear();
@@ -50,13 +50,13 @@ public interface CustomList<E, T extends CustomList<E, T>> // all this for the c
     int size();
 
     /** @return A copy of this list as far down as its elements (but elements in the copied array point to the same place as corresponding elements in this array) */
-    T copy();
+    CustomList<E> copy();
 
     /**
      * @param otherList The list to compare this list to
      * @return A boolean representing whether or not this list is equal to otherList (which includes the result of getCurrentIndex)
      */
-    boolean equals(CustomList<E, ?> otherList);
+    boolean equals(CustomList<E> otherList);
 
     /** String of the values in the list, comma separated, between square brackets */
     String toString();

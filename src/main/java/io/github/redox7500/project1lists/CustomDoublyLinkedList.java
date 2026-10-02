@@ -1,7 +1,7 @@
 package io.github.redox7500.project1lists;
 
 /** Linked list implementation */
-class CustomDoublyLinkedList<E> extends DefaultCustomListImplementations<E, CustomDoublyLinkedList<E>>
+class CustomDoublyLinkedList<E> extends DefaultCustomListImplementations<E>
 {
     /** Pointer to first link */
     private CustomDoublyLinkedList.Link<E> headLink = null;

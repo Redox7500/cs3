@@ -1,7 +1,7 @@
 package io.github.redox7500.project1lists;
 
 /** All of the default implementations of the CustomList required methods except for Shaffer's aliases */
-public abstract class DefaultCustomListImplementations<E, T extends DefaultCustomListImplementations<E, T>> implements CustomList<E, T>
+public abstract class DefaultCustomListImplementations<E> implements CustomList<E>
 {
     @Override
     public void clear()
@@ -48,10 +48,10 @@ public abstract class DefaultCustomListImplementations<E, T extends DefaultCusto
 
     @SuppressWarnings("unchecked")
     @Override
-    public T copy()
+    public CustomList<E> copy()
     {
-        T toReturn;
-        try {toReturn = (T)this.getClass().getDeclaredConstructor().newInstance();}
+        CustomList<E> toReturn;
+        try {toReturn = this.getClass().getDeclaredConstructor().newInstance();}
         catch (Throwable _) {System.err.println("Class to copy has no visible parameterless constructor"); return null;}
 
         int size = this.size();
@@ -76,7 +76,7 @@ public abstract class DefaultCustomListImplementations<E, T extends DefaultCusto
     }
 
     @Override
-    public boolean equals(CustomList<E, ?> otherList)
+    public boolean equals(CustomList<E> otherList)
     {
         int size = this.size();
         if (size != otherList.size()) return false;

@@ -1,7 +1,7 @@
 package io.github.redox7500.project1lists;
 
 /** Array-based list implementation */
-class CustomArrayList<E> extends DefaultCustomListImplementations<E, CustomArrayList<E>>
+class CustomArrayList<E> extends DefaultCustomListImplementations<E>
 {
     /** Maximum amount of elements AList is instantiated to contain by default */
     private static final int DEFAULT_SIZE = 16;
