@@ -1,4 +1,4 @@
-package project1lists;
+package io.github.redox7500.project1lists;
 
 /** Array-based list implementation */
 class CustomArrayList<E> extends DefaultCustomListImplementations<E, CustomArrayList<E>>

@@ -1,4 +1,4 @@
-package project1lists;
+package io.github.redox7500.project1lists;
 
 // honestly i could probably remove the dummy head link when there are no elements to save more, but idk, it does mess up the consistency
 /** Linked list implementation */

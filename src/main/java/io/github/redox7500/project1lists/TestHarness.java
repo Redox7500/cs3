@@ -1,4 +1,4 @@
-package project1lists;
+package io.github.redox7500.project1lists;
 
 import java.util.ArrayList;
 import java.util.ArrayDeque;

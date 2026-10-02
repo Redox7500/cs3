@@ -1,4 +1,4 @@
-package project1lists;
+package io.github.redox7500.project1lists;
 
 /** All of the default implementations of the CustomList required methods except for Shaffer's aliases */
 public abstract class DefaultCustomListImplementations<E, T extends DefaultCustomListImplementations<E, T>> implements CustomList<E, T>
