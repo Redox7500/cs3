@@ -1,7 +1,6 @@
 package io.github.redox7500.project1lists;
 
 import java.util.ArrayList;
-import java.util.ArrayDeque;
 import java.util.function.Supplier;
 import java.util.function.Function;
 import java.util.function.Consumer;
@@ -85,16 +84,7 @@ public class TestHarness
      */
     private static <E, T extends CustomList<E, T>> boolean testCustomList(Supplier<T> constructor, int depth)
     {
-        ArrayDeque<State<E, T>> leaves = new ArrayDeque<>();
-        leaves.add(new State<>(constructor));
-
-        for (int i = 0; i < depth; i++)
-        {
-            int leafCount = leaves.size();
-            // System.out.println(leafCount);
-            for (int j = 0; j < leafCount; j++) if (!leaves.poll().addLeaves(leaves)) return false;
-        }
-        return true;
+        return new State<>(constructor).branch(depth);
     }
 
     /** Expresses a state that a CustomList and its corresponding ArrayList can be in, along with arrays to keep track of the function call and argument histories */
@@ -238,8 +228,10 @@ public class TestHarness
          * @param leaves The deque to add the new leaf states to
          * @return A boolean representing whether any of the leaves had CustomLists that misbehaved or not
          */
-        boolean addLeaves(ArrayDeque<State<E, T>> leaves)
+        boolean branch(int depth)
         {
+            if (depth == 0) return true;
+
             for (int currentFunction = 0; currentFunction < 13; currentFunction++)
             {
                 int firstArgument, lastArgument;
@@ -278,7 +270,7 @@ public class TestHarness
 
                             return false;
                         case State.Evaluation.SUCCESS:
-                            leaves.addLast(newState);
+                            if (!newState.branch(depth - 1)) return false;
                     }
                 }
             }
