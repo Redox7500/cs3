@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.function.UnaryOperator;
 import java.util.Comparator;
 import java.util.function.Predicate;
+import java.util.Optional;
 
 // change leaves thing to be recursion to save memory?
 /** Test harness to test CustomList implementations (specifically CustomList<Integer, ?> implementations) */
@@ -198,24 +199,35 @@ public class TestHarness
 
             int customListSize;
             int customListCurrentIndex;
-            E customListCurrentValue;
+            Optional<E> customListCurrentValue;
             try
             {
                 customListSize = customList.size();
                 customListCurrentIndex = customList.getCurrentIndex();
-                customListCurrentValue = (customListSize == 0)? null : customList.getCurrentValue();
+                customListCurrentValue = (customListSize == 0)? Optional.empty() : Optional.of(customList.getCurrentValue());
             }
             catch (Throwable _)
             {
                 return State.Evaluation.INEVALUABLE_CUSTOM_LIST;
             }
             int arrayListWrapperSize = arrayListWrapper.size();
-            E arrayListWrapperCurrentValue = (arrayListWrapperSize == 0)? null : arrayListWrapper.getCurrentValue();
-
+            // System.out.println("Function history (most recent at the bottom): ");
+            // for (int i = 0; i < this.functionHistory.length; i++)
+            // {
+            //     int f = this.functionHistory[i];
+            //     System.out.print("\t" + TestHarness.customListMethods[f].name() + "(");
+            //     if (TestHarness.customListMethods[f].function() instanceof BiConsumer) System.out.print(this.argumentHistory[i]);
+            //     System.out.println(")");
+            // }
+            Optional<E> arrayListWrapperCurrentValue = (arrayListWrapperSize == 0)? Optional.empty() : Optional.of(arrayListWrapper.getCurrentValue());
+            // System.out.println(customListSize != arrayListWrapperSize);
+            // System.out.println(customListCurrentIndex);
+            // System.out.println(arrayListWrapper.getCurrentIndex());
+            // System.out.println(!customListCurrentValue.equals(arrayListWrapperCurrentValue));
             if (
                 customListSize != arrayListWrapperSize ||
                 customListCurrentIndex != this.arrayListWrapper.getCurrentIndex() ||
-                customListCurrentValue != arrayListWrapperCurrentValue
+                !customListCurrentValue.equals(arrayListWrapperCurrentValue)
             ) return State.Evaluation.UNEQUAL;
 
             int customListIndex;
@@ -226,9 +238,10 @@ public class TestHarness
             catch (Throwable _) {return State.Evaluation.INEVALUABLE_CUSTOM_LIST;}
             for (int i = 0; i < arrayListWrapperSize; i++)
             {
-                try {customListCurrentValue = customList.getCurrentValue();}
+                E c;
+                try {c = customList.getCurrentValue();}
                 catch (Throwable _) {return State.Evaluation.INEVALUABLE_CUSTOM_LIST;}
-                if (customListCurrentValue != arrayListWrapper.arrayList.get(i)) {return State.Evaluation.UNEQUAL;}
+                if (c != arrayListWrapper.arrayList.get(i)) {return State.Evaluation.UNEQUAL;}
                 if (i < arrayListWrapperSize - 1)
                 {
                     try {customList.moveCurrentIndexRight();}
@@ -415,7 +428,7 @@ public class TestHarness
         public void append(E value) {this.arrayList.add(value);}
 
         @Override
-        public E remove() {return this.arrayList.remove(this.currentIndex);}
+        public E remove() {E toReturn = this.arrayList.remove(this.currentIndex); if (this.currentIndex == this.size() && this.currentIndex != 0) this.currentIndex--; return toReturn;}
 
         @Override
         public E getCurrentValue() {return this.arrayList.get(this.currentIndex);}
