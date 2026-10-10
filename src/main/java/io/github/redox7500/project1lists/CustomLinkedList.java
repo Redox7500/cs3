@@ -68,7 +68,7 @@ class CustomLinkedList<E> extends DefaultCustomListImplementations<E>
         {
             if (this.elementCount > 1)
             {
-                this.moveCurrentIndexLeft();
+                this.moveCurrentIndexToPrevious();
                 this.tailLink = this.currentLink;
             }
             else
@@ -110,7 +110,7 @@ class CustomLinkedList<E> extends DefaultCustomListImplementations<E>
     public void moveCurrentIndexToEnd() {this.currentLink = this.tailLink; this.currentIndex = Math.max(this.elementCount - 1, 0);}
 
     @Override
-    public void moveCurrentIndexLeft()
+    public void moveCurrentIndexToPrevious()
     {
         assert this.currentIndex != 0 : "Index out of range";
 
@@ -120,7 +120,7 @@ class CustomLinkedList<E> extends DefaultCustomListImplementations<E>
     }
     
     @Override
-    public void moveCurrentIndexRight() {assert this.currentIndex != Math.max(this.elementCount - 1, 0) : "Index out of range"; this.currentLink = this.currentLink.nextLink; this.currentIndex++;}
+    public void moveCurrentIndexToNext() {assert this.currentIndex != Math.max(this.elementCount - 1, 0) : "Index out of range"; this.currentLink = this.currentLink.nextLink; this.currentIndex++;}
 
     @Override
     public int size() {return this.elementCount;}

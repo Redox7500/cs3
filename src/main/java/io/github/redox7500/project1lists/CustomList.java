@@ -2,7 +2,7 @@ package io.github.redox7500.project1lists;
 
 // add negative indices like in python maybe?
 /** List ADT */
-public interface CustomList<E> extends Copyable<CustomList<E>> // all this for the copy function is wild
+public interface CustomList<E> extends Testable<CustomList<E>> // all this for the copy function is wild
 {
     /** Remove all contents from the list, so it is once again empty. The client is responsible for reclaiming storage used by the list elements. */
     void clear();
@@ -41,25 +41,33 @@ public interface CustomList<E> extends Copyable<CustomList<E>> // all this for t
     void moveCurrentIndexToEnd();
 
     /** Move the current index one step left */
-    void moveCurrentIndexLeft();
+    void moveCurrentIndexToPrevious();
 
     /** Move the current index one step right */
-    void moveCurrentIndexRight();
+    void moveCurrentIndexToNext();
 
     /** @return The number of elements in the list */
     int size();
 
     /** @return A copy of this list as far down as its elements (but elements in the copied array point to the same place as corresponding elements in this array) */
-    CustomList<E> copy();
+    // CustomList<E> copy();
 
     /**
      * @param otherList The list to compare this list to
      * @return A boolean representing whether or not this list is equal to otherList (which includes the result of getCurrentIndex)
      */
-    boolean equals(CustomList<E> otherList);
+    // default boolean equals(CustomList<E> otherList)
+    // {
+
+    // }
+
+    // default int hashCode()
+    // {
+    //     return Object.hashCode
+    // }
 
     /** String of the values in the list, comma separated, between square brackets */
-    String toString();
+    // String toString();
 
     /** Shaffer's name for my equivalent {@link #project1lists.CustomList.moveCurrentIndexToStart moveCurrentIndexToStart()} method */
     default void moveToStart() {this.moveCurrentIndexToStart();}
@@ -67,11 +75,11 @@ public interface CustomList<E> extends Copyable<CustomList<E>> // all this for t
     /** Shaffer's name for my equivalent {@link #project1lists.CustomList.moveCurrentIndexToEnd moveCurrentIndexToEnd()} method */
     default void moveToEnd() {this.moveCurrentIndexToEnd();}
 
-    /** Shaffer's name for my equivalent {@link #project1lists.CustomList.moveCurrentIndexLeft moveCurrentIndexLeft()} method */
-    default void prev() {this.moveCurrentIndexLeft();}
+    /** Shaffer's name for my equivalent {@link #project1lists.CustomList.moveCurrentIndexToPrevious moveCurrentIndexToPrevious()} method */
+    default void prev() {this.moveCurrentIndexToPrevious();}
 
-    /** Shaffer's name for my equivalent {@link #project1lists.CustomList.moveCurrentIndexRight moveCurrentIndexRight()} method */
-    default void next() {this.moveCurrentIndexRight();}
+    /** Shaffer's name for my equivalent {@link #project1lists.CustomList.moveCurrentIndexToNext moveCurrentIndexToNext()} method */
+    default void next() {this.moveCurrentIndexToNext();}
 
     /** Shaffer's name for my equivalent {@link #project1lists.CustomList.size size()} method */
     default int length() {return this.size();}

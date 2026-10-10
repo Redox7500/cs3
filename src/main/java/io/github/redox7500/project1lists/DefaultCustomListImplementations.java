@@ -11,46 +11,23 @@ public abstract class DefaultCustomListImplementations<E> implements CustomList<
     }
     
     @Override
-    public abstract void insert(E value);
-    
-    @Override
-    public abstract void append(E value);
-
-    @Override
-    public abstract E remove();
-
-    @Override
-    public abstract E getCurrentValue();
-
-    @Override
-    public abstract void setCurrentValue(E value);
-    
-    @Override
-    public abstract int getCurrentIndex();
-    
-    @Override
-    public abstract void moveCurrentIndexTo(int index);
-    
-    @Override
     public void moveCurrentIndexToStart() {this.moveCurrentIndexTo(0);}
     
     @Override
     public void moveCurrentIndexToEnd() {this.moveCurrentIndexTo(Math.max(this.size() - 1, 0));}
     
     @Override
-    public void moveCurrentIndexLeft() {this.moveCurrentIndexTo(this.getCurrentIndex() - 1);}
+    public void moveCurrentIndexToPrevious() {this.moveCurrentIndexTo(this.getCurrentIndex() - 1);}
     
     @Override
-    public void moveCurrentIndexRight() {this.moveCurrentIndexTo(this.getCurrentIndex() + 1);}
-    
-    @Override
-    public abstract int size();
+    public void moveCurrentIndexToNext() {this.moveCurrentIndexTo(this.getCurrentIndex() + 1);}
 
     @SuppressWarnings("unchecked")
     @Override
     public CustomList<E> copy()
     {
         CustomList<E> toReturn;
+
         try {toReturn = this.getClass().getDeclaredConstructor().newInstance();}
         catch (Throwable _) {System.err.println("Class to copy has no visible parameterless constructor"); return null;}
 
@@ -58,49 +35,100 @@ public abstract class DefaultCustomListImplementations<E> implements CustomList<
         if (size == 0) return toReturn;
 
         int currentIndex = this.getCurrentIndex();
-        this.moveCurrentIndexToStart();
-        for (int i = 0; ; i++)
+
+        try
         {
+            this.moveCurrentIndexToStart();
+
+            for (int i = 0; ; i++)
+            {
+                toReturn.append(this.getCurrentValue());
+
+                if (i == size - 1) break;
+
+                this.moveCurrentIndexToNext();
+            }
             toReturn.append(this.getCurrentValue());
 
-            if (i == size - 1) break;
-
-            this.moveCurrentIndexRight();
+            toReturn.moveCurrentIndexTo(currentIndex);
         }
-        toReturn.append(this.getCurrentValue());
-
-        this.moveCurrentIndexTo(currentIndex);
-        toReturn.moveCurrentIndexTo(currentIndex);
+        finally
+        {
+            this.moveCurrentIndexTo(currentIndex);
+        }
 
         return toReturn;
     }
-
+    
     @Override
-    public boolean equals(CustomList<E> otherList)
+    public boolean testEquality(CustomList<E> otherList) // only supports comparisons with other CustomLists
     {
         int size = this.size();
         if (size != otherList.size()) return false;
+        if (size == 0) return true;
 
         int currentIndex = this.getCurrentIndex();
         if (currentIndex != otherList.getCurrentIndex()) return false;
 
-        this.moveCurrentIndexToStart();
-        otherList.moveCurrentIndexToStart();
-
-        for (int i = 0; ; i++)
+        try
         {
-            if (this.getCurrentValue() != otherList.getCurrentValue()) return false;
+            this.moveCurrentIndexToStart();
+            otherList.moveCurrentIndexToStart();
 
-            if (i == size - 1) break;
+            for (int i = 0; ; i++)
+            {
+                if (!(this.getCurrentValue().equals(otherList.getCurrentValue()))) return false;
 
-            this.moveCurrentIndexRight();
-            otherList.moveCurrentIndexRight();
+                if (i == size - 1) break;
+
+                this.moveCurrentIndexToNext();
+                otherList.moveCurrentIndexToNext();
+            }
+        }
+        finally
+        {
+            this.moveCurrentIndexTo(currentIndex);
+            otherList.moveCurrentIndexTo(currentIndex);
+        }
+    }
+
+    @Override
+    public int hashCode() // apparently i need to do this if i want to override equals(Object)
+    {
+        int toReturn = 1;
+
+        int size = this.size();
+        int currentIndex = this.getCurrentIndex();
+
+        if (this.size() > 0)
+        {
+            try
+            {
+                this.moveCurrentIndexToStart();
+
+                for (int i = 0; ; i++)
+                {
+                    E currentValue = this.getCurrentValue();
+                    toReturn = 31 * toReturn + ((currentValue == null)? 0 : currentValue.hashCode());
+
+                    if (i == size - 1) break;
+
+                    this.moveCurrentIndexToNext();
+                }
+            }
+            finally
+            {
+                this.moveCurrentIndexTo(currentIndex);
+            }
         }
 
-        this.moveCurrentIndexTo(currentIndex);
-        otherList.moveCurrentIndexTo(currentIndex);
+        toReturn = 31 * toReturn + Integer.hashCode(size);
+        toReturn = 31 * toReturn + Integer.hashCode(currentIndex);
 
-        return true;
+        E currentValue = this.getCurrentValue();
+        toReturn = 31 * toReturn + ((currentValue == null)? 0 : currentValue.hashCode());
+
+        return toReturn;
     }
     
     @Override
@@ -121,7 +149,7 @@ public abstract class DefaultCustomListImplementations<E> implements CustomList<
                 toReturn.append(", ");
                 toReturn.append(this.getCurrentValue());
 
-                this.moveCurrentIndexRight();
+                this.moveCurrentIndexToNext();
             }
         }
         toReturn.append(']');
@@ -129,5 +157,14 @@ public abstract class DefaultCustomListImplementations<E> implements CustomList<
         this.moveCurrentIndexTo(currentIndex);
 
         return toReturn.toString();
+    }
+
+    @Override
+    public void printRelevantInfo(String name)
+    {
+        System.out.println(name + ": " + this);
+        System.out.println(name + " size: " + this.size());
+        System.out.println(name + " current value: " + this.getCurrentValue());
+        System.out.println(name + " current index: " + this.getCurrentIndex());
     }
 }

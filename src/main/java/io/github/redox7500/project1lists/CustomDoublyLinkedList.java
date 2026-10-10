@@ -133,10 +133,10 @@ class CustomDoublyLinkedList<E> extends DefaultCustomListImplementations<E>
     public void moveCurrentIndexToEnd() {this.currentLink = this.tailLink; this.currentIndex = Math.max(this.elementCount - 1, 0);}
 
     @Override
-    public void moveCurrentIndexLeft() {assert this.currentIndex != 0 : "Index out of range"; this.currentLink = this.currentLink.previousLink; this.currentIndex--;}
+    public void moveCurrentIndexToPrevious() {assert this.currentIndex != 0 : "Index out of range"; this.currentLink = this.currentLink.previousLink; this.currentIndex--;}
     
     @Override
-    public void moveCurrentIndexRight() {assert this.currentIndex != Math.max(this.elementCount - 1, 0) : "Index out of range"; this.currentLink = this.currentLink.nextLink; this.currentIndex++;}
+    public void moveCurrentIndexToNext() {assert this.currentIndex != Math.max(this.elementCount - 1, 0) : "Index out of range"; this.currentLink = this.currentLink.nextLink; this.currentIndex++;}
 
     @Override
     public int size() {return this.elementCount;}

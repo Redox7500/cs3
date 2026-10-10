@@ -22,6 +22,6 @@ All of these cases will be achieved at the third loop through the leaves (also k
 
 I think that's it! Let me know if I missed something!
 
-*The methods being tested are: `clear`, `insert`, `append`, `remove`, `getCurrentValue`, `setCurrentValue`, `getCurrentIndex`, `moveCurrentIndexTo`, `moveCurrentIndexToStart`, `moveCurrentIndexToEnd`, `moveCurrentIndexLeft`, `moveCurrentIndexRight`, and `size`, which is basically all of the methods.
+*The methods being tested are: `clear`, `insert`, `append`, `remove`, `getCurrentValue`, `setCurrentValue`, `getCurrentIndex`, `moveCurrentIndexTo`, `moveCurrentIndexToStart`, `moveCurrentIndexToEnd`, `moveCurrentIndexToPrevious`, `moveCurrentIndexToNext`, and `size`, which is basically all of the methods.
 
 **For methods that take in an element, the only value tested is `depth` , or the length of the method history array. This works because there is guaranteed to be only one argument value at every `depth`. For methods that take in an index, all of the values from -1 to the current length of the `CustomList`/`ArrayList` are tested, so that both edge cases and all normal cases are tested. (I might change this, but I can't think of anything objectively better off the top of my head.)
