@@ -1,36 +1,50 @@
 package io.github.redox7500.project1lists;
 
-public interface Testable<T> extends Copyable<T>
+public interface Testable<T extends Testable<T>> extends Copyable<T>
 {
-    static <T> Result fullTest(Testable<T> toTest1, Testable<T> toTest2, TestFunction<T> testFunction, Object[] args)
+    static <T extends Testable<T>> FullTestResult fullTest(Testable<T> toTest1, Testable<T> toTest2, TestFunction<T>[] testFunctions, Object[] args)
     {
-        Object result1 = null;
-        Object result2 = null;
-        boolean error1 = false;
-        boolean error2 = false;
+        for (TestFunction<T> testFunction : testFunctions)
+        {
+            Testable<T> toTest1Copy = toTest1.copy();
+            Testable<T> toTest2Copy = toTest2.copy();
 
-        try {result1 = testFunction.apply(toTest1, args);}
-        catch (Throwable _) {error1 = true;}
-        try {result2 = testFunction.apply(toTest2, args);}
-        catch (Throwable _) {error2 = true;}
+            Object result1 = null;
+            Object result2 = null;
+            boolean error1 = false;
+            boolean error2 = false;
 
-        if (error1 && error2) return Result.ERROR_BOTH;
-        if (error1 && !error2) return Result.ERROR_1;
-        if (!error1 && error2) return Result.ERROR_2;
-        return (((result1 == null)? result2 == null : result1.equals(result2)) && toTest1.equals(toTest2))? Result.SUCCESS : Result.UNEQUAL;
-        // probably change equals to something like equalityCheck and make it output a Result thing, then no more hashCode too
-        // return ((result1 == null)? result2 == null : result1.equals(result2))? Result.SUCCESS : Result.UNEQUAL;
+            try {result1 = testFunction.apply(toTest1Copy, args);}
+            catch (Throwable _) {error1 = true;}
+            try {result2 = testFunction.apply(toTest2Copy, args);}
+            catch (Throwable _) {error2 = true;}
+
+            if (error1 && error2) continue;
+            if (error1 && !error2) return FullTestResult.ERROR_1;
+            if (!error1 && error2) return FullTestResult.ERROR_2;
+            switch (toTest1Copy.equalityTest(toTest2Copy))
+            {
+                case ERROR_1: return FullTestResult.INEVALUABLE_1;
+                case ERROR_2: return FullTestResult.INEVALUABLE_2;
+                case UNEQUAL: return FullTestResult.UNEQUAL;
+                case EQUAL:
+                    Testable.fullTest(toTest1Copy, toTest2Copy, testFunctions, )
+            }
+        }
     }
 
-    void testEquality(Testable<T> toTest);
+    EqualityTestResult equalityTest(Testable<T> toTest);
     void printRelevantInfo(String name);
     
-    enum Equality
+    enum EqualityTestResult
     {
-        
+        ERROR_1,
+        ERROR_2,
+        UNEQUAL,
+        EQUAL
     }
 
-    enum Result
+    enum FullTestResult
     {
         ERROR_BOTH,
         ERROR_1,
@@ -42,7 +56,7 @@ public interface Testable<T> extends Copyable<T>
     }
 
     @FunctionalInterface
-    interface TestFunction<T>
+    interface TestFunction<T extends Testable<T>>
     {
         Object apply(Testable<T> toTest, Object[] args);
     }
