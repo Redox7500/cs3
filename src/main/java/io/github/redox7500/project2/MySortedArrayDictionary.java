@@ -28,15 +28,12 @@ class MySortedArrayDictionary<K extends Comparable<? super K>, V> implements MyD
     /** Remove the last element */
     public V removeAny()
     {
-        if (size() != 0)
-        {
-            list.moveToEnd();
-            list.prev();
-            KVpair<K, V> e = list.remove();
-            return e.value();
-        }
-
-        else return null;
+        if (size() == 0) return null;
+        
+        list.moveToEnd();
+        list.prev();
+        KVpair<K, V> e = list.remove();
+        return e.value();
     }
 
     // Find "k" using sequential search
