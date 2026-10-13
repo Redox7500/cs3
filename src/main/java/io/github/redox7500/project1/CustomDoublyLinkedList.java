@@ -1,4 +1,4 @@
-package io.github.redox7500.project1lists;
+package io.github.redox7500.project1;
 
 /** Linked list implementation */
 class CustomDoublyLinkedList<E> extends DefaultCustomListImplementations<E>
