@@ -9,6 +9,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.Executors;
 import java.util.Optional;
+import java.util.function.BiFunction;
 import java.lang.Cloneable;
 import java.lang.classfile.Interfaces;
 
@@ -80,18 +81,18 @@ public class TestHarness
         int[] functionHistory;
 
         /** An array containing all of the arguments used in the function calls leading up to this state */
-        int[] argumentHistory;
+        Object[][] argumentHistory;
 
         State(Supplier<T> testConstructor, Supplier<U> verifiedConstructor)
         {
             this.toTest1 = testConstructor.get();
             this.toTest2 = verifiedConstructor.get();
             this.functionHistory = new int[0];
-            this.argumentHistory = new int[0];
+            this.argumentHistory = new Object[0][0];
         }
 
         @SuppressWarnings("unchecked")
-        State (State<S, T, U> previousState, int function, int argument)
+        State(State<S, T, U> previousState, int function, Object[] argument)
         {
             this.toTest1 = previousState.toTest1.copy();
             this.toTest2 = previousState.toTest2.copy();
@@ -102,7 +103,7 @@ public class TestHarness
             System.arraycopy(previousState.functionHistory, 0, this.functionHistory, 0, depth - 1);
             this.functionHistory[depth - 1] = function;
 
-            this.argumentHistory = new int[depth];
+            this.argumentHistory = new Object[depth][];
             System.arraycopy(previousState.argumentHistory, 0, this.argumentHistory, 0, depth - 1);
             this.argumentHistory[depth - 1] = argument;
         }
@@ -116,8 +117,9 @@ public class TestHarness
 
         State.Evaluation evaluate()
         {
-            TestHarness.CustomListMethod<?> function = TestHarness.customListMethods[this.functionHistory[this.functionHistory.length - 1]];
-            int argument = this.argumentHistory[this.argumentHistory.length - 1];
+            // TestHarness.CustomListMethod<?> function = TestHarness.customListMethods[this.functionHistory[this.functionHistory.length - 1]];
+            TestHarness.TestFunction<S> function = 
+            Object[] argument = this.argumentHistory[this.argumentHistory.length - 1];
 
             Object customListResult = null;
             Object arrayListWrapperResult = null;
@@ -183,23 +185,24 @@ public class TestHarness
          * @param leaves The deque to add the new leaf states to
          * @return A boolean representing whether any of the leaves had CustomLists that misbehaved or not
          */
-        boolean branch(int depth)
+        boolean branch(TestFunction<S>[] testFunctions, BiFunction<State<S, T, U>, Integer, Object[][]> argumentGenerator, int depth)
         {
-            if (depth == 0) return true;
+            // if (depth == 0) return true;
 
-            for (int currentFunction = 0; currentFunction < 13; currentFunction++)
+            for (int currentFunction = 0; currentFunction < testFunctions.length; currentFunction++)
             {
-                int firstArgument, lastArgument;
-                int argumentStep = 1;
-                switch (TestHarness.customListMethods[currentFunction])
+                // int firstArgument, lastArgument;
+                // int argumentStep = 1;
+                // switch (TestHarness.customListMethods[currentFunction])
+                // {
+                //     case TestHarness.CustomListMethod.CustomListIndexConsumer _ -> {firstArgument = -1; lastArgument = this.verifiedList.size();} // change args to be based on inputs to testharness method?
+                //     case TestHarness.CustomListMethod.CustomListValueConsumer<?> _ -> firstArgument = lastArgument = this.functionHistory.length;
+                //     default -> firstArgument = lastArgument = 0;
+                // }
+                Object[][] arguments = argumentGenerator.apply(this, currentFunction);
+                for (int currentArgument = 0; currentArgument < arguments.length; currentArgument++)
                 {
-                    case TestHarness.CustomListMethod.CustomListIndexConsumer _ -> {firstArgument = -1; lastArgument = this.verifiedList.size();} // change args to be based on inputs to testharness method?
-                    case TestHarness.CustomListMethod.CustomListValueConsumer<?> _ -> firstArgument = lastArgument = this.functionHistory.length;
-                    default -> firstArgument = lastArgument = 0;
-                }
-                for (int currentArgument = firstArgument; currentArgument < lastArgument + 1; currentArgument += argumentStep)
-                {
-                    State<S, T, U> newState = new State<>(this, currentFunction, currentArgument);
+                    State<S, T, U> newState = new State<S, T, U>(this, currentFunction, arguments[currentArgument]);
                     switch (newState.evaluate())
                     {
                         case State.Evaluation.ERROR_BOTH:
@@ -225,7 +228,7 @@ public class TestHarness
 
                             return false;
                         case State.Evaluation.SUCCESS:
-                            if (!newState.branch(depth - 1)) return false;
+                            if (depth > 1 && !newState.branch(testFunctions, argumentGenerator, depth - 1)) return false;
                     }
                 }
             }
@@ -418,11 +421,11 @@ public class TestHarness
             UNEQUAL,
             SUCCESS
         }
+    }
 
-        @FunctionalInterface
+    @FunctionalInterface
         interface TestFunction<T extends Testable<T>>
         {
             Object apply(Testable<T> toTest, Object[] args);
         }
-    }
 }
