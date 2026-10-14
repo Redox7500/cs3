@@ -2,7 +2,7 @@ package io.github.redox7500.project1;
 
 // add negative indices like in python maybe?
 /** List ADT */
-public interface CustomList<E> extends Testable<CustomList<E>> // all this for the copy function is wild
+public interface CustomList<E> extends TestHarness.Testable<CustomList<E>> // all this for the copy function is wild
 {
     /** Remove all contents from the list, so it is once again empty. The client is responsible for reclaiming storage used by the list elements. */
     void clear();

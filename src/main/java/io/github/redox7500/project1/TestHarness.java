@@ -13,26 +13,24 @@ import java.util.function.BiFunction;
 import java.lang.Cloneable;
 import java.lang.classfile.Interfaces;
 
-// change leaves thing to be recursion to save memory?
 /** Test harness to test CustomList implementations (specifically CustomList<Integer, ?> implementations) */
-public class TestHarness
+public class TestHarness<S extends TestHarness.Testable<S>, T extends S, U extends S>
 {
-    /** A list of all of the CustomListMethods to be tested */
-    private static final CustomListMethod<?>[] customListMethods = new CustomListMethod[]{
-        new TestHarness.CustomListMethod.CustomListIndexSupplier  ("size",                    CustomList::size),
-        new TestHarness.CustomListMethod.CustomListIndexSupplier  ("getCurrentIndex",         CustomList::getCurrentIndex),
-        new TestHarness.CustomListMethod.CustomListIndexConsumer  ("moveCurrentIndexTo",      CustomList::moveCurrentIndexTo),
-        new TestHarness.CustomListMethod.CustomListRunnable       ("moveCurrentIndexToStart", CustomList::moveCurrentIndexToStart),
-        new TestHarness.CustomListMethod.CustomListRunnable       ("moveCurrentIndexToEnd",   CustomList::moveCurrentIndexToEnd),
-        new TestHarness.CustomListMethod.CustomListRunnable       ("moveCurrentIndexToPrevious",    CustomList::moveCurrentIndexToPrevious),
-        new TestHarness.CustomListMethod.CustomListRunnable       ("moveCurrentIndexToNext",   CustomList::moveCurrentIndexToNext),
-        new TestHarness.CustomListMethod.CustomListValueSupplier<>("getCurrentValue",         CustomList::getCurrentValue),
-        new TestHarness.CustomListMethod.CustomListValueConsumer<>("setCurrentValue",         CustomList::setCurrentValue),
-        new TestHarness.CustomListMethod.CustomListRunnable       ("clear",                   CustomList::clear),
-        new TestHarness.CustomListMethod.CustomListValueConsumer<>("insert",                  CustomList::insert),
-        new TestHarness.CustomListMethod.CustomListValueConsumer<>("append",                  CustomList::append),
-        new TestHarness.CustomListMethod.CustomListValueSupplier<>("remove",                  CustomList::remove)
-    };
+    Supplier<T> supplier1;
+    Supplier<U> supplier2;
+    TestFunction<?>[] testFunctions;
+    BiFunction<State<S, T, U>, Integer, Object[]> argumentGenerator;
+
+    TestHarness(Supplier<T> supplier1, Supplier<U> supplier2, TestFunction<?>[] testFunctions, BiFunction<State<S, T, U>, Integer, Object[]> argumentGenerator)
+    {
+        this.testFunctions = testFunctions;
+        this.argumentGenerator = argumentGenerator;
+    }
+
+    public boolean test(Supplier<T> supplier1, Supplier<U> supplier2, TestFunction<?>[] testFunctions, BiFunction<State<S, T, U>, Integer, Object[]> argumentGenerator, int depth)
+    {
+        return State.branch(supplier1, supplier2, 7);
+    }
 
     /** Test the given CustomList(s) and print the outputs nicely
      * @param constructors The constructors of the CustomList(s) you want to test
@@ -69,8 +67,12 @@ public class TestHarness
     }
 
     /** Expresses a state that a CustomList and its corresponding ArrayList can be in, along with arrays to keep track of the function call and argument histories */
-    private static class State<S extends Testable<S>, T extends S, U extends S>
+    private static abstract class State<S extends Testable<S>, T extends S, U extends S>
     {
+        abstract TestFunction<S>[] getTestFunctions();
+        // static TestFunction<S>[] testFunctions;
+        abstract Object[] argumentGenerator(int function);
+
         /** The instance of the CustomList being tested that resulted after the functionHistory/argumentHistory */
         S toTest1;
 
@@ -181,11 +183,14 @@ public class TestHarness
             return State.Evaluation.SUCCESS;
         }
 
+        abstract State<S, T, U> createInstance();
+
         /** Branch out from this state and add the new leaf states to leaves
          * @param leaves The deque to add the new leaf states to
          * @return A boolean representing whether any of the leaves had CustomLists that misbehaved or not
          */
-        boolean branch(TestFunction<S>[] testFunctions, BiFunction<State<S, T, U>, Integer, Object[][]> argumentGenerator, int depth)
+        @SuppressWarnings("unchecked")
+        final boolean branch(TestFunction<S>[] testFunctions, BiFunction<State<S, T, U>, Integer, Object[][]> argumentGenerator, int depth)
         {
             // if (depth == 0) return true;
 
@@ -202,7 +207,9 @@ public class TestHarness
                 Object[][] arguments = argumentGenerator.apply(this, currentFunction);
                 for (int currentArgument = 0; currentArgument < arguments.length; currentArgument++)
                 {
-                    State<S, T, U> newState = new State<S, T, U>(this, currentFunction, arguments[currentArgument]);
+                    State<S, T, U> newState; //= new State<S, T, U>(this, currentFunction, arguments[currentArgument]);
+                    try {newState = this.getClass().getDeclaredConstructor().newInstance();}
+                    catch (Throwable _) {System.err.println("TestHarness.State subclass has no visible parameterless constructor");}
                     switch (newState.evaluate())
                     {
                         case State.Evaluation.ERROR_BOTH:
@@ -244,6 +251,26 @@ public class TestHarness
             INEVALUABLE_CUSTOM_LIST,
             UNEQUAL,
             SUCCESS
+        }
+    }
+
+    private static class ThisState<E, T extends CustomList<E>> extends TestHarness.State<CustomList<E>, T, ArrayListWrapper<E>>
+    {
+        ThisState(State<CustomList<E>, T, ArrayListWrapper<E>> state, int function, Object[] argument)
+        {
+            super(state, function, argument);
+        }
+
+        @SuppressWarnings("unchecked")
+        TestFunction<CustomList<E>>[] getTestFunctions()
+        {
+            return (TestFunction<CustomList<E>>[])new TestFunction<?>[]{};
+        }
+
+        Object[] argumentGenerator(int function)
+        {
+            // probably a switch here
+            return new Object[]{};
         }
     }
 
@@ -331,42 +358,6 @@ public class TestHarness
         static void kill() {if (AsyncSpinner.executor != null) AsyncSpinner.executor.shutdownNow();}
     }
 
-    /** An interface to combine all of the types of methods CustomLists have into a uniform function type (with names)
-     * <p>
-     * The CustomList is passed into the CustomListMethod.function() as the first argument.
-    */
-    private sealed interface CustomListMethod<T>
-    {
-        /** Get the name of this CustomListMethod */
-        public String name();
-
-        // change to be something that calls the function according to what type this CustomListMethod is so that i don't have to do isinstanceof checks for accept/apply calls?
-        /** Get the function of this CustomListMethod */
-        public T function();
-
-        public Object call(CustomList<?> customList, Object argument);
-
-        /** A method of CustomList that has no inputs or outputs */
-        record CustomListRunnable(String name, Consumer<CustomList<?>> function) implements CustomListMethod<Consumer<CustomList<?>>>
-        {public Object call(CustomList<?> customList, Object argument) {this.function.accept(customList); return null;}}
-        
-        /** A method of CustomList that has a value as an input and no outputs */
-        record CustomListValueConsumer<E>(String name, BiConsumer<CustomList<E>, E> function) implements CustomListMethod<BiConsumer<CustomList<E>, E>>
-        {@SuppressWarnings("unchecked") public Object call(CustomList<?> customList, Object argument) {this.function.accept((CustomList<E>)customList, (E)argument); return null;}}
-        
-        /** A method of CustomList that has an index as an input and no outputs */
-        record CustomListIndexConsumer(String name, BiConsumer<CustomList<?>, Integer> function) implements CustomListMethod<BiConsumer<CustomList<?>, Integer>>
-        {public Object call(CustomList<?> customList, Object argument) {this.function.accept(customList, (int)argument); return null;}}
-        
-        /** A method of CustomList that has no inputs and a value as an output */
-        record CustomListValueSupplier<E>(String name, Function<CustomList<E>, E> function) implements CustomListMethod<Function<CustomList<E>, E>>
-        {@SuppressWarnings("unchecked") public Object call(CustomList<?> customList, Object argument) {return this.function.apply((CustomList<E>)customList);}}
-        
-        /** A method of CustomList that has no inputs and an index as an output */
-        record CustomListIndexSupplier(String name, Function<CustomList<?>, Integer> function) implements CustomListMethod<Function<CustomList<?>, Integer>>
-        {public Integer call(CustomList<?> customList, Object argument) {return this.function.apply(customList);}}
-    }
-
     public interface Testable<T extends Testable<T>> extends Copyable<T>
     {
         static <T extends Testable<T>> FullTestResult fullTest(Testable<T> toTest1, Testable<T> toTest2, TestFunction<T>[] testFunctions, Object[] args)
@@ -424,8 +415,8 @@ public class TestHarness
     }
 
     @FunctionalInterface
-        interface TestFunction<T extends Testable<T>>
-        {
-            Object apply(Testable<T> toTest, Object[] args);
-        }
+    interface TestFunction<T extends Testable<T>>
+    {
+        Object apply(T toTest, Object[] args);
+    }
 }

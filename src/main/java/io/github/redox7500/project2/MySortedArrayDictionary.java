@@ -2,26 +2,27 @@ package io.github.redox7500.project2;
 
 class MySortedArrayDictionary<K extends Comparable<? super K>, V> implements MyDictionary<K, V>
 {
-    private static final int defaultSize = 10; // Default size
-    private AList<KVpair<K, V>> list; // To store dictionary
+    // Default size
+    private static final int defaultSize = 10;
+
+    // To store dictionary
+    private AList<KeyValuePair<K, V>> arrayList;
 
     MySortedArrayDictionary() {this(defaultSize);}
-    MySortedArrayDictionary(int size) {list = new AList<KVpair<K, V>>(sz);}
+    MySortedArrayDictionary(int size) {this.arrayList = new AList<KeyValuePair<K, V>>(size);}
 
-    public void clear() {list.clear();} // Reinitialize
+    // Reinitialize
+    public void clear() {this.arrayList.clear();}
 
     /** Insert an element: append to list */
-    public void insert(K k, V e)
-    {
-        KVpair<K, V> temp = new KVpair<K, V>(k, e);
-        list.append(temp);
-    }
+    public void insert(K key, V value) {this.arrayList.append(new KeyValuePair<K, V>(key, value));}
 
     /** Use sequential search to find the element to remove */
-    public V remove(K k)
+    public V remove(K key)
     {
-        V temp = find(k);
-        if (temp != null) list.remove();
+        V temp = find(key);
+        if (temp != null) this.arrayList.remove();
+
         return temp;
     }
 
@@ -32,23 +33,29 @@ class MySortedArrayDictionary<K extends Comparable<? super K>, V> implements MyD
         
         list.moveToEnd();
         list.prev();
-        KVpair<K, V> e = list.remove();
+        KeyValuePair<K, V> e = list.remove();
+
         return e.value();
     }
 
     // Find "k" using sequential search
-    public V find(K k)
+    public V find(K key)
     {
-        for(list.moveToStart(); list.currPos() < list.length(); list.next())
+        this.arrayList.moveToStart();
+        int length = this.arrayList.length();
+        for (int i = 0; i < length; i++)
         {
-            KVpair<K, V> temp = list.getValue();
-            if (k == temp.key())
-            return temp.value();
+            KeyValuePair<K, V> currentPair = this.arrayList.getValue();
+            if (key == currentPair.key()) return currentPair.value();
+
+            if (i == length - 1) break;
+            
+            this.arrayList.next();
         }
 
         return null; // "k" does not appear in dictionary
     }
 
     // Return list size
-    public int size() {return list.length();}
+    public int size() {return this.arrayList.length();}
 }
