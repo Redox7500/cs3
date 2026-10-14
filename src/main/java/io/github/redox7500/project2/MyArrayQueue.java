@@ -1,7 +1,9 @@
 package io.github.redox7500.project2;
 
+import java.lang.StringBuilder;
+
 // Array-based queue implementation
-class MyArrayQueue<E> implements MyQueue<E>
+class MyArrayQueue<E> extends MyAbstractQueue<E>
 {
     private static final int defaultSize = 10;
     private int size;
@@ -19,9 +21,11 @@ class MyArrayQueue<E> implements MyQueue<E>
     }
 
     // Reinitialize
+    @Override
     public void clear() {this.front = 0; this.size = 0;}
 
     // Put "it" in queue
+    @Override
     public void enqueue(E it)
     {
         assert this.size != this.array.length - 1 : "Queue is full";
@@ -33,6 +37,7 @@ class MyArrayQueue<E> implements MyQueue<E>
     }
 
     // Take element out of queue
+    @Override
     public E dequeue()
     {
         assert this.size != 0 : "Queue is empty";
@@ -47,8 +52,29 @@ class MyArrayQueue<E> implements MyQueue<E>
     }
 
     // Get front value
+    @Override
     public E frontValue() {assert this.size != 0 : "Queue is empty"; return this.array[this.front];}
 
     // Return length
+    @Override
     public int length() {return this.size;}
+
+    @Override
+    public String toString()
+    {
+        StringBuilder toReturn = new StringBuilder();
+        toReturn.append('[');
+        if (this.size > 0)
+        {
+            toReturn.append(this.array[this.front]);
+            for (int i = this.front + 1; i < this.front + this.size; i++)
+            {
+                toReturn.append(", ");
+                toReturn.append(this.array[(i >= this.array.length)? i - this.array.length : i]);
+            }
+        }
+        toReturn.append(']');
+
+        return toReturn.toString();
+    }
 }

@@ -6,8 +6,10 @@ public class Main
     {
         MyQueue<Integer> queue = new MyLinkedQueue<Integer>();
 
-        queue.enqueue(0);
+        queue.enqueue(1);
+        System.out.println(queue);
         System.out.println(queue.dequeue());
+        System.out.println(queue);
         queue.dequeue();
     }
 }

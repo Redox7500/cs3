@@ -31,9 +31,9 @@ class MySortedArrayDictionary<K extends Comparable<? super K>, V> implements MyD
     {
         if (size() == 0) return null;
         
-        list.moveToEnd();
-        list.prev();
-        KeyValuePair<K, V> e = list.remove();
+        this.arrayList.moveToEnd();
+        if (this.arrayList.length() > 1) this.arrayList.prev();
+        KeyValuePair<K, V> e = this.arrayList.remove();
 
         return e.value();
     }
@@ -49,7 +49,7 @@ class MySortedArrayDictionary<K extends Comparable<? super K>, V> implements MyD
             if (key == currentPair.key()) return currentPair.value();
 
             if (i == length - 1) break;
-            
+
             this.arrayList.next();
         }
 

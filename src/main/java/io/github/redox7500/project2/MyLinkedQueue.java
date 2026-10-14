@@ -1,7 +1,8 @@
 package io.github.redox7500.project2;
 
 // Linked queue implementation
-class MyLinkedQueue<E> implements MyQueue<E> {
+class MyLinkedQueue<E> extends MyAbstractQueue<E>
+{
     private Link<E> front; // Pointer to front queue node
     private Link<E> rear; // Pointer to rear queuenode
     int size; // Number of elements in queue
@@ -9,9 +10,11 @@ class MyLinkedQueue<E> implements MyQueue<E> {
     public MyLinkedQueue() {this.front = this.rear = null; this.size = 0;}
 
     // Reinitialize queue
+    @Override
     public void clear() {this.front = this.rear = null; this.size = 0;}
 
     // Put element on rear
+    @Override
     public void enqueue(E it)
     {
         Link<E> newLink = Link.acquire(it);
@@ -22,6 +25,7 @@ class MyLinkedQueue<E> implements MyQueue<E> {
     }
 
     // remove element from front
+    @Override
     public E dequeue()
     {
         assert this.size != 0 : "Queue is empty";
@@ -39,10 +43,33 @@ class MyLinkedQueue<E> implements MyQueue<E> {
     }
 
     // Get front element
+    @Override
     public E frontValue() {assert size != 0 : "Queue is empty"; return this.front.value;}
 
     // Return length
+    @Override
     public int length() {return this.size;}
+
+    @Override
+    public String toString()
+    {
+        StringBuilder toReturn = new StringBuilder();
+        toReturn.append('[');
+        if (this.size > 0)
+        {
+            toReturn.append(this.front.value);
+            Link<E> currentLink = this.front;
+            for (int i = 1; i < this.size; i++)
+            {
+                currentLink = currentLink.nextLink;
+                toReturn.append(", ");
+                toReturn.append(currentLink.value);
+            }
+        }
+        toReturn.append(']');
+
+        return toReturn.toString();
+    }
 
     private static class Link<E>
     {
