@@ -5,13 +5,13 @@ package io.github.redox7500.project1;
 public class Project1LinkedList<E> extends Project1AbstractList<E>
 {
     /** Pointer to first link */
-    private final Project1LinkedList.Link<E> headLink = Link.acquire(true);
+    private final Project1Link<E> headLink = Project1Link.acquire(true);
 
     /** Pointer to second to last link */
-    private Project1LinkedList.Link<E> tailLink = this.headLink;
+    private Project1Link<E> tailLink = this.headLink;
 
     /** Pointer to current link */
-    private Project1LinkedList.Link<E> currentLink = this.headLink;
+    private Project1Link<E> currentLink = this.headLink;
 
     /** Index of the current link in the list */
     private int currentIndex = 0;
@@ -23,7 +23,7 @@ public class Project1LinkedList<E> extends Project1AbstractList<E>
     public void clear()
     {
         if (this.elementCount == 0) return;
-        for (Project1LinkedList.Link<E> tempLink = this.headLink.nextLink; tempLink != null; tempLink = tempLink.nextLink) tempLink.release();
+        for (Project1Link<E> tempLink = this.headLink.nextLink; tempLink != null; tempLink = tempLink.nextLink) tempLink.release();
         this.headLink.nextLink = this.headLink; // Drop access to links
         this.currentIndex = 0;
         this.elementCount = 0;
@@ -38,7 +38,7 @@ public class Project1LinkedList<E> extends Project1AbstractList<E>
         }
         else
         {
-            this.currentLink.nextLink = Link.acquire(value, this.currentLink.nextLink);
+            this.currentLink.nextLink = Project1Link.acquire(value, this.currentLink.nextLink);
             if (this.currentLink == this.tailLink) this.tailLink = this.tailLink.nextLink;
             this.elementCount++;
         }
@@ -48,7 +48,7 @@ public class Project1LinkedList<E> extends Project1AbstractList<E>
     public void append(E value)
     {
         this.tailLink = this.tailLink.nextLink;
-        this.tailLink.nextLink = Link.acquire(value);
+        this.tailLink.nextLink = Project1Link.acquire(value);
         this.elementCount++;
     }
     
@@ -59,7 +59,7 @@ public class Project1LinkedList<E> extends Project1AbstractList<E>
         
         E value = this.currentLink.nextLink.value; // Remember value
 
-        Project1LinkedList.Link<E> currentNextLink = this.currentLink.nextLink;
+        Project1Link<E> currentNextLink = this.currentLink.nextLink;
         this.currentLink.nextLink = currentNextLink.nextLink; // Remove from list
         currentNextLink.release();
         if (this.currentLink == this.tailLink) // Removed last
@@ -127,7 +127,7 @@ public class Project1LinkedList<E> extends Project1AbstractList<E>
     public Project1LinkedList<E> copy()
     {
         Project1LinkedList<E> toReturn = new Project1LinkedList<>();
-        if (this.elementCount > 0) for (Project1LinkedList.Link<E> tempLink = this.headLink; tempLink.nextLink != null; tempLink = tempLink.nextLink) toReturn.append(tempLink.nextLink.value);
+        if (this.elementCount > 0) for (Project1Link<E> tempLink = this.headLink; tempLink.nextLink != null; tempLink = tempLink.nextLink) toReturn.append(tempLink.nextLink.value);
         if (this.currentIndex != 0) toReturn.moveCurrentIndexTo(this.currentIndex);
 
         return toReturn;
@@ -141,7 +141,7 @@ public class Project1LinkedList<E> extends Project1AbstractList<E>
         if (this.elementCount > 0)
         {
             toReturn.append(this.headLink.nextLink.value);
-            for (Project1LinkedList.Link<E> tempLink = this.headLink.nextLink; tempLink.nextLink != null; )
+            for (Project1Link<E> tempLink = this.headLink.nextLink; tempLink.nextLink != null; )
             {
                 toReturn.append(", ");
                 toReturn.append((tempLink = tempLink.nextLink).value);
@@ -150,62 +150,5 @@ public class Project1LinkedList<E> extends Project1AbstractList<E>
         toReturn.append(']');
 
         return toReturn.toString();
-    }
-
-    private static class Link<E>
-    {
-        /** Linked list of nodes that are not currently being used and can be reused */
-        private static Link<?> freeList;
-
-        /** Value for this node */
-        private E value = null;
-
-        /** Pointer to next node in list */
-        private Link<E> nextLink = null;
-
-        private static <E> Link<E> acquire()
-        {
-            if (freeList == null) return new Link<>();
-            
-            @SuppressWarnings("unchecked")
-            Link<E> toReturn = (Link<E>)freeList;
-            freeList = freeList.nextLink;
-
-            return toReturn;
-        }
-
-        private static <E> Link<E> acquire(boolean looping)
-        {
-            Link<E> toReturn = Link.acquire();
-            if (looping) toReturn.nextLink = toReturn;
-
-            return toReturn;
-        }
-
-        private static <E> Link<E> acquire(E value)
-        {
-            Link<E> toReturn = Link.acquire();
-            toReturn.value = value;
-            toReturn.nextLink = null;
-
-            return toReturn;
-        }
-
-        private static <E> Link<E> acquire(E value, Link<E> nextLink)
-        {
-            Link<E> toReturn = Link.acquire();
-            toReturn.value = value;
-            toReturn.nextLink = nextLink;
-
-            return toReturn;
-        }
-
-        @SuppressWarnings("unchecked")
-        private void release()
-        {
-            this.value = null;
-            this.nextLink = (Link<E>)Link.freeList;
-            Link.freeList = this;
-        }
     }
 }

@@ -1,10 +1,12 @@
 package io.github.redox7500.project2;
 
+import io.github.redox7500.project1.Project1Link;
+
 // Linked queue implementation
 class Project2LinkedQueue<E> extends Project2AbstractQueue<E>
 {
-    private Link<E> front; // Pointer to front queue node
-    private Link<E> rear; // Pointer to rear queuenode
+    private Project1Link<E> front; // Pointer to front queue node
+    private Project1Link<E> rear; // Pointer to rear queuenode
     private int size; // Number of elements in queue
     
     public Project2LinkedQueue() {this.front = this.rear = null; this.size = 0;}
@@ -17,7 +19,7 @@ class Project2LinkedQueue<E> extends Project2AbstractQueue<E>
     @Override
     public void enqueue(E it)
     {
-        Link<E> newLink = Link.acquire(it);
+        Project1Link<E> newLink = Project1Link.acquire(it);
         if (this.size == 0) this.front = this.rear = newLink;
         else this.rear.nextLink = newLink; this.rear = this.rear.nextLink;
 
@@ -32,7 +34,7 @@ class Project2LinkedQueue<E> extends Project2AbstractQueue<E>
 
         E it = this.front.value; // Store dequeued value
 
-        Link<E> newFrontLink = this.front.nextLink;
+        Project1Link<E> newFrontLink = this.front.nextLink;
         this.front.release();
         this.front = newFrontLink;
         if (this.front == null) this.rear = null;
@@ -58,7 +60,7 @@ class Project2LinkedQueue<E> extends Project2AbstractQueue<E>
         if (this.size > 0)
         {
             toReturn.append(this.front.value);
-            Link<E> currentLink = this.front;
+            Project1Link<E> currentLink = this.front;
             for (int i = 1; i < this.size; i++)
             {
                 currentLink = currentLink.nextLink;
@@ -69,45 +71,5 @@ class Project2LinkedQueue<E> extends Project2AbstractQueue<E>
         toReturn.append(']');
 
         return toReturn.toString();
-    }
-
-    private static class Link<E>
-    {
-        /** Linked list of nodes that are not currently being used and can be reused */
-        private static Link<?> freeList;
-
-        /** Value for this node */
-        private E value = null;
-
-        /** Pointer to next node in list */
-        private Link<E> nextLink = null;
-
-        private static <E> Link<E> acquire()
-        {
-            if (freeList == null) return new Link<>();
-            
-            @SuppressWarnings("unchecked")
-            Link<E> toReturn = (Link<E>)freeList;
-            freeList = freeList.nextLink;
-
-            return toReturn;
-        }
-
-        private static <E> Link<E> acquire(E value)
-        {
-            Link<E> toReturn = Link.acquire();
-            toReturn.value = value;
-            toReturn.nextLink = null;
-
-            return toReturn;
-        }
-
-        @SuppressWarnings("unchecked")
-        private void release()
-        {
-            this.value = null;
-            this.nextLink = (Link<E>)Link.freeList;
-            Link.freeList = this;
-        }
     }
 }
