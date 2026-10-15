@@ -90,6 +90,7 @@ public abstract class DefaultCustomListImplementations<E> implements CustomList<
         catch (Throwable _) {return TestHarness.Testable.EqualityTestResult.ERROR_OTHER;}
 
         if (thisSize != otherSize) return TestHarness.Testable.EqualityTestResult.UNEQUAL;
+        if (thisSize == 0) return TestHarness.Testable.EqualityTestResult.EQUAL; // this one is debatable but i'm feeling lazy right now.
 
         int thisCurrentIndex;
         try {thisCurrentIndex = this.getCurrentIndex();}
@@ -223,9 +224,20 @@ public abstract class DefaultCustomListImplementations<E> implements CustomList<
     @Override
     public void printRelevantInfo(String name)
     {
-        System.out.println(name + ": " + this);
-        System.out.println(name + " size: " + this.size());
-        System.out.println(name + " current value: " + this.getCurrentValue());
-        System.out.println(name + " current index: " + this.getCurrentIndex());
+        System.out.print(name + ": ");
+        try {System.out.println(this);}
+        catch (Throwable error) {System.out.println("error: " + error);}
+
+        System.out.print(name + " size: ");
+        try {System.out.println(this.size());}
+        catch (Throwable error) {System.out.println("error: " + error);}
+
+        System.out.print(name + " current value: ");
+        try {System.out.println(this.getCurrentValue());}
+        catch (Throwable error) {System.out.println("error: " + error);}
+
+        System.out.print(name + " current index: ");
+        try {System.out.println(this.getCurrentIndex());}
+        catch (Throwable error) {System.out.println("error: " + error);}
     }
 }

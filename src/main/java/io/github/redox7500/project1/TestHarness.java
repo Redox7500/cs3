@@ -2,16 +2,16 @@ package io.github.redox7500.project1;
 
 import java.util.ArrayList;
 import java.util.function.Supplier;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
-import java.util.concurrent.Executors;
+// import java.util.concurrent.ExecutorService;
+// import java.util.concurrent.Future;
+// import java.util.concurrent.Executors;
 
 /** Test harness to test CustomList implementations (specifically CustomList<Integer, ?> implementations) */
 public class TestHarness
 {
     public static <E, T extends CustomList<E>> boolean test(Supplier<T> supplier1, int depth)
     {
-        return new ThisState<E, T>(supplier1).branch(7);
+        return new ThisState<E, T>(supplier1).branch(depth);
     }
 
     // /** Test the given CustomList(s) and print the outputs nicely
@@ -160,6 +160,7 @@ public class TestHarness
         // final boolean branch(TestFunction<S>[] testFunctions, BiFunction<State<S, T, U>, Integer, Object[][]> argumentGenerator, int depth)
         final boolean branch(int depth)
         {
+            // System.out.println(depth);
             if (depth == 0) return true;
 
             // for (int currentFunction = 0; currentFunction < testFunctions.length; currentFunction++)
@@ -220,15 +221,16 @@ public class TestHarness
                     newState.toTest1 = this.toTest1.copy();
                     newState.toTest2 = this.toTest2.copy();
 
-                    int historyLength = this.functionHistory.length + 1;
+                    int historyLength = this.functionHistory.length;
 
-                    this.functionHistory = new int[historyLength];
-                    System.arraycopy(this.functionHistory, 0, newState.functionHistory, 0, historyLength - 1);
-                    this.functionHistory[historyLength - 1] = function;
+                    newState.functionHistory = new int[historyLength + 1];
+                    // if (this.functionHistory.length == 2) System.out.println(this.functionHistory[1]);
+                    System.arraycopy(this.functionHistory, 0, newState.functionHistory, 0, historyLength);
+                    newState.functionHistory[historyLength] = function;
 
-                    this.argumentHistory = new Object[historyLength][];
-                    System.arraycopy(this.argumentHistory, 0, newState.argumentHistory, 0, historyLength - 1);
-                    this.argumentHistory[historyLength - 1] = argument;
+                    newState.argumentHistory = new Object[historyLength + 1][];
+                    System.arraycopy(this.argumentHistory, 0, newState.argumentHistory, 0, historyLength);
+                    newState.argumentHistory[historyLength] = argument;
 
                     Object result1 = null;
                     Object result2 = null;
@@ -243,14 +245,14 @@ public class TestHarness
                     if (error1 && error2) continue;
                     if (error1 && !error2)
                     {
-                        System.out.println("Custom list had an error while ArrayListWrapper did not at state below\0337");
+                        System.out.println("Custom list had an error while ArrayListWrapper did not at state below");// \0337");
                         newState.printInfo();
 
                         return false;
                     }
                     if (!error1 && error2)
                     {
-                        System.out.println("ArrayListWrapper had an error while custom list did not at state below\0337");
+                        System.out.println("ArrayListWrapper had an error while custom list did not at state below");// \0337");
                         newState.printInfo();
 
                         return false;
@@ -258,7 +260,7 @@ public class TestHarness
 
                     if ((result1 == null)? result2 != null : !result1.equals(result2))
                     {
-                        System.out.println("Results were not equal at state below\0337");
+                        System.out.println("Results were not equal at state below");// \0337");
                         newState.printInfo();
 
                         return false;
@@ -267,17 +269,17 @@ public class TestHarness
                     switch (newState.toTest1.equalityTest(newState.toTest2))
                     {
                         case ERROR_THIS:
-                            System.out.println("Custom list had an error when being compared to ArrayListWrapper\0337");
+                            System.out.println("Custom list had an error when being compared to ArrayListWrapper");// \0337");
                             newState.printInfo();
 
                             return false;
                         case ERROR_OTHER:
-                            System.out.println("Custom list had an error when being compared to ArrayListWrapper\0337");
+                            System.out.println("Custom list had an error when being compared to ArrayListWrapper");// \0337");
                             newState.printInfo();
 
                             return false;
                         case UNEQUAL:
-                            System.out.println("Lists were not equal at state below\0337");
+                            System.out.println("Lists were not equal at state below");// \0337");
                             newState.printInfo();
 
                             return false;
@@ -416,44 +418,44 @@ public class TestHarness
         }
     }
 
-    /** Fancy spinning line character */
-    private static class AsyncSpinner
-    {
-        /** Character frames to play for animating the spinner */
-        static final char[] frames = {'-', '\\', '|', '/'};
+    // /** Fancy spinning line character */
+    // private static class AsyncSpinner
+    // {
+    //     /** Character frames to play for animating the spinner */
+    //     static final char[] frames = {'-', '\\', '|', '/'};
 
-        /** Thread to animate the spinner on (so that other operations can be run while the spinner is animating) */
-        static ExecutorService executor;
+    //     /** Thread to animate the spinner on (so that other operations can be run while the spinner is animating) */
+    //     static ExecutorService executor;
 
-        /** Current task that animates the spinner (if null there is no spinner) */
-        static Future<?> task;
+    //     /** Current task that animates the spinner (if null there is no spinner) */
+    //     static Future<?> task;
 
-        /** Play AsyncSpinner.frames (should not be used outside of AsyncSpinner) */
-        static void animate()
-        {
-            int frame = 0;
-            while (!Thread.currentThread().isInterrupted())
-            {
-                System.out.print(frames[frame] + "\033[1D");
-                frame = (frame + 1) % frames.length;
-                try {Thread.sleep(100);}
-                catch (InterruptedException _) {Thread.currentThread().interrupt();}
-            }
-        }
+    //     /** Play AsyncSpinner.frames (should not be used outside of AsyncSpinner) */
+    //     static void animate()
+    //     {
+    //         int frame = 0;
+    //         while (!Thread.currentThread().isInterrupted())
+    //         {
+    //             System.out.print(frames[frame] + "\033[1D");
+    //             frame = (frame + 1) % frames.length;
+    //             try {Thread.sleep(100);}
+    //             catch (InterruptedException _) {Thread.currentThread().interrupt();}
+    //         }
+    //     }
 
-        /** Start the spinner's animation (to be used outside) */
-        static void start()
-        {
-            if (AsyncSpinner.executor == null) AsyncSpinner.executor = Executors.newSingleThreadExecutor();
-            AsyncSpinner.task = executor.submit(AsyncSpinner::animate);
-        }
+    //     /** Start the spinner's animation (to be used outside) */
+    //     static void start()
+    //     {
+    //         if (AsyncSpinner.executor == null) AsyncSpinner.executor = Executors.newSingleThreadExecutor();
+    //         AsyncSpinner.task = executor.submit(AsyncSpinner::animate);
+    //     }
 
-        /** End the spinner's animation */
-        static void stop() {if (AsyncSpinner.task != null) AsyncSpinner.task.cancel(true);}
+    //     /** End the spinner's animation */
+    //     static void stop() {if (AsyncSpinner.task != null) AsyncSpinner.task.cancel(true);}
 
-        /** Completely kill the spinner's thread */
-        static void kill() {if (AsyncSpinner.executor != null) AsyncSpinner.executor.shutdownNow();}
-    }
+    //     /** Completely kill the spinner's thread */
+    //     static void kill() {if (AsyncSpinner.executor != null) AsyncSpinner.executor.shutdownNow();}
+    // }
 
     public interface Testable<T extends Testable<T>> extends Copyable<T>
     {
