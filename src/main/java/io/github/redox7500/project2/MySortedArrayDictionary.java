@@ -1,21 +1,21 @@
 package io.github.redox7500.project2;
 
-class MySortedArrayDictionary<K extends Comparable<? super K>, V> implements MyDictionary<K, V>
+class MySortedArrayDictionary<K extends Comparable<? super K>, V> extends MyAbstractDictionary<K, V>
 {
     // Default size
     private static final int defaultSize = 10;
 
     // To store dictionary
-    private AList<KeyValuePair<K, V>> arrayList;
+    private MyArrayList<MyKeyValuePair<K, V>> arrayList;
 
     MySortedArrayDictionary() {this(defaultSize);}
-    MySortedArrayDictionary(int size) {this.arrayList = new AList<KeyValuePair<K, V>>(size);}
+    MySortedArrayDictionary(int size) {this.arrayList = new MyArrayList<MyKeyValuePair<K, V>>(size);}
 
     // Reinitialize
     public void clear() {this.arrayList.clear();}
 
     /** Insert an element: append to list */
-    public void insert(K key, V value) {this.arrayList.append(new KeyValuePair<K, V>(key, value));}
+    public void insert(K key, V value) {this.arrayList.append(new MyKeyValuePair<K, V>(key, value));}
 
     /** Use sequential search to find the element to remove */
     public V remove(K key)
@@ -33,7 +33,7 @@ class MySortedArrayDictionary<K extends Comparable<? super K>, V> implements MyD
         
         this.arrayList.moveToEnd();
         if (this.arrayList.length() > 1) this.arrayList.prev();
-        KeyValuePair<K, V> e = this.arrayList.remove();
+        MyKeyValuePair<K, V> e = this.arrayList.remove();
 
         return e.value();
     }
@@ -45,7 +45,7 @@ class MySortedArrayDictionary<K extends Comparable<? super K>, V> implements MyD
         int length = this.arrayList.length();
         for (int i = 0; i < length; i++)
         {
-            KeyValuePair<K, V> currentPair = this.arrayList.getValue();
+            MyKeyValuePair<K, V> currentPair = this.arrayList.getValue();
             if (key == currentPair.key()) return currentPair.value();
 
             if (i == length - 1) break;
@@ -58,4 +58,36 @@ class MySortedArrayDictionary<K extends Comparable<? super K>, V> implements MyD
 
     // Return list size
     public int size() {return this.arrayList.length();}
+
+    @Override
+    public String toString()
+    {
+        StringBuilder toReturn = new StringBuilder();
+        toReturn.append('{');
+        if (this.arrayList.size() > 0)
+        {
+            toReturn.append("\n");
+
+            int currentIndex = this.arrayList.getCurrentIndex();
+            this.arrayList.moveCurrentIndexToStart();
+
+            for (int i = 1; i < this.arrayList.size(); i++)
+            {
+                toReturn.append(",\n");
+
+                this.arrayList.moveCurrentIndexToNext();
+
+                MyKeyValuePair<K, V> currentPair = this.arrayList.getCurrentValue();
+                toReturn.append(currentPair.key());
+                toReturn.append(": ");
+                toReturn.append(currentPair.value());
+            }
+            toReturn.append("\n");
+
+            this.arrayList.moveCurrentIndexTo(currentIndex);
+        }
+        toReturn.append('}');
+
+        return toReturn.toString();
+    }
 }

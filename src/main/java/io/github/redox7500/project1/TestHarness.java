@@ -9,10 +9,10 @@ import java.util.concurrent.Executors;
 /** Test harness to test CustomList implementations (specifically CustomList<Integer, ?> implementations) */
 public class TestHarness
 {
-    // public static <E, T extends CustomList<E>> boolean test(Supplier<T> supplier1, Supplier<U> supplier2, int depth)
-    // {
-    //     return new ThisState<E, T>().branch(supplier1, supplier2, 7);
-    // }
+    public static <E, T extends CustomList<E>> boolean test(Supplier<T> supplier1, int depth)
+    {
+        return new ThisState<E, T>(supplier1).branch(7);
+    }
 
     // /** Test the given CustomList(s) and print the outputs nicely
     //  * @param constructors The constructors of the CustomList(s) you want to test
@@ -67,7 +67,11 @@ public class TestHarness
         /** An array containing all of the arguments used in the function calls leading up to this state */
         Object[][] argumentHistory; // maybe combine functionHistory and argumentHistory into an array of records?
 
-        State() {}
+        State()
+        {
+            this.functionHistory = new int[0];
+            this.argumentHistory = new Object[0][];
+        }
 
         /** Log all of the information of this State (with formatting to work with {@link #project1lists.TestHarness.testCustomLists testCustomLists}) */
         void printInfo()
@@ -290,6 +294,7 @@ public class TestHarness
 
     private static class ThisState<E, T extends CustomList<E>> extends TestHarness.State<CustomList<E>, T, ArrayListWrapper<E>>
     {
+        // static TestHarness.TestFunction<CustomList<E>>[] testFunctions;
         // ThisState(State<CustomList<E>, T, ArrayListWrapper<E>> state, int function, Object[] argument)
         // {
         //     super(state, function, argument);
@@ -305,19 +310,61 @@ public class TestHarness
 
         @SuppressWarnings("unchecked")
         @Override
-        TestFunction<CustomList<E>>[] getTestFunctions()
+        TestHarness.TestFunction<CustomList<E>>[] getTestFunctions()
         {
-            return (TestFunction<CustomList<E>>[])new TestFunction<?>[]
+            // do something to make this not make a new array every single time maybe?
+            return (TestHarness.TestFunction<CustomList<E>>[])new TestHarness.TestFunction<?>[]
             {
-
+                (TestHarness.TestFunction<CustomList<E>>)(l, a) -> new OptionalValue<Integer>(l.size()),
+                (TestHarness.TestFunction<CustomList<E>>)(l, a) -> new OptionalValue<Integer>(l.getCurrentIndex()),
+                (TestHarness.TestFunction<CustomList<E>>)(l, a) -> {l.moveCurrentIndexTo((int)a[0]); return new OptionalValue<Object>();},
+                (TestHarness.TestFunction<CustomList<E>>)(l, a) -> {l.moveCurrentIndexToStart(); return new OptionalValue<Object>();},
+                (TestHarness.TestFunction<CustomList<E>>)(l, a) -> {l.moveCurrentIndexToEnd(); return new OptionalValue<Object>();},
+                (TestHarness.TestFunction<CustomList<E>>)(l, a) -> {l.moveCurrentIndexToPrevious(); return new OptionalValue<Object>();},
+                (TestHarness.TestFunction<CustomList<E>>)(l, a) -> {l.moveCurrentIndexToNext(); return new OptionalValue<Object>();},
+                (TestHarness.TestFunction<CustomList<E>>)(l, a) -> new OptionalValue<E>(l.getCurrentValue()),
+                (TestHarness.TestFunction<CustomList<E>>)(l, a) -> {l.setCurrentValue((E)a[0]); return new OptionalValue<Object>();},
+                (TestHarness.TestFunction<CustomList<E>>)(l, a) -> {l.clear(); return new OptionalValue<Object>();},
+                (TestHarness.TestFunction<CustomList<E>>)(l, a) -> {l.insert((E)a[0]); return new OptionalValue<Object>();},
+                (TestHarness.TestFunction<CustomList<E>>)(l, a) -> {l.append((E)a[0]); return new OptionalValue<Object>();},
+                (TestHarness.TestFunction<CustomList<E>>)(l, a) -> new OptionalValue<Object>(l.remove())
             };
+//             "size",                    
+// "getCurrentIndex",         
+// "moveCurrentIndexTo",      
+// "moveCurrentIndexToStart", 
+// "moveCurrentIndexToEnd",   
+// "moveCurrentIndexLeft",    
+// "moveCurrentIndexRight",   
+// "getCurrentValue",         
+// "setCurrentValue",         
+// "clear",                   
+// "insert",                  
+// "append",                  
+// "remove",                  
+            // return (TestFunction<CustomList<E>>[])new TestFunction<?>[]
+            // {
+
+            // };
         }
 
         @Override
         Object[][] generateArguments(int function)
         {
-            // probably a switch here
-            return new Object[][]{};
+            // // probably a switch here
+            return switch (function)
+            {
+                case 2, 8 -> 
+                {
+                    int size = this.toTest2.size();
+                    Object[][] toReturn = new Object[size + 2][1];
+                    for (int i = 0; i < size + 2; i++) toReturn[i] = new Object[]{i - 1};
+
+                    yield toReturn;
+                }
+                case 10, 11 -> new Object[][]{{this.functionHistory.length}};
+                default -> new Object[][]{{null}};
+            };
         }
 
         @Override
@@ -467,6 +514,13 @@ public class TestHarness
     @FunctionalInterface
     interface TestFunction<T extends Testable<T>>
     {
-        Object apply(T toTest, Object[] args);
+        OptionalValue<?> apply(T toTest, Object[] args);
+    }
+
+    record OptionalValue<T>(boolean empty, T value)
+    {
+        OptionalValue() {this(true, null);}
+
+        OptionalValue(T value) {this(false, value);}
     }
 }

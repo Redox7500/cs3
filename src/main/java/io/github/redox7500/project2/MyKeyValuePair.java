@@ -1,9 +1,9 @@
 package io.github.redox7500.project2;
 
 // Container for a key-value pair
-public record KeyValuePair<K, V>(K key, V value)
+public record MyKeyValuePair<K, V>(K key, V value)
 {
-    public KeyValuePair() {this(null, null);}
+    public MyKeyValuePair() {this(null, null);}
 
     @Override
     public String toString() {return this.key + ": " + this.value;}
