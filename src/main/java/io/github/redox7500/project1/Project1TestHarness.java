@@ -84,6 +84,11 @@ public class Project1TestHarness
         {
             toTest1.printRelevantInfo("First object");
             toTest2.printRelevantInfo("Second object");
+            System.out.println("Function history (first at the top):");
+            for (int i = 0; i < this.functionHistory.length; i++)
+            {
+                System.out.println("\t" + )
+            }
         }
 
         // State.Evaluation evaluate()
@@ -318,24 +323,24 @@ public class Project1TestHarness
 
         @SuppressWarnings("unchecked")
         @Override
-        Project1TestHarness.TestFunction<Project1List<E>>[] getTestFunctions()
+        Project1TestHarness.NamedTestFunction<Project1List<E>>[] getTestFunctions()
         {
             // do something to make this not make a new array every single time maybe?
-            return (Project1TestHarness.TestFunction<Project1List<E>>[])new Project1TestHarness.TestFunction<?>[]
+            return (Project1TestHarness.NamedTestFunction<Project1List<E>>[])new Project1TestHarness.NamedTestFunction<?>[]
             {
-                (Project1TestHarness.TestFunction<Project1List<E>>)(l, a) -> new OptionalValue<Integer>(l.size()),
-                (Project1TestHarness.TestFunction<Project1List<E>>)(l, a) -> new OptionalValue<Integer>(l.getCurrentIndex()),
-                (Project1TestHarness.TestFunction<Project1List<E>>)(l, a) -> {l.moveCurrentIndexTo((int)a[0]); return new OptionalValue<Object>();},
-                (Project1TestHarness.TestFunction<Project1List<E>>)(l, a) -> {l.moveCurrentIndexToStart(); return new OptionalValue<Object>();},
-                (Project1TestHarness.TestFunction<Project1List<E>>)(l, a) -> {l.moveCurrentIndexToEnd(); return new OptionalValue<Object>();},
-                (Project1TestHarness.TestFunction<Project1List<E>>)(l, a) -> {l.moveCurrentIndexToPrevious(); return new OptionalValue<Object>();},
-                (Project1TestHarness.TestFunction<Project1List<E>>)(l, a) -> {l.moveCurrentIndexToNext(); return new OptionalValue<Object>();},
-                (Project1TestHarness.TestFunction<Project1List<E>>)(l, a) -> new OptionalValue<E>(l.getCurrentValue()),
-                (Project1TestHarness.TestFunction<Project1List<E>>)(l, a) -> {l.setCurrentValue((E)a[0]); return new OptionalValue<Object>();},
-                (Project1TestHarness.TestFunction<Project1List<E>>)(l, a) -> {l.clear(); return new OptionalValue<Object>();},
-                (Project1TestHarness.TestFunction<Project1List<E>>)(l, a) -> {l.insert((E)a[0]); return new OptionalValue<Object>();},
-                (Project1TestHarness.TestFunction<Project1List<E>>)(l, a) -> {l.append((E)a[0]); return new OptionalValue<Object>();},
-                (Project1TestHarness.TestFunction<Project1List<E>>)(l, a) -> new OptionalValue<Object>(l.remove())
+                new Project1TestHarness.NamedTestFunction<Project1List<E>>("size", (l, a) -> new OptionalValue<Integer>(l.size())),
+                new Project1TestHarness.NamedTestFunction<Project1List<E>>("getCurrentIndex", (l, a) -> new OptionalValue<Integer>(l.getCurrentIndex())),
+                new Project1TestHarness.NamedTestFunction<Project1List<E>>("moveCurrentIndexTo", (l, a) -> {l.moveCurrentIndexTo((int)a[0]); return new OptionalValue<Object>();}),
+                new Project1TestHarness.NamedTestFunction<Project1List<E>>("moveCurrentIndexToStart", (Project1TestHarness.TestFunction<Project1List<E>>)(l, a) -> {l.moveCurrentIndexToStart(); return new OptionalValue<Object>();}),
+                new Project1TestHarness.NamedTestFunction<Project1List<E>>("moveCurrentIndexToEnd", (l, a) -> {l.moveCurrentIndexToEnd(); return new OptionalValue<Object>();}),
+                new Project1TestHarness.NamedTestFunction<Project1List<E>>("moveCurrentIndexToPrevious", (l, a) -> {l.moveCurrentIndexToPrevious(); return new OptionalValue<Object>();}),
+                new Project1TestHarness.NamedTestFunction<Project1List<E>>("moveCurrentIndexToNext", (Project1TestHarness.TestFunction<Project1List<E>>)(l, a) -> {l.moveCurrentIndexToNext(); return new OptionalValue<Object>();}),
+                new Project1TestHarness.NamedTestFunction<Project1List<E>>("getCurrentValue", (Project1TestHarness.TestFunction<Project1List<E>>)(l, a) -> new OptionalValue<E>(l.getCurrentValue())),
+                new Project1TestHarness.NamedTestFunction<Project1List<E>>("setCurrentValue", (l, a) -> {l.setCurrentValue((E)a[0]); return new OptionalValue<Object>();}),
+                new Project1TestHarness.NamedTestFunction<Project1List<E>>("clear", (l, a) -> {l.clear(); return new OptionalValue<Object>();}),
+                new Project1TestHarness.NamedTestFunction<Project1List<E>>("insert", (l, a) -> {l.insert((E)a[0]); return new OptionalValue<Object>();}),
+                new Project1TestHarness.NamedTestFunction<Project1List<E>>("append", (l, a) -> {l.append((E)a[0]); return new OptionalValue<Object>();}),
+                new Project1TestHarness.NamedTestFunction<Project1List<E>>("remove", (l, a) -> new OptionalValue<Object>(l.remove()))
             };
 //             "size",                    
 // "getCurrentIndex",         
@@ -524,6 +529,8 @@ public class Project1TestHarness
     {
         OptionalValue<?> apply(T toTest, Object[] args);
     }
+
+    record NamedTestFunction<T extends Testable<T>>(String name, TestFunction<T> function) {}
 
     private record OptionalValue<T>(boolean empty, T value)
     {
