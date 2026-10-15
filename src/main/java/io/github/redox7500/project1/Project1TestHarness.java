@@ -99,6 +99,7 @@ public class Project1TestHarness
                 }
                 System.out.println(')');
             }
+            System.out.println();
         }
 
         // State.Evaluation evaluate()
@@ -262,6 +263,8 @@ public class Project1TestHarness
                     catch (Throwable _) {error1 = true;}
                     try {result2 = functions[function].function().apply(newState.toTest2, argument);}
                     catch (Throwable _) {error2 = true;}
+
+                    newState.printInfo();
 
                     if (error1 && error2) continue;
                     if (error1 && !error2)

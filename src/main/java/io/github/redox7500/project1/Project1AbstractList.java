@@ -196,7 +196,7 @@ public abstract class Project1AbstractList<E> implements Project1List<E>
     @Override
     public String toString()
     {
-        int currentIndex = 0;
+        int currentIndex = this.getCurrentIndex();
         int size = this.size();
 
         StringBuilder toReturn = new StringBuilder();
