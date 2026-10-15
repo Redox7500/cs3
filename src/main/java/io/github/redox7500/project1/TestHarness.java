@@ -2,16 +2,9 @@ package io.github.redox7500.project1;
 
 import java.util.ArrayList;
 import java.util.function.Supplier;
-import java.util.function.Function;
-import java.util.function.Consumer;
-import java.util.function.BiConsumer;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.Executors;
-import java.util.Optional;
-import java.util.function.BiFunction;
-import java.lang.Cloneable;
-import java.lang.classfile.Interfaces;
 
 /** Test harness to test CustomList implementations (specifically CustomList<Integer, ?> implementations) */
 public class TestHarness
@@ -75,14 +68,6 @@ public class TestHarness
         Object[][] argumentHistory; // maybe combine functionHistory and argumentHistory into an array of records?
 
         State() {}
-
-        State(Supplier<T> testConstructor, Supplier<U> verifiedConstructor)
-        {
-            this.toTest1 = testConstructor.get();
-            this.toTest2 = verifiedConstructor.get();
-            this.functionHistory = new int[0];
-            this.argumentHistory = new Object[0][0];
-        }
 
         /** Log all of the information of this State (with formatting to work with {@link #project1lists.TestHarness.testCustomLists testCustomLists}) */
         void printInfo()
@@ -168,7 +153,6 @@ public class TestHarness
          * @param leaves The deque to add the new leaf states to
          * @return A boolean representing whether any of the leaves had CustomLists that misbehaved or not
          */
-        @SuppressWarnings("unchecked")
         // final boolean branch(TestFunction<S>[] testFunctions, BiFunction<State<S, T, U>, Integer, Object[][]> argumentGenerator, int depth)
         final boolean branch(int depth)
         {
@@ -234,13 +218,13 @@ public class TestHarness
 
                     int historyLength = this.functionHistory.length + 1;
 
-                    this.functionHistory = new int[depth];
-                    System.arraycopy(this.functionHistory, 0, newState.functionHistory, 0, depth - 1);
-                    this.functionHistory[depth - 1] = function;
+                    this.functionHistory = new int[historyLength];
+                    System.arraycopy(this.functionHistory, 0, newState.functionHistory, 0, historyLength - 1);
+                    this.functionHistory[historyLength - 1] = function;
 
-                    this.argumentHistory = new Object[depth][];
-                    System.arraycopy(this.argumentHistory, 0, newState.argumentHistory, 0, depth - 1);
-                    this.argumentHistory[depth - 1] = argument;
+                    this.argumentHistory = new Object[historyLength][];
+                    System.arraycopy(this.argumentHistory, 0, newState.argumentHistory, 0, historyLength - 1);
+                    this.argumentHistory[historyLength - 1] = argument;
 
                     Object result1 = null;
                     Object result2 = null;
@@ -267,6 +251,15 @@ public class TestHarness
 
                         return false;
                     }
+
+                    if ((result1 == null)? result2 != null : !result1.equals(result2))
+                    {
+                        System.out.println("Results were not equal at state below\0337");
+                        newState.printInfo();
+
+                        return false;
+                    }
+
                     switch (newState.toTest1.equalityTest(newState.toTest2))
                     {
                         case ERROR_THIS:
@@ -292,16 +285,6 @@ public class TestHarness
             // make a copy with extra arg/function state thing?
 
             return true;
-        }
-
-        enum Evaluation
-        {
-            ERROR_BOTH,
-            ERROR_CUSTOM_LIST,
-            ERROR_ARRAY_LIST_WRAPPER,
-            INEVALUABLE_CUSTOM_LIST,
-            UNEQUAL,
-            SUCCESS
         }
     }
 
