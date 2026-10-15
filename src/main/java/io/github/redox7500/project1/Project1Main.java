@@ -4,6 +4,6 @@ public class Project1Main
 {
     public static void main(String[] args)
     {
-        System.out.println(Project1TestHarness.test(() -> new Project1ArrayList<Integer>(), 7));
+        Project1TestHarness.test(() -> new Project1ArrayList<Integer>(), 6);
     }
 }

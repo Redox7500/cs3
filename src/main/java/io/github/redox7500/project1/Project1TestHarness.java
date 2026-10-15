@@ -11,7 +11,13 @@ public class Project1TestHarness
 {
     public static <E, T extends Project1List<E>> boolean test(Supplier<T> supplier1, int depth)
     {
-        return new ThisState<E, T>(supplier1).branch(depth);
+        long startTime = System.nanoTime();
+
+        boolean toReturn = new ThisState<E, T>(supplier1).branch(depth);
+        System.out.print((toReturn)? "Success!" : "Failed!");
+        System.out.printf(" (%.5f seconds elapsed)\n", (System.nanoTime() - startTime) / (float)1_000_000__000);
+
+        return toReturn;
     }
 
     // /** Test the given CustomList(s) and print the outputs nicely

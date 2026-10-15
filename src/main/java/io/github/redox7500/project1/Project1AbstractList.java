@@ -229,12 +229,21 @@ public abstract class Project1AbstractList<E> implements Project1List<E>
         catch (Throwable error) {System.out.println("error: " + error);}
 
         System.out.print(name + " size: ");
-        try {System.out.println(this.size());}
+        int size = 0;
+        try {size = this.size(); System.out.println(size);}
         catch (Throwable error) {System.out.println("error: " + error);}
 
         System.out.print(name + " current value: ");
-        try {System.out.println(this.getCurrentValue());}
-        catch (Throwable error) {System.out.println("error: " + error);}
+        if (size > 0) // kinda scuffed using this possibly unitialized value of 0 thing but idk i'll think about that one for later
+        // also i could definitely make this a ternary in the line below, where this.getCurrentValue() is it would branch i think
+        {
+            try {System.out.println(this.getCurrentValue());}
+            catch (Throwable error) {System.out.println("error: " + error);}
+        }
+        else
+        {
+            System.out.println("N/A (empty list)");
+        }
 
         System.out.print(name + " current index: ");
         try {System.out.println(this.getCurrentIndex());}
