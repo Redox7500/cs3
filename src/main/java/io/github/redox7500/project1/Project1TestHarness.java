@@ -57,7 +57,7 @@ public class Project1TestHarness
     /** Expresses a state that a CustomList and its corresponding ArrayList can be in, along with arrays to keep track of the function call and argument histories */
     private static abstract class State<S extends Testable<S>, T extends S, U extends S>
     {
-        abstract TestFunction<S>[] getTestFunctions();
+        abstract NamedTestFunction<S>[] getTestFunctions();
         // static TestFunction<S>[] testFunctions;
         abstract Object[][] generateArguments(int function);
 
@@ -83,11 +83,21 @@ public class Project1TestHarness
         void printInfo()
         {
             toTest1.printRelevantInfo("First object");
+            System.out.println();
             toTest2.printRelevantInfo("Second object");
+            System.out.println();
             System.out.println("Function history (first at the top):");
+            NamedTestFunction<S>[] functions = this.getTestFunctions();
             for (int i = 0; i < this.functionHistory.length; i++)
             {
-                System.out.println("\t" + )
+                System.out.print('\t' + functions[this.functionHistory[i]].name() + '(');
+                int argumentLength = this.argumentHistory[i].length;
+                if (argumentLength > 0)
+                {
+                    System.out.print(this.argumentHistory[i][0]);
+                    for (int j = 1; j < this.argumentHistory[i].length; j++) System.out.print(this.argumentHistory[i][j]);
+                }
+                System.out.println(')');
             }
         }
 
@@ -221,7 +231,7 @@ public class Project1TestHarness
             // }
 
             // return true;
-            Project1TestHarness.TestFunction<S>[] functions = this.getTestFunctions();
+            Project1TestHarness.NamedTestFunction<S>[] functions = this.getTestFunctions();
             for (int function = 0; function < functions.length; function++)
             {
                 Object[][] arguments = this.generateArguments(function);
@@ -248,9 +258,9 @@ public class Project1TestHarness
                     boolean error1 = false;
                     boolean error2 = false;
 
-                    try {result1 = functions[function].apply(newState.toTest1, argument);}
+                    try {result1 = functions[function].function().apply(newState.toTest1, argument);}
                     catch (Throwable _) {error1 = true;}
-                    try {result2 = functions[function].apply(newState.toTest2, argument);}
+                    try {result2 = functions[function].function().apply(newState.toTest2, argument);}
                     catch (Throwable _) {error2 = true;}
 
                     if (error1 && error2) continue;
@@ -367,7 +377,7 @@ public class Project1TestHarness
             // // probably a switch here
             return switch (function)
             {
-                case 2, 8 -> 
+                case 2 -> 
                 {
                     int size = this.toTest2.size();
                     Object[][] toReturn = new Object[size + 2][1];
@@ -375,8 +385,8 @@ public class Project1TestHarness
 
                     yield toReturn;
                 }
-                case 10, 11 -> new Object[][]{{this.functionHistory.length}};
-                default -> new Object[][]{{null}};
+                case 8, 10, 11 -> new Object[][]{{this.functionHistory.length}};
+                default -> new Object[][]{{}};
             };
         }
 
