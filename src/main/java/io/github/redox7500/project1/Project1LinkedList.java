@@ -2,7 +2,7 @@ package io.github.redox7500.project1;
 
 // honestly i could probably remove the dummy head link when there are no elements to save more, but idk, it does mess up the consistency
 /** Linked list implementation */
-class Project1LinkedList<E> extends Project1AbstractList<E>
+public class Project1LinkedList<E> extends Project1AbstractList<E>
 {
     /** Pointer to first link */
     private final Project1LinkedList.Link<E> headLink = Link.acquire(true);

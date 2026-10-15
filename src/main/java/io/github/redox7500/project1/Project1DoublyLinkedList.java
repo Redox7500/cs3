@@ -1,7 +1,7 @@
 package io.github.redox7500.project1;
 
 /** Linked list implementation */
-class Project1DoublyLinkedList<E> extends Project1AbstractList<E>
+public class Project1DoublyLinkedList<E> extends Project1AbstractList<E>
 {
     /** Pointer to first link */
     private Project1DoublyLinkedList.Link<E> headLink = null;
