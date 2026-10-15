@@ -1,7 +1,7 @@
 package io.github.redox7500.project2;
 
 /** Queue ADT */
-public interface MyQueue<E>
+public interface Project2Queue<E>
 {
     /** Reinitialize the queue. The user is responsible for reclaiming the storage used by the queue elements. */
     public void clear();

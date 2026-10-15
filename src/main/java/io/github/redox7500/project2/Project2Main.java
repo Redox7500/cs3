@@ -1,10 +1,10 @@
 package io.github.redox7500.project2;
 
-public class Main
+public class Project2Main
 {
     public static void main(String[] args)
     {
-        MyQueue<Integer> queue = new MyLinkedQueue<Integer>();
+        Project2Queue<Integer> queue = new Project2LinkedQueue<Integer>();
 
         queue.enqueue(1);
         System.out.println(queue);

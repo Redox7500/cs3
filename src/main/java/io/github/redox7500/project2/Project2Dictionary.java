@@ -1,7 +1,7 @@
 package io.github.redox7500.project2;
 
 /** The Dictionary abstract class. */
-public interface MyDictionary<K, V>
+public interface Project2Dictionary<K, V>
 {
     /** Reinitialize dictionary */
     public void clear();

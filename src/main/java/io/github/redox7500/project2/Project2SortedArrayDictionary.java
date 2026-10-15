@@ -1,21 +1,21 @@
 package io.github.redox7500.project2;
 
-class MySortedArrayDictionary<K extends Comparable<? super K>, V> extends MyAbstractDictionary<K, V>
+class Project2SortedArrayDictionary<K extends Comparable<? super K>, V> extends Project2AbstractDictionary<K, V>
 {
     // Default size
     private static final int defaultSize = 10;
 
     // To store dictionary
-    private MyArrayList<MyKeyValuePair<K, V>> arrayList;
+    private io.github.redox7500.project1.Project1ArrayList<Project2KeyValuePair<K, V>> arrayList;
 
-    MySortedArrayDictionary() {this(defaultSize);}
-    MySortedArrayDictionary(int size) {this.arrayList = new MyArrayList<MyKeyValuePair<K, V>>(size);}
+    Project2SortedArrayDictionary() {this(defaultSize);}
+    Project2SortedArrayDictionary(int size) {this.arrayList = new MyArrayList<Project2KeyValuePair<K, V>>(size);}
 
     // Reinitialize
     public void clear() {this.arrayList.clear();}
 
     /** Insert an element: append to list */
-    public void insert(K key, V value) {this.arrayList.append(new MyKeyValuePair<K, V>(key, value));}
+    public void insert(K key, V value) {this.arrayList.append(new Project2KeyValuePair<K, V>(key, value));}
 
     /** Use sequential search to find the element to remove */
     public V remove(K key)
@@ -33,7 +33,7 @@ class MySortedArrayDictionary<K extends Comparable<? super K>, V> extends MyAbst
         
         this.arrayList.moveToEnd();
         if (this.arrayList.length() > 1) this.arrayList.prev();
-        MyKeyValuePair<K, V> e = this.arrayList.remove();
+        Project2KeyValuePair<K, V> e = this.arrayList.remove();
 
         return e.value();
     }
@@ -45,7 +45,7 @@ class MySortedArrayDictionary<K extends Comparable<? super K>, V> extends MyAbst
         int length = this.arrayList.length();
         for (int i = 0; i < length; i++)
         {
-            MyKeyValuePair<K, V> currentPair = this.arrayList.getValue();
+            Project2KeyValuePair<K, V> currentPair = this.arrayList.getValue();
             if (key == currentPair.key()) return currentPair.value();
 
             if (i == length - 1) break;
@@ -77,7 +77,7 @@ class MySortedArrayDictionary<K extends Comparable<? super K>, V> extends MyAbst
 
                 this.arrayList.moveCurrentIndexToNext();
 
-                MyKeyValuePair<K, V> currentPair = this.arrayList.getCurrentValue();
+                Project2KeyValuePair<K, V> currentPair = this.arrayList.getCurrentValue();
                 toReturn.append(currentPair.key());
                 toReturn.append(": ");
                 toReturn.append(currentPair.value());

@@ -1,16 +1,16 @@
 package io.github.redox7500.project1;
 
 /** Linked list implementation */
-class CustomDoublyLinkedList<E> extends DefaultCustomListImplementations<E>
+class Project1DoublyLinkedList<E> extends Project1AbstractList<E>
 {
     /** Pointer to first link */
-    private CustomDoublyLinkedList.Link<E> headLink = null;
+    private Project1DoublyLinkedList.Link<E> headLink = null;
 
     /** Pointer to second to last link */
-    private CustomDoublyLinkedList.Link<E> tailLink = null;
+    private Project1DoublyLinkedList.Link<E> tailLink = null;
 
     /** Pointer to current link */
-    private CustomDoublyLinkedList.Link<E> currentLink = null;
+    private Project1DoublyLinkedList.Link<E> currentLink = null;
 
     /** Index of the current link in the list */
     private int currentIndex = 0;
@@ -18,12 +18,12 @@ class CustomDoublyLinkedList<E> extends DefaultCustomListImplementations<E>
     /** Size of list */
     private int elementCount = 0;
 
-    CustomDoublyLinkedList() {}
+    Project1DoublyLinkedList() {}
 
     @Override
     public void clear()
     {
-        for (CustomDoublyLinkedList.Link<E> tempLink = this.headLink; tempLink != null; tempLink = tempLink.nextLink) tempLink.release();
+        for (Project1DoublyLinkedList.Link<E> tempLink = this.headLink; tempLink != null; tempLink = tempLink.nextLink) tempLink.release();
         this.headLink = this.currentLink = this.tailLink = null; // Drop access to links
         this.currentIndex = 0;
         this.elementCount = 0;
@@ -75,8 +75,8 @@ class CustomDoublyLinkedList<E> extends DefaultCustomListImplementations<E>
         
         E value = this.currentLink.value; // Remember value
 
-        CustomDoublyLinkedList.Link<E> currentPreviousLink = this.currentLink.previousLink;
-        CustomDoublyLinkedList.Link<E> currentNextLink = this.currentLink.nextLink;
+        Project1DoublyLinkedList.Link<E> currentPreviousLink = this.currentLink.previousLink;
+        Project1DoublyLinkedList.Link<E> currentNextLink = this.currentLink.nextLink;
         this.currentLink.release();
         if (this.currentLink != this.headLink) currentPreviousLink.nextLink = currentNextLink;
         if (this.currentLink != this.tailLink)
@@ -142,10 +142,10 @@ class CustomDoublyLinkedList<E> extends DefaultCustomListImplementations<E>
     public int size() {return this.elementCount;}
 
     @Override
-    public CustomDoublyLinkedList<E> copy()
+    public Project1DoublyLinkedList<E> copy()
     {
-        CustomDoublyLinkedList<E> toReturn = new CustomDoublyLinkedList<>();
-        for (CustomDoublyLinkedList.Link<E> tempLink = this.headLink; tempLink != null; tempLink = tempLink.nextLink) toReturn.append(tempLink.value);
+        Project1DoublyLinkedList<E> toReturn = new Project1DoublyLinkedList<>();
+        for (Project1DoublyLinkedList.Link<E> tempLink = this.headLink; tempLink != null; tempLink = tempLink.nextLink) toReturn.append(tempLink.value);
         if (this.currentIndex != 0) toReturn.moveCurrentIndexTo(this.currentIndex);
 
         return toReturn;
@@ -159,7 +159,7 @@ class CustomDoublyLinkedList<E> extends DefaultCustomListImplementations<E>
         if (this.elementCount > 0)
         {
             toReturn.append(this.headLink.value);
-            for (CustomDoublyLinkedList.Link<E> tempLink = this.headLink.nextLink; tempLink != null; tempLink = tempLink.nextLink)
+            for (Project1DoublyLinkedList.Link<E> tempLink = this.headLink.nextLink; tempLink != null; tempLink = tempLink.nextLink)
             {
                 toReturn.append(", ");
                 toReturn.append(tempLink.value);

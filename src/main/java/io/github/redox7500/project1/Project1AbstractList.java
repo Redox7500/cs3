@@ -1,7 +1,7 @@
 package io.github.redox7500.project1;
 
 /** All of the default implementations of the CustomList required methods except for Shaffer's aliases */
-public abstract class DefaultCustomListImplementations<E> implements CustomList<E>
+public abstract class Project1AbstractList<E> implements Project1List<E>
 {
     @Override
     public void clear()
@@ -24,9 +24,9 @@ public abstract class DefaultCustomListImplementations<E> implements CustomList<
 
     @SuppressWarnings("unchecked")
     @Override
-    public CustomList<E> copy()
+    public Project1List<E> copy()
     {
-        CustomList<E> toReturn;
+        Project1List<E> toReturn;
 
         try {toReturn = this.getClass().getDeclaredConstructor().newInstance();}
         catch (Throwable _) {System.err.println("Class to copy has no visible parameterless constructor"); return null;}
@@ -61,7 +61,7 @@ public abstract class DefaultCustomListImplementations<E> implements CustomList<
     }
     
     @Override
-    public TestHarness.Testable.EqualityTestResult equalityTest(CustomList<E> other) // only supports comparisons with other CustomLists
+    public Project1TestHarness.Testable.EqualityTestResult equalityTest(Project1List<E> other) // only supports comparisons with other CustomLists
     {
         // boolean error1 = false;
         // boolean error2 = false;
@@ -83,32 +83,32 @@ public abstract class DefaultCustomListImplementations<E> implements CustomList<
         // what if i make a record of size, nvm actually
         int thisSize;
         try {thisSize = this.size();}
-        catch (Throwable _) {return TestHarness.Testable.EqualityTestResult.ERROR_THIS;}
+        catch (Throwable _) {return Project1TestHarness.Testable.EqualityTestResult.ERROR_THIS;}
 
         int otherSize;
         try {otherSize = other.size();}
-        catch (Throwable _) {return TestHarness.Testable.EqualityTestResult.ERROR_OTHER;}
+        catch (Throwable _) {return Project1TestHarness.Testable.EqualityTestResult.ERROR_OTHER;}
 
-        if (thisSize != otherSize) return TestHarness.Testable.EqualityTestResult.UNEQUAL;
-        if (thisSize == 0) return TestHarness.Testable.EqualityTestResult.EQUAL; // this one is debatable but i'm feeling lazy right now.
+        if (thisSize != otherSize) return Project1TestHarness.Testable.EqualityTestResult.UNEQUAL;
+        if (thisSize == 0) return Project1TestHarness.Testable.EqualityTestResult.EQUAL; // this one is debatable but i'm feeling lazy right now.
 
         int thisCurrentIndex;
         try {thisCurrentIndex = this.getCurrentIndex();}
-        catch (Throwable _) {return TestHarness.Testable.EqualityTestResult.ERROR_THIS;}
+        catch (Throwable _) {return Project1TestHarness.Testable.EqualityTestResult.ERROR_THIS;}
 
         int otherCurrentIndex;
         try {otherCurrentIndex = other.getCurrentIndex();}
-        catch (Throwable _) {return TestHarness.Testable.EqualityTestResult.ERROR_OTHER;}
+        catch (Throwable _) {return Project1TestHarness.Testable.EqualityTestResult.ERROR_OTHER;}
 
-        if (thisCurrentIndex != otherCurrentIndex) return TestHarness.Testable.EqualityTestResult.UNEQUAL;
+        if (thisCurrentIndex != otherCurrentIndex) return Project1TestHarness.Testable.EqualityTestResult.UNEQUAL;
         // int currentIndex = this.getCurrentIndex();
         // if (currentIndex != otherList.getCurrentIndex()) return false;
 
         try {this.moveCurrentIndexToStart();}
-        catch (Throwable _) {return TestHarness.Testable.EqualityTestResult.ERROR_THIS;}
+        catch (Throwable _) {return Project1TestHarness.Testable.EqualityTestResult.ERROR_THIS;}
         
         try {other.moveCurrentIndexToStart();}
-        catch (Throwable _) {return TestHarness.Testable.EqualityTestResult.ERROR_OTHER;}
+        catch (Throwable _) {return Project1TestHarness.Testable.EqualityTestResult.ERROR_OTHER;}
         // otherList.moveCurrentIndexToStart();
 
         // for (int i = 0; ; i++)
@@ -128,30 +128,30 @@ public abstract class DefaultCustomListImplementations<E> implements CustomList<
         {
             E thisCurrentValue;
             try {thisCurrentValue = this.getCurrentValue();}
-            catch (Throwable _) {return TestHarness.Testable.EqualityTestResult.ERROR_THIS;}
+            catch (Throwable _) {return Project1TestHarness.Testable.EqualityTestResult.ERROR_THIS;}
 
             E otherCurrentValue;
             try {otherCurrentValue = other.getCurrentValue();}
-            catch (Throwable _) {return TestHarness.Testable.EqualityTestResult.ERROR_OTHER;}
+            catch (Throwable _) {return Project1TestHarness.Testable.EqualityTestResult.ERROR_OTHER;}
 
-            if (!thisCurrentValue.equals(otherCurrentValue)) return TestHarness.Testable.EqualityTestResult.UNEQUAL;
+            if (!thisCurrentValue.equals(otherCurrentValue)) return Project1TestHarness.Testable.EqualityTestResult.UNEQUAL;
 
             if (i == thisSize - 1) break;
 
             try {this.moveCurrentIndexToNext();}
-            catch (Throwable _) {return TestHarness.Testable.EqualityTestResult.ERROR_THIS;}
+            catch (Throwable _) {return Project1TestHarness.Testable.EqualityTestResult.ERROR_THIS;}
 
             try {other.moveCurrentIndexToNext();}
-            catch (Throwable _) {return TestHarness.Testable.EqualityTestResult.ERROR_OTHER;}
+            catch (Throwable _) {return Project1TestHarness.Testable.EqualityTestResult.ERROR_OTHER;}
         }
 
         try {this.moveCurrentIndexTo(thisCurrentIndex);}
-        catch (Throwable _) {return TestHarness.Testable.EqualityTestResult.ERROR_THIS;}
+        catch (Throwable _) {return Project1TestHarness.Testable.EqualityTestResult.ERROR_THIS;}
 
         try {other.moveCurrentIndexTo(otherCurrentIndex);} // could also be phrased as thisCurrentIndex
-        catch (Throwable _) {return TestHarness.Testable.EqualityTestResult.ERROR_OTHER;}
+        catch (Throwable _) {return Project1TestHarness.Testable.EqualityTestResult.ERROR_OTHER;}
 
-        return TestHarness.Testable.EqualityTestResult.EQUAL;
+        return Project1TestHarness.Testable.EqualityTestResult.EQUAL;
     }
 
     // @Override

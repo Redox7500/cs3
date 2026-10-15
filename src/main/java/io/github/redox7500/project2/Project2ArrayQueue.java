@@ -3,17 +3,17 @@ package io.github.redox7500.project2;
 import java.lang.StringBuilder;
 
 // Array-based queue implementation
-class MyArrayQueue<E> extends MyAbstractQueue<E>
+class Project2ArrayQueue<E> extends Project2AbstractQueue<E>
 {
     private static final int defaultSize = 10;
     private int size;
     private int front; // Index of front element
     private E[] array; // Array holding queue elements
     
-    MyArrayQueue() {this(MyArrayQueue.defaultSize);}
+    Project2ArrayQueue() {this(Project2ArrayQueue.defaultSize);}
 
     @SuppressWarnings("unchecked") // For generic array
-    MyArrayQueue(int size)
+    Project2ArrayQueue(int size)
     {
         this.size = 0;
         this.front = 1;

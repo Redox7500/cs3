@@ -7,9 +7,9 @@ import java.util.function.Supplier;
 // import java.util.concurrent.Executors;
 
 /** Test harness to test CustomList implementations (specifically CustomList<Integer, ?> implementations) */
-public class TestHarness
+public class Project1TestHarness
 {
-    public static <E, T extends CustomList<E>> boolean test(Supplier<T> supplier1, int depth)
+    public static <E, T extends Project1List<E>> boolean test(Supplier<T> supplier1, int depth)
     {
         return new ThisState<E, T>(supplier1).branch(depth);
     }
@@ -210,7 +210,7 @@ public class TestHarness
             // }
 
             // return true;
-            TestHarness.TestFunction<S>[] functions = this.getTestFunctions();
+            Project1TestHarness.TestFunction<S>[] functions = this.getTestFunctions();
             for (int function = 0; function < functions.length; function++)
             {
                 Object[][] arguments = this.generateArguments(function);
@@ -294,7 +294,7 @@ public class TestHarness
         }
     }
 
-    private static class ThisState<E, T extends CustomList<E>> extends TestHarness.State<CustomList<E>, T, ArrayListWrapper<E>>
+    private static class ThisState<E, T extends Project1List<E>> extends Project1TestHarness.State<Project1List<E>, T, ArrayListWrapper<E>>
     {
         // static TestHarness.TestFunction<CustomList<E>>[] testFunctions;
         // ThisState(State<CustomList<E>, T, ArrayListWrapper<E>> state, int function, Object[] argument)
@@ -312,24 +312,24 @@ public class TestHarness
 
         @SuppressWarnings("unchecked")
         @Override
-        TestHarness.TestFunction<CustomList<E>>[] getTestFunctions()
+        Project1TestHarness.TestFunction<Project1List<E>>[] getTestFunctions()
         {
             // do something to make this not make a new array every single time maybe?
-            return (TestHarness.TestFunction<CustomList<E>>[])new TestHarness.TestFunction<?>[]
+            return (Project1TestHarness.TestFunction<Project1List<E>>[])new Project1TestHarness.TestFunction<?>[]
             {
-                (TestHarness.TestFunction<CustomList<E>>)(l, a) -> new OptionalValue<Integer>(l.size()),
-                (TestHarness.TestFunction<CustomList<E>>)(l, a) -> new OptionalValue<Integer>(l.getCurrentIndex()),
-                (TestHarness.TestFunction<CustomList<E>>)(l, a) -> {l.moveCurrentIndexTo((int)a[0]); return new OptionalValue<Object>();},
-                (TestHarness.TestFunction<CustomList<E>>)(l, a) -> {l.moveCurrentIndexToStart(); return new OptionalValue<Object>();},
-                (TestHarness.TestFunction<CustomList<E>>)(l, a) -> {l.moveCurrentIndexToEnd(); return new OptionalValue<Object>();},
-                (TestHarness.TestFunction<CustomList<E>>)(l, a) -> {l.moveCurrentIndexToPrevious(); return new OptionalValue<Object>();},
-                (TestHarness.TestFunction<CustomList<E>>)(l, a) -> {l.moveCurrentIndexToNext(); return new OptionalValue<Object>();},
-                (TestHarness.TestFunction<CustomList<E>>)(l, a) -> new OptionalValue<E>(l.getCurrentValue()),
-                (TestHarness.TestFunction<CustomList<E>>)(l, a) -> {l.setCurrentValue((E)a[0]); return new OptionalValue<Object>();},
-                (TestHarness.TestFunction<CustomList<E>>)(l, a) -> {l.clear(); return new OptionalValue<Object>();},
-                (TestHarness.TestFunction<CustomList<E>>)(l, a) -> {l.insert((E)a[0]); return new OptionalValue<Object>();},
-                (TestHarness.TestFunction<CustomList<E>>)(l, a) -> {l.append((E)a[0]); return new OptionalValue<Object>();},
-                (TestHarness.TestFunction<CustomList<E>>)(l, a) -> new OptionalValue<Object>(l.remove())
+                (Project1TestHarness.TestFunction<Project1List<E>>)(l, a) -> new OptionalValue<Integer>(l.size()),
+                (Project1TestHarness.TestFunction<Project1List<E>>)(l, a) -> new OptionalValue<Integer>(l.getCurrentIndex()),
+                (Project1TestHarness.TestFunction<Project1List<E>>)(l, a) -> {l.moveCurrentIndexTo((int)a[0]); return new OptionalValue<Object>();},
+                (Project1TestHarness.TestFunction<Project1List<E>>)(l, a) -> {l.moveCurrentIndexToStart(); return new OptionalValue<Object>();},
+                (Project1TestHarness.TestFunction<Project1List<E>>)(l, a) -> {l.moveCurrentIndexToEnd(); return new OptionalValue<Object>();},
+                (Project1TestHarness.TestFunction<Project1List<E>>)(l, a) -> {l.moveCurrentIndexToPrevious(); return new OptionalValue<Object>();},
+                (Project1TestHarness.TestFunction<Project1List<E>>)(l, a) -> {l.moveCurrentIndexToNext(); return new OptionalValue<Object>();},
+                (Project1TestHarness.TestFunction<Project1List<E>>)(l, a) -> new OptionalValue<E>(l.getCurrentValue()),
+                (Project1TestHarness.TestFunction<Project1List<E>>)(l, a) -> {l.setCurrentValue((E)a[0]); return new OptionalValue<Object>();},
+                (Project1TestHarness.TestFunction<Project1List<E>>)(l, a) -> {l.clear(); return new OptionalValue<Object>();},
+                (Project1TestHarness.TestFunction<Project1List<E>>)(l, a) -> {l.insert((E)a[0]); return new OptionalValue<Object>();},
+                (Project1TestHarness.TestFunction<Project1List<E>>)(l, a) -> {l.append((E)a[0]); return new OptionalValue<Object>();},
+                (Project1TestHarness.TestFunction<Project1List<E>>)(l, a) -> new OptionalValue<Object>(l.remove())
             };
 //             "size",                    
 // "getCurrentIndex",         
@@ -373,7 +373,7 @@ public class TestHarness
         ThisState<E, T> createInstance() {return new ThisState<E, T>();}
     }
 
-    private static class ArrayListWrapper<E> extends DefaultCustomListImplementations<E>
+    private static class ArrayListWrapper<E> extends Project1AbstractList<E>
     {
         ArrayList<E> arrayList = new ArrayList<>();
         int currentIndex = 0;
@@ -457,7 +457,7 @@ public class TestHarness
     //     static void kill() {if (AsyncSpinner.executor != null) AsyncSpinner.executor.shutdownNow();}
     // }
 
-    public interface Testable<T extends Testable<T>> extends Copyable<T>
+    public interface Testable<T extends Testable<T>> extends Project1Copyable<T>
     {
         // static <T extends Testable<T>> FullTestResult fullTest(Testable<T> toTest1, Testable<T> toTest2, TestFunction<T>[] testFunctions, Object[] args)
         // {

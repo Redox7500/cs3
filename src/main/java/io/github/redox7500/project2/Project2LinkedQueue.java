@@ -1,13 +1,13 @@
 package io.github.redox7500.project2;
 
 // Linked queue implementation
-class MyLinkedQueue<E> extends MyAbstractQueue<E>
+class Project2LinkedQueue<E> extends Project2AbstractQueue<E>
 {
     private Link<E> front; // Pointer to front queue node
     private Link<E> rear; // Pointer to rear queuenode
     int size; // Number of elements in queue
     
-    public MyLinkedQueue() {this.front = this.rear = null; this.size = 0;}
+    public Project2LinkedQueue() {this.front = this.rear = null; this.size = 0;}
 
     // Reinitialize queue
     @Override

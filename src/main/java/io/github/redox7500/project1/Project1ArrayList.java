@@ -1,7 +1,7 @@
 package io.github.redox7500.project1;
 
 /** Array-based list implementation */
-class CustomArrayList<E> extends DefaultCustomListImplementations<E>
+public class Project1ArrayList<E> extends Project1AbstractList<E>
 {
     /** Maximum amount of elements AList is instantiated to contain by default */
     private static final int DEFAULT_SIZE = 16;
@@ -19,7 +19,7 @@ class CustomArrayList<E> extends DefaultCustomListImplementations<E>
      * @param size Maximum amount of elements this instance should have
      */
     @SuppressWarnings("unchecked") // For generic array allocation
-    CustomArrayList(int size)
+    Project1ArrayList(int size)
     {
         this.elementCount = 0;
         this.currentIndex = 0;
@@ -27,7 +27,7 @@ class CustomArrayList<E> extends DefaultCustomListImplementations<E>
     }
 
     /** Create a list with the default capacity. */
-    CustomArrayList() {this(CustomArrayList.DEFAULT_SIZE);}
+    Project1ArrayList() {this(Project1ArrayList.DEFAULT_SIZE);}
 
     @Override
     public void clear() {this.elementCount = 0; this.currentIndex = 0;}
@@ -80,9 +80,9 @@ class CustomArrayList<E> extends DefaultCustomListImplementations<E>
     public int size() {return this.elementCount;}
 
     @Override
-    public CustomArrayList<E> copy()
+    public Project1ArrayList<E> copy()
     {
-        CustomArrayList<E> toReturn = new CustomArrayList<>(this.array.length);
+        Project1ArrayList<E> toReturn = new Project1ArrayList<>(this.array.length);
         System.arraycopy(this.array, 0, toReturn.array, 0, this.elementCount);
         toReturn.elementCount = this.elementCount;
         toReturn.currentIndex = this.currentIndex;

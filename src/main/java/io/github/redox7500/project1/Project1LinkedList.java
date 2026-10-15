@@ -2,16 +2,16 @@ package io.github.redox7500.project1;
 
 // honestly i could probably remove the dummy head link when there are no elements to save more, but idk, it does mess up the consistency
 /** Linked list implementation */
-class CustomLinkedList<E> extends DefaultCustomListImplementations<E>
+class Project1LinkedList<E> extends Project1AbstractList<E>
 {
     /** Pointer to first link */
-    private final CustomLinkedList.Link<E> headLink = Link.acquire(true);
+    private final Project1LinkedList.Link<E> headLink = Link.acquire(true);
 
     /** Pointer to second to last link */
-    private CustomLinkedList.Link<E> tailLink = this.headLink;
+    private Project1LinkedList.Link<E> tailLink = this.headLink;
 
     /** Pointer to current link */
-    private CustomLinkedList.Link<E> currentLink = this.headLink;
+    private Project1LinkedList.Link<E> currentLink = this.headLink;
 
     /** Index of the current link in the list */
     private int currentIndex = 0;
@@ -19,13 +19,13 @@ class CustomLinkedList<E> extends DefaultCustomListImplementations<E>
     /** Size of list */
     private int elementCount = 0;
 
-    CustomLinkedList() {}
+    Project1LinkedList() {}
 
     @Override
     public void clear()
     {
         if (this.elementCount == 0) return;
-        for (CustomLinkedList.Link<E> tempLink = this.headLink.nextLink; tempLink != null; tempLink = tempLink.nextLink) tempLink.release();
+        for (Project1LinkedList.Link<E> tempLink = this.headLink.nextLink; tempLink != null; tempLink = tempLink.nextLink) tempLink.release();
         this.headLink.nextLink = this.headLink; // Drop access to links
         this.currentIndex = 0;
         this.elementCount = 0;
@@ -61,7 +61,7 @@ class CustomLinkedList<E> extends DefaultCustomListImplementations<E>
         
         E value = this.currentLink.nextLink.value; // Remember value
 
-        CustomLinkedList.Link<E> currentNextLink = this.currentLink.nextLink;
+        Project1LinkedList.Link<E> currentNextLink = this.currentLink.nextLink;
         this.currentLink.nextLink = currentNextLink.nextLink; // Remove from list
         currentNextLink.release();
         if (this.currentLink == this.tailLink) // Removed last
@@ -126,10 +126,10 @@ class CustomLinkedList<E> extends DefaultCustomListImplementations<E>
     public int size() {return this.elementCount;}
 
     @Override
-    public CustomLinkedList<E> copy()
+    public Project1LinkedList<E> copy()
     {
-        CustomLinkedList<E> toReturn = new CustomLinkedList<>();
-        if (this.elementCount > 0) for (CustomLinkedList.Link<E> tempLink = this.headLink; tempLink.nextLink != null; tempLink = tempLink.nextLink) toReturn.append(tempLink.nextLink.value);
+        Project1LinkedList<E> toReturn = new Project1LinkedList<>();
+        if (this.elementCount > 0) for (Project1LinkedList.Link<E> tempLink = this.headLink; tempLink.nextLink != null; tempLink = tempLink.nextLink) toReturn.append(tempLink.nextLink.value);
         if (this.currentIndex != 0) toReturn.moveCurrentIndexTo(this.currentIndex);
 
         return toReturn;
@@ -143,7 +143,7 @@ class CustomLinkedList<E> extends DefaultCustomListImplementations<E>
         if (this.elementCount > 0)
         {
             toReturn.append(this.headLink.nextLink.value);
-            for (CustomLinkedList.Link<E> tempLink = this.headLink.nextLink; tempLink.nextLink != null; )
+            for (Project1LinkedList.Link<E> tempLink = this.headLink.nextLink; tempLink.nextLink != null; )
             {
                 toReturn.append(", ");
                 toReturn.append((tempLink = tempLink.nextLink).value);
