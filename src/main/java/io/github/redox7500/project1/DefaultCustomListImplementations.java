@@ -61,75 +61,136 @@ public abstract class DefaultCustomListImplementations<E> implements CustomList<
     }
     
     @Override
-    public boolean testEquality(CustomList<E> otherList) // only supports comparisons with other CustomLists
+    public TestHarness.Testable.EqualityTestResult equalityTest(CustomList<E> other) // only supports comparisons with other CustomLists
     {
-        int size = this.size();
-        if (size != otherList.size()) return false;
-        if (size == 0) return true;
+        // boolean error1 = false;
+        // boolean error2 = false;
 
-        int currentIndex = this.getCurrentIndex();
-        if (currentIndex != otherList.getCurrentIndex()) return false;
+        // int size1;
+        // try {size1 = this.size();}
+        // catch (Throwable _) {error1 = true;}
+        // int size2;
+        // try {size2 = this.size();}
+        // catch (Throwable _) {error2 = true;}
+        // if (error1 && error2) return TestHarness.Testable.EqualityTestResult.ERROR_BOTH;
+        // if (error1 && !error2) return TestHarness.Testable.EqualityTestResult.ERROR_1;
+        // if (!error1 && error2) return TestHarness.Testable.EqualityTestResult.ERROR_2;
+        // if (size1 != size2) return TestHarness.Testable.EqualityTestResult.UNEQUAL;
+        // if (size1 == 0) return TestHarness.Testable.EqualityTestResult.EQUAL;
+        // could do what i did above and make it do the both thing but that's for later right now
 
-        try
+        // i just thought of a thing
+        // what if i make a record of size, nvm actually
+        int thisSize;
+        try {thisSize = this.size();}
+        catch (Throwable _) {return TestHarness.Testable.EqualityTestResult.ERROR_THIS;}
+
+        int otherSize;
+        try {otherSize = other.size();}
+        catch (Throwable _) {return TestHarness.Testable.EqualityTestResult.ERROR_OTHER;}
+
+        if (thisSize != otherSize) return TestHarness.Testable.EqualityTestResult.UNEQUAL;
+
+        int thisCurrentIndex;
+        try {thisCurrentIndex = this.getCurrentIndex();}
+        catch (Throwable _) {return TestHarness.Testable.EqualityTestResult.ERROR_THIS;}
+
+        int otherCurrentIndex;
+        try {otherCurrentIndex = other.getCurrentIndex();}
+        catch (Throwable _) {return TestHarness.Testable.EqualityTestResult.ERROR_OTHER;}
+
+        if (thisCurrentIndex != otherCurrentIndex) return TestHarness.Testable.EqualityTestResult.UNEQUAL;
+        // int currentIndex = this.getCurrentIndex();
+        // if (currentIndex != otherList.getCurrentIndex()) return false;
+
+        try {this.moveCurrentIndexToStart();}
+        catch (Throwable _) {return TestHarness.Testable.EqualityTestResult.ERROR_THIS;}
+        
+        try {other.moveCurrentIndexToStart();}
+        catch (Throwable _) {return TestHarness.Testable.EqualityTestResult.ERROR_OTHER;}
+        // otherList.moveCurrentIndexToStart();
+
+        // for (int i = 0; ; i++)
+        // {
+        //     if (!(this.getCurrentValue().equals(otherList.getCurrentValue()))) return false;
+
+        //     if (i == size - 1) break;
+
+        //     this.moveCurrentIndexToNext();
+        //     otherList.moveCurrentIndexToNext();
+        // }
+
+        // this.moveCurrentIndexTo(currentIndex);
+        // otherList.moveCurrentIndexTo(currentIndex);
+
+        for (int i = 0; ; i++)
         {
-            this.moveCurrentIndexToStart();
-            otherList.moveCurrentIndexToStart();
+            E thisCurrentValue;
+            try {thisCurrentValue = this.getCurrentValue();}
+            catch (Throwable _) {return TestHarness.Testable.EqualityTestResult.ERROR_THIS;}
 
-            for (int i = 0; ; i++)
-            {
-                if (!(this.getCurrentValue().equals(otherList.getCurrentValue()))) return false;
+            E otherCurrentValue;
+            try {otherCurrentValue = other.getCurrentValue();}
+            catch (Throwable _) {return TestHarness.Testable.EqualityTestResult.ERROR_OTHER;}
 
-                if (i == size - 1) break;
+            if (!thisCurrentValue.equals(otherCurrentValue)) return TestHarness.Testable.EqualityTestResult.UNEQUAL;
 
-                this.moveCurrentIndexToNext();
-                otherList.moveCurrentIndexToNext();
-            }
+            if (i == thisSize - 1) break;
+
+            try {this.moveCurrentIndexToNext();}
+            catch (Throwable _) {return TestHarness.Testable.EqualityTestResult.ERROR_THIS;}
+
+            try {other.moveCurrentIndexToNext();}
+            catch (Throwable _) {return TestHarness.Testable.EqualityTestResult.ERROR_OTHER;}
         }
-        finally
-        {
-            this.moveCurrentIndexTo(currentIndex);
-            otherList.moveCurrentIndexTo(currentIndex);
-        }
+
+        try {this.moveCurrentIndexTo(thisCurrentIndex);}
+        catch (Throwable _) {return TestHarness.Testable.EqualityTestResult.ERROR_THIS;}
+
+        try {other.moveCurrentIndexTo(otherCurrentIndex);} // could also be phrased as thisCurrentIndex
+        catch (Throwable _) {return TestHarness.Testable.EqualityTestResult.ERROR_OTHER;}
+
+        return TestHarness.Testable.EqualityTestResult.EQUAL;
     }
 
-    @Override
-    public int hashCode() // apparently i need to do this if i want to override equals(Object)
-    {
-        int toReturn = 1;
+    // @Override
+    // public int hashCode() // apparently i need to do this if i want to override equals(Object)
+    // {
+    //     int toReturn = 1;
 
-        int size = this.size();
-        int currentIndex = this.getCurrentIndex();
+    //     int size = this.size();
+    //     int currentIndex = this.getCurrentIndex();
 
-        if (this.size() > 0)
-        {
-            try
-            {
-                this.moveCurrentIndexToStart();
+    //     if (this.size() > 0)
+    //     {
+    //         try
+    //         {
+    //             this.moveCurrentIndexToStart();
 
-                for (int i = 0; ; i++)
-                {
-                    E currentValue = this.getCurrentValue();
-                    toReturn = 31 * toReturn + ((currentValue == null)? 0 : currentValue.hashCode());
+    //             for (int i = 0; ; i++)
+    //             {
+    //                 E currentValue = this.getCurrentValue();
+    //                 toReturn = 31 * toReturn + ((currentValue == null)? 0 : currentValue.hashCode());
 
-                    if (i == size - 1) break;
+    //                 if (i == size - 1) break;
 
-                    this.moveCurrentIndexToNext();
-                }
-            }
-            finally
-            {
-                this.moveCurrentIndexTo(currentIndex);
-            }
-        }
+    //                 this.moveCurrentIndexToNext();
+    //             }
+    //         }
+    //         finally
+    //         {
+    //             this.moveCurrentIndexTo(currentIndex);
+    //         }
+    //     }
 
-        toReturn = 31 * toReturn + Integer.hashCode(size);
-        toReturn = 31 * toReturn + Integer.hashCode(currentIndex);
+    //     toReturn = 31 * toReturn + Integer.hashCode(size);
+    //     toReturn = 31 * toReturn + Integer.hashCode(currentIndex);
 
-        E currentValue = this.getCurrentValue();
-        toReturn = 31 * toReturn + ((currentValue == null)? 0 : currentValue.hashCode());
+    //     E currentValue = this.getCurrentValue();
+    //     toReturn = 31 * toReturn + ((currentValue == null)? 0 : currentValue.hashCode());
 
-        return toReturn;
-    }
+    //     return toReturn;
+    // }
     
     @Override
     public String toString()

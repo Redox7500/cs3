@@ -14,64 +14,53 @@ import java.lang.Cloneable;
 import java.lang.classfile.Interfaces;
 
 /** Test harness to test CustomList implementations (specifically CustomList<Integer, ?> implementations) */
-public class TestHarness<S extends TestHarness.Testable<S>, T extends S, U extends S>
+public class TestHarness
 {
-    Supplier<T> supplier1;
-    Supplier<U> supplier2;
-    TestFunction<?>[] testFunctions;
-    BiFunction<State<S, T, U>, Integer, Object[]> argumentGenerator;
+    // public static <E, T extends CustomList<E>> boolean test(Supplier<T> supplier1, Supplier<U> supplier2, int depth)
+    // {
+    //     return new ThisState<E, T>().branch(supplier1, supplier2, 7);
+    // }
 
-    TestHarness(Supplier<T> supplier1, Supplier<U> supplier2, TestFunction<?>[] testFunctions, BiFunction<State<S, T, U>, Integer, Object[]> argumentGenerator)
-    {
-        this.testFunctions = testFunctions;
-        this.argumentGenerator = argumentGenerator;
-    }
+    // /** Test the given CustomList(s) and print the outputs nicely
+    //  * @param constructors The constructors of the CustomList(s) you want to test
+    //  * @param names The names of the CustomList(s) you want to test (in the same order as the constructors)
+    //  */
+    // @SuppressWarnings("rawtypes")
+    // public static <E, S extends Testable<S>, T extends S, U extends S> void testCustomList(Supplier<T> testConstructor, Supplier<U> verifiedConstructor, Supplier<E> valueGenerator, String name)
+    // {
+    //     System.out.print("\033[?25l");
 
-    public boolean test(Supplier<T> supplier1, Supplier<U> supplier2, TestFunction<?>[] testFunctions, BiFunction<State<S, T, U>, Integer, Object[]> argumentGenerator, int depth)
-    {
-        return State.branch(supplier1, supplier2, 7);
-    }
-
-    /** Test the given CustomList(s) and print the outputs nicely
-     * @param constructors The constructors of the CustomList(s) you want to test
-     * @param names The names of the CustomList(s) you want to test (in the same order as the constructors)
-     */
-    @SuppressWarnings("rawtypes")
-    public static <E, S extends Testable<S>, T extends S, U extends S> void testCustomList(Supplier<T> testConstructor, Supplier<U> verifiedConstructor, Supplier<E> valueGenerator, String name)
-    {
-        System.out.print("\033[?25l");
-
-        System.out.print(name);
-        AsyncSpinner.start();
+    //     System.out.print(name);
+    //     AsyncSpinner.start();
         
-        System.out.print("\033[25G\033[25G");
-        AsyncSpinner.start();
+    //     System.out.print("\033[25G\033[25G");
+    //     AsyncSpinner.start();
 
-        long startTime = System.nanoTime();
-        @SuppressWarnings("unchecked")
-        boolean result = new State<S, T, U>(testConstructor, verifiedConstructor).branch(7);
-        String elapsedTime = String.format("%.5f", (System.nanoTime() - startTime) / (float)1_000_000_000);
+    //     long startTime = System.nanoTime();
+    //     @SuppressWarnings("unchecked")
+    //     boolean result = new State<S, T, U>(testConstructor, verifiedConstructor).branch(7);
+    //     String elapsedTime = String.format("%.5f", (System.nanoTime() - startTime) / (float)1_000_000_000);
 
-        AsyncSpinner.stop();
-        if (result)
-        {
-            System.out.println("Success (" + elapsedTime + " seconds elapsed)");
-        }
-        else
-        {
-            System.out.println("(" + elapsedTime + " seconds elapsed)");
-        }
+    //     AsyncSpinner.stop();
+    //     if (result)
+    //     {
+    //         System.out.println("Success (" + elapsedTime + " seconds elapsed)");
+    //     }
+    //     else
+    //     {
+    //         System.out.println("(" + elapsedTime + " seconds elapsed)");
+    //     }
 
-        AsyncSpinner.kill();
-        System.out.print("\033[?25h");
-    }
+    //     AsyncSpinner.kill();
+    //     System.out.print("\033[?25h");
+    // }
 
     /** Expresses a state that a CustomList and its corresponding ArrayList can be in, along with arrays to keep track of the function call and argument histories */
     private static abstract class State<S extends Testable<S>, T extends S, U extends S>
     {
         abstract TestFunction<S>[] getTestFunctions();
         // static TestFunction<S>[] testFunctions;
-        abstract Object[] argumentGenerator(int function);
+        abstract Object[][] generateArguments(int function);
 
         /** The instance of the CustomList being tested that resulted after the functionHistory/argumentHistory */
         S toTest1;
@@ -83,7 +72,9 @@ public class TestHarness<S extends TestHarness.Testable<S>, T extends S, U exten
         int[] functionHistory;
 
         /** An array containing all of the arguments used in the function calls leading up to this state */
-        Object[][] argumentHistory;
+        Object[][] argumentHistory; // maybe combine functionHistory and argumentHistory into an array of records?
+
+        State() {}
 
         State(Supplier<T> testConstructor, Supplier<U> verifiedConstructor)
         {
@@ -93,23 +84,6 @@ public class TestHarness<S extends TestHarness.Testable<S>, T extends S, U exten
             this.argumentHistory = new Object[0][0];
         }
 
-        @SuppressWarnings("unchecked")
-        State(State<S, T, U> previousState, int function, Object[] argument)
-        {
-            this.toTest1 = previousState.toTest1.copy();
-            this.toTest2 = previousState.toTest2.copy();
-
-            int depth = previousState.functionHistory.length + 1;
-
-            this.functionHistory = new int[depth];
-            System.arraycopy(previousState.functionHistory, 0, this.functionHistory, 0, depth - 1);
-            this.functionHistory[depth - 1] = function;
-
-            this.argumentHistory = new Object[depth][];
-            System.arraycopy(previousState.argumentHistory, 0, this.argumentHistory, 0, depth - 1);
-            this.argumentHistory[depth - 1] = argument;
-        }
-
         /** Log all of the information of this State (with formatting to work with {@link #project1lists.TestHarness.testCustomLists testCustomLists}) */
         void printInfo()
         {
@@ -117,71 +91,76 @@ public class TestHarness<S extends TestHarness.Testable<S>, T extends S, U exten
             toTest2.printRelevantInfo("Second object");
         }
 
-        State.Evaluation evaluate()
-        {
-            // TestHarness.CustomListMethod<?> function = TestHarness.customListMethods[this.functionHistory[this.functionHistory.length - 1]];
-            TestHarness.TestFunction<S> function = 
-            Object[] argument = this.argumentHistory[this.argumentHistory.length - 1];
+        // State.Evaluation evaluate()
+        // {
+        //     // TestHarness.CustomListMethod<?> function = TestHarness.customListMethods[this.functionHistory[this.functionHistory.length - 1]];
+        //     TestHarness.TestFunction<S> function = this.getTestFunctions()[this.functionHistory.length - 1]; // could make the index a variable for both here, it's also known as depth i guess
+        //     Object[] argument = this.argumentHistory[this.argumentHistory.length - 1];
 
-            Object customListResult = null;
-            Object arrayListWrapperResult = null;
-            boolean customListError = false;
-            boolean arrayListWrapperError = false;
+        //     Object result1 = null;
+        //     Object result2 = null;
+        //     boolean error1 = false;
+        //     boolean error2 = false;
 
-            try {customListResult = function.call(this.toTest1, argument);}
-            catch (Throwable _) {customListError = true;}
-            try {arrayListWrapperResult = function.call(this.toTest2, argument);}
-            catch (Throwable _) {arrayListWrapperError = true;}
+        //     try {result1 = function.apply(this.toTest1, argument);}
+        //     catch (Throwable _) {error1 = true;}
+        //     try {result2 = function.apply(this.toTest2, argument);}
+        //     catch (Throwable _) {error2 = true;}
 
-            if (customListError && arrayListWrapperError) return State.Evaluation.ERROR_BOTH;
-            if (customListError && !arrayListWrapperError) return State.Evaluation.ERROR_CUSTOM_LIST;
-            if (arrayListWrapperError && !customListError) return State.Evaluation.ERROR_ARRAY_LIST_WRAPPER;
-            if ((customListResult == null)? arrayListWrapperResult != null : !customListResult.equals(arrayListWrapperResult)) return State.Evaluation.UNEQUAL;
+        //     if (error1 && error2) return State.Evaluation.ERROR_BOTH;
+        //     if (error1 && !error2) return State.Evaluation.ERROR_CUSTOM_LIST;
+        //     if (arrayListWrapperError && !customListError) return State.Evaluation.ERROR_ARRAY_LIST_WRAPPER;
+        //     if ((customListResult == null)? arrayListWrapperResult != null : !customListResult.equals(arrayListWrapperResult)) return State.Evaluation.UNEQUAL;
 
-            int customListSize;
-            int customListCurrentIndex;
-            Optional<E> customListCurrentValue;
-            try
-            {
-                customListSize = customList.size();
-                customListCurrentIndex = customList.getCurrentIndex();
-                customListCurrentValue = (customListSize == 0)? Optional.empty() : Optional.of(customList.getCurrentValue());
-            }
-            catch (Throwable _)
-            {
-                return State.Evaluation.INEVALUABLE_CUSTOM_LIST;
-            }
-            int arrayListWrapperSize = arrayListWrapper.size();
-            Optional<E> arrayListWrapperCurrentValue = (arrayListWrapperSize == 0)? Optional.empty() : Optional.of(arrayListWrapper.getCurrentValue());
-            if (
-                customListSize != arrayListWrapperSize ||
-                customListCurrentIndex != this.arrayListWrapper.getCurrentIndex() ||
-                !customListCurrentValue.equals(arrayListWrapperCurrentValue)
-            ) return State.Evaluation.UNEQUAL;
+        //     int customListSize;
+        //     int customListCurrentIndex;
+        //     Optional<E> customListCurrentValue;
+        //     try
+        //     {
+        //         customListSize = customList.size();
+        //         customListCurrentIndex = customList.getCurrentIndex();
+        //         customListCurrentValue = (customListSize == 0)? Optional.empty() : Optional.of(customList.getCurrentValue());
+        //     }
+        //     catch (Throwable _)
+        //     {
+        //         return State.Evaluation.INEVALUABLE_CUSTOM_LIST;
+        //     }
+        //     int arrayListWrapperSize = arrayListWrapper.size();
+        //     Optional<E> arrayListWrapperCurrentValue = (arrayListWrapperSize == 0)? Optional.empty() : Optional.of(arrayListWrapper.getCurrentValue());
+        //     if (
+        //         customListSize != arrayListWrapperSize ||
+        //         customListCurrentIndex != this.arrayListWrapper.getCurrentIndex() ||
+        //         !customListCurrentValue.equals(arrayListWrapperCurrentValue)
+        //     ) return State.Evaluation.UNEQUAL;
 
-            int customListIndex;
-            try {customListIndex = customList.getCurrentIndex();}
-            catch (Throwable _) {return State.Evaluation.INEVALUABLE_CUSTOM_LIST;}
+        //     int customListIndex;
+        //     try {customListIndex = customList.getCurrentIndex();}
+        //     catch (Throwable _) {return State.Evaluation.INEVALUABLE_CUSTOM_LIST;}
             
-            try {customList.moveCurrentIndexToStart();}
-            catch (Throwable _) {return State.Evaluation.INEVALUABLE_CUSTOM_LIST;}
-            for (int i = 0; i < arrayListWrapperSize; i++)
-            {
-                E c;
-                try {c = customList.getCurrentValue();}
-                catch (Throwable _) {return State.Evaluation.INEVALUABLE_CUSTOM_LIST;}
-                if (c != arrayListWrapper.arrayList.get(i)) {return State.Evaluation.UNEQUAL;}
-                if (i < arrayListWrapperSize - 1)
-                {
-                    try {customList.moveCurrentIndexToNext();}
-                    catch (Throwable _) {return State.Evaluation.INEVALUABLE_CUSTOM_LIST;}
-                }
-            }
-            try {customList.moveCurrentIndexTo(customListIndex);} // if this errors i don't even know dude
-            catch (Throwable _) {return State.Evaluation.INEVALUABLE_CUSTOM_LIST;}
+        //     try {customList.moveCurrentIndexToStart();}
+        //     catch (Throwable _) {return State.Evaluation.INEVALUABLE_CUSTOM_LIST;}
+        //     for (int i = 0; i < arrayListWrapperSize; i++)
+        //     {
+        //         E c;
+        //         try {c = customList.getCurrentValue();}
+        //         catch (Throwable _) {return State.Evaluation.INEVALUABLE_CUSTOM_LIST;}
+        //         if (c != arrayListWrapper.arrayList.get(i)) {return State.Evaluation.UNEQUAL;}
+        //         if (i < arrayListWrapperSize - 1)
+        //         {
+        //             try {customList.moveCurrentIndexToNext();}
+        //             catch (Throwable _) {return State.Evaluation.INEVALUABLE_CUSTOM_LIST;}
+        //         }
+        //     }
+        //     try {customList.moveCurrentIndexTo(customListIndex);} // if this errors i don't even know dude
+        //     catch (Throwable _) {return State.Evaluation.INEVALUABLE_CUSTOM_LIST;}
 
-            return State.Evaluation.SUCCESS;
-        }
+        //     return State.Evaluation.SUCCESS;
+        // }
+
+        // State.Evaluation extend()
+        // {
+
+        // }
 
         abstract State<S, T, U> createInstance();
 
@@ -190,55 +169,127 @@ public class TestHarness<S extends TestHarness.Testable<S>, T extends S, U exten
          * @return A boolean representing whether any of the leaves had CustomLists that misbehaved or not
          */
         @SuppressWarnings("unchecked")
-        final boolean branch(TestFunction<S>[] testFunctions, BiFunction<State<S, T, U>, Integer, Object[][]> argumentGenerator, int depth)
+        // final boolean branch(TestFunction<S>[] testFunctions, BiFunction<State<S, T, U>, Integer, Object[][]> argumentGenerator, int depth)
+        final boolean branch(int depth)
         {
-            // if (depth == 0) return true;
+            if (depth == 0) return true;
 
-            for (int currentFunction = 0; currentFunction < testFunctions.length; currentFunction++)
+            // for (int currentFunction = 0; currentFunction < testFunctions.length; currentFunction++)
+            // {
+            //     // int firstArgument, lastArgument;
+            //     // int argumentStep = 1;
+            //     // switch (TestHarness.customListMethods[currentFunction])
+            //     // {
+            //     //     case TestHarness.CustomListMethod.CustomListIndexConsumer _ -> {firstArgument = -1; lastArgument = this.verifiedList.size();} // change args to be based on inputs to testharness method?
+            //     //     case TestHarness.CustomListMethod.CustomListValueConsumer<?> _ -> firstArgument = lastArgument = this.functionHistory.length;
+            //     //     default -> firstArgument = lastArgument = 0;
+            //     // }
+            //     Object[][] arguments = argumentGenerator.apply(this, currentFunction);
+            //     for (int currentArgument = 0; currentArgument < arguments.length; currentArgument++)
+            //     {
+            //         State<S, T, U> newState; //= new State<S, T, U>(this, currentFunction, arguments[currentArgument]);
+            //         try {newState = this.getClass().getDeclaredConstructor().newInstance();}
+            //         catch (Throwable _) {System.err.println("TestHarness.State subclass has no visible parameterless constructor");}
+            //         switch (newState.evaluate())
+            //         {
+            //             case State.Evaluation.ERROR_BOTH:
+            //                 continue;
+            //             case State.Evaluation.ERROR_CUSTOM_LIST:
+            //                 System.out.println("Custom list had an error while ArrayListWrapper did not at state below\0337");
+            //                 newState.printInfo();
+
+            //                 return false;
+            //             case State.Evaluation.ERROR_ARRAY_LIST_WRAPPER:
+            //                 System.out.println("ArrayListWrapper had an error while custom list did not at state below\0337");
+            //                 newState.printInfo();
+
+            //                 return false;
+            //             case State.Evaluation.INEVALUABLE_CUSTOM_LIST:
+            //                 System.out.println("Custom list had an error when being compared to ArrayListWrapper\0337");
+            //                 newState.printInfo();
+
+            //                 return false;
+            //             case State.Evaluation.UNEQUAL:
+            //                 System.out.println("Lists were not equal at state below\0337");
+            //                 newState.printInfo();
+
+            //                 return false;
+            //             case State.Evaluation.SUCCESS:
+            //                 if (depth > 1 && !newState.branch(testFunctions, argumentGenerator, depth - 1)) return false;
+            //         }
+            //     }
+            // }
+
+            // return true;
+            TestHarness.TestFunction<S>[] functions = this.getTestFunctions();
+            for (int function = 0; function < functions.length; function++)
             {
-                // int firstArgument, lastArgument;
-                // int argumentStep = 1;
-                // switch (TestHarness.customListMethods[currentFunction])
-                // {
-                //     case TestHarness.CustomListMethod.CustomListIndexConsumer _ -> {firstArgument = -1; lastArgument = this.verifiedList.size();} // change args to be based on inputs to testharness method?
-                //     case TestHarness.CustomListMethod.CustomListValueConsumer<?> _ -> firstArgument = lastArgument = this.functionHistory.length;
-                //     default -> firstArgument = lastArgument = 0;
-                // }
-                Object[][] arguments = argumentGenerator.apply(this, currentFunction);
-                for (int currentArgument = 0; currentArgument < arguments.length; currentArgument++)
+                Object[][] arguments = this.generateArguments(function);
+                for (Object[] argument : arguments)
                 {
-                    State<S, T, U> newState; //= new State<S, T, U>(this, currentFunction, arguments[currentArgument]);
-                    try {newState = this.getClass().getDeclaredConstructor().newInstance();}
-                    catch (Throwable _) {System.err.println("TestHarness.State subclass has no visible parameterless constructor");}
-                    switch (newState.evaluate())
+                    State<S, T, U> newState = this.createInstance();
+
+                    newState.toTest1 = this.toTest1.copy();
+                    newState.toTest2 = this.toTest2.copy();
+
+                    int historyLength = this.functionHistory.length + 1;
+
+                    this.functionHistory = new int[depth];
+                    System.arraycopy(this.functionHistory, 0, newState.functionHistory, 0, depth - 1);
+                    this.functionHistory[depth - 1] = function;
+
+                    this.argumentHistory = new Object[depth][];
+                    System.arraycopy(this.argumentHistory, 0, newState.argumentHistory, 0, depth - 1);
+                    this.argumentHistory[depth - 1] = argument;
+
+                    Object result1 = null;
+                    Object result2 = null;
+                    boolean error1 = false;
+                    boolean error2 = false;
+
+                    try {result1 = functions[function].apply(newState.toTest1, argument);}
+                    catch (Throwable _) {error1 = true;}
+                    try {result2 = functions[function].apply(newState.toTest2, argument);}
+                    catch (Throwable _) {error2 = true;}
+
+                    if (error1 && error2) continue;
+                    if (error1 && !error2)
                     {
-                        case State.Evaluation.ERROR_BOTH:
-                            continue;
-                        case State.Evaluation.ERROR_CUSTOM_LIST:
-                            System.out.println("Custom list had an error while ArrayListWrapper did not at state below\0337");
-                            newState.printInfo();
+                        System.out.println("Custom list had an error while ArrayListWrapper did not at state below\0337");
+                        newState.printInfo();
 
-                            return false;
-                        case State.Evaluation.ERROR_ARRAY_LIST_WRAPPER:
-                            System.out.println("ArrayListWrapper had an error while custom list did not at state below\0337");
-                            newState.printInfo();
+                        return false;
+                    }
+                    if (!error1 && error2)
+                    {
+                        System.out.println("ArrayListWrapper had an error while custom list did not at state below\0337");
+                        newState.printInfo();
 
-                            return false;
-                        case State.Evaluation.INEVALUABLE_CUSTOM_LIST:
+                        return false;
+                    }
+                    switch (newState.toTest1.equalityTest(newState.toTest2))
+                    {
+                        case ERROR_THIS:
                             System.out.println("Custom list had an error when being compared to ArrayListWrapper\0337");
                             newState.printInfo();
 
                             return false;
-                        case State.Evaluation.UNEQUAL:
+                        case ERROR_OTHER:
+                            System.out.println("Custom list had an error when being compared to ArrayListWrapper\0337");
+                            newState.printInfo();
+
+                            return false;
+                        case UNEQUAL:
                             System.out.println("Lists were not equal at state below\0337");
                             newState.printInfo();
 
                             return false;
-                        case State.Evaluation.SUCCESS:
-                            if (depth > 1 && !newState.branch(testFunctions, argumentGenerator, depth - 1)) return false;
+                        case EQUAL:
+                            if (!newState.branch(depth - 1)) return false;
                     }
                 }
             }
+            // make a copy with extra arg/function state thing?
 
             return true;
         }
@@ -256,22 +307,38 @@ public class TestHarness<S extends TestHarness.Testable<S>, T extends S, U exten
 
     private static class ThisState<E, T extends CustomList<E>> extends TestHarness.State<CustomList<E>, T, ArrayListWrapper<E>>
     {
-        ThisState(State<CustomList<E>, T, ArrayListWrapper<E>> state, int function, Object[] argument)
+        // ThisState(State<CustomList<E>, T, ArrayListWrapper<E>> state, int function, Object[] argument)
+        // {
+        //     super(state, function, argument);
+        // }
+
+        ThisState() {}
+        
+        ThisState(Supplier<T> supplier)
         {
-            super(state, function, argument);
+            this.toTest1 = supplier.get();
+            this.toTest2 = new ArrayListWrapper<E>();
         }
 
         @SuppressWarnings("unchecked")
+        @Override
         TestFunction<CustomList<E>>[] getTestFunctions()
         {
-            return (TestFunction<CustomList<E>>[])new TestFunction<?>[]{};
+            return (TestFunction<CustomList<E>>[])new TestFunction<?>[]
+            {
+
+            };
         }
 
-        Object[] argumentGenerator(int function)
+        @Override
+        Object[][] generateArguments(int function)
         {
             // probably a switch here
-            return new Object[]{};
+            return new Object[][]{};
         }
+
+        @Override
+        ThisState<E, T> createInstance() {return new ThisState<E, T>();}
     }
 
     private static class ArrayListWrapper<E> extends DefaultCustomListImplementations<E>
@@ -360,58 +427,58 @@ public class TestHarness<S extends TestHarness.Testable<S>, T extends S, U exten
 
     public interface Testable<T extends Testable<T>> extends Copyable<T>
     {
-        static <T extends Testable<T>> FullTestResult fullTest(Testable<T> toTest1, Testable<T> toTest2, TestFunction<T>[] testFunctions, Object[] args)
-        {
-            for (TestFunction<T> testFunction : testFunctions)
-            {
-                Testable<T> toTest1Copy = toTest1.copy();
-                Testable<T> toTest2Copy = toTest2.copy();
+        // static <T extends Testable<T>> FullTestResult fullTest(Testable<T> toTest1, Testable<T> toTest2, TestFunction<T>[] testFunctions, Object[] args)
+        // {
+        //     for (TestFunction<T> testFunction : testFunctions)
+        //     {
+        //         Testable<T> toTest1Copy = toTest1.copy();
+        //         Testable<T> toTest2Copy = toTest2.copy();
 
-                Object result1 = null;
-                Object result2 = null;
-                boolean error1 = false;
-                boolean error2 = false;
+        //         Object result1 = null;
+        //         Object result2 = null;
+        //         boolean error1 = false;
+        //         boolean error2 = false;
 
-                try {result1 = testFunction.apply(toTest1Copy, args);}
-                catch (Throwable _) {error1 = true;}
-                try {result2 = testFunction.apply(toTest2Copy, args);}
-                catch (Throwable _) {error2 = true;}
+        //         try {result1 = testFunction.apply(toTest1Copy, args);}
+        //         catch (Throwable _) {error1 = true;}
+        //         try {result2 = testFunction.apply(toTest2Copy, args);}
+        //         catch (Throwable _) {error2 = true;}
 
-                if (error1 && error2) continue;
-                if (error1 && !error2) return FullTestResult.ERROR_1;
-                if (!error1 && error2) return FullTestResult.ERROR_2;
-                switch (toTest1Copy.equalityTest(toTest2Copy))
-                {
-                    case ERROR_1: return FullTestResult.INEVALUABLE_1;
-                    case ERROR_2: return FullTestResult.INEVALUABLE_2;
-                    case UNEQUAL: return FullTestResult.UNEQUAL;
-                    case EQUAL:
-                        Testable.fullTest(toTest1Copy, toTest2Copy, testFunctions, )
-                }
-            }
-        }
+        //         if (error1 && error2) continue;
+        //         if (error1 && !error2) return FullTestResult.ERROR_1;
+        //         if (!error1 && error2) return FullTestResult.ERROR_2;
+        //         switch (toTest1Copy.equalityTest(toTest2Copy))
+        //         {
+        //             case ERROR_1: return FullTestResult.INEVALUABLE_1;
+        //             case ERROR_2: return FullTestResult.INEVALUABLE_2;
+        //             case UNEQUAL: return FullTestResult.UNEQUAL;
+        //             case EQUAL:
+        //                 Testable.fullTest(toTest1Copy, toTest2Copy, testFunctions, )
+        //         }
+        //     }
+        // }
 
-        EqualityTestResult equalityTest(Testable<T> toTest);
+        EqualityTestResult equalityTest(T other);
         void printRelevantInfo(String name);
         
         enum EqualityTestResult
         {
-            ERROR_1,
-            ERROR_2,
+            ERROR_THIS,
+            ERROR_OTHER,
             UNEQUAL,
             EQUAL
         }
 
-        enum FullTestResult
-        {
-            ERROR_BOTH,
-            ERROR_1,
-            ERROR_2,
-            INEVALUABLE_1,
-            INEVALUABLE_2,
-            UNEQUAL,
-            SUCCESS
-        }
+        // enum FullTestResult
+        // {
+        //     ERROR_BOTH,
+        //     ERROR_1,
+        //     ERROR_2,
+        //     INEVALUABLE_1,
+        //     INEVALUABLE_2,
+        //     UNEQUAL,
+        //     SUCCESS
+        // }
     }
 
     @FunctionalInterface
