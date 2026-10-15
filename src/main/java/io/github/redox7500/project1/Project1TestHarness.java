@@ -514,12 +514,12 @@ public class Project1TestHarness
     }
 
     @FunctionalInterface
-    interface TestFunction<T extends Testable<T>>
+    private interface TestFunction<T extends Testable<T>>
     {
         OptionalValue<?> apply(T toTest, Object[] args);
     }
 
-    record OptionalValue<T>(boolean empty, T value)
+    private record OptionalValue<T>(boolean empty, T value)
     {
         OptionalValue() {this(true, null);}
 

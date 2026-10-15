@@ -5,7 +5,7 @@ class Project2LinkedQueue<E> extends Project2AbstractQueue<E>
 {
     private Link<E> front; // Pointer to front queue node
     private Link<E> rear; // Pointer to rear queuenode
-    int size; // Number of elements in queue
+    private int size; // Number of elements in queue
     
     public Project2LinkedQueue() {this.front = this.rear = null; this.size = 0;}
 
@@ -81,8 +81,6 @@ class Project2LinkedQueue<E> extends Project2AbstractQueue<E>
 
         /** Pointer to next node in list */
         private Link<E> nextLink = null;
-
-        Link() {}
 
         private static <E> Link<E> acquire()
         {

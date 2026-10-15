@@ -19,7 +19,7 @@ public class Project1ArrayList<E> extends Project1AbstractList<E>
      * @param size Maximum amount of elements this instance should have
      */
     @SuppressWarnings("unchecked") // For generic array allocation
-    Project1ArrayList(int size)
+    public Project1ArrayList(int size)
     {
         this.elementCount = 0;
         this.currentIndex = 0;
@@ -27,7 +27,7 @@ public class Project1ArrayList<E> extends Project1AbstractList<E>
     }
 
     /** Create a list with the default capacity. */
-    Project1ArrayList() {this(Project1ArrayList.DEFAULT_SIZE);}
+    public Project1ArrayList() {this(Project1ArrayList.DEFAULT_SIZE);}
 
     @Override
     public void clear() {this.elementCount = 0; this.currentIndex = 0;}

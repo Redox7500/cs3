@@ -19,8 +19,6 @@ class Project1LinkedList<E> extends Project1AbstractList<E>
     /** Size of list */
     private int elementCount = 0;
 
-    Project1LinkedList() {}
-
     @Override
     public void clear()
     {
@@ -164,8 +162,6 @@ class Project1LinkedList<E> extends Project1AbstractList<E>
 
         /** Pointer to next node in list */
         private Link<E> nextLink = null;
-
-        Link() {}
 
         private static <E> Link<E> acquire()
         {

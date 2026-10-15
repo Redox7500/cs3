@@ -9,8 +9,6 @@ class Project2ArrayQueue<E> extends Project2AbstractQueue<E>
     private int size;
     private int front; // Index of front element
     private E[] array; // Array holding queue elements
-    
-    Project2ArrayQueue() {this(Project2ArrayQueue.defaultSize);}
 
     @SuppressWarnings("unchecked") // For generic array
     Project2ArrayQueue(int size)
@@ -19,6 +17,8 @@ class Project2ArrayQueue<E> extends Project2AbstractQueue<E>
         this.front = 1;
         this.array = (E[])new Object[size]; // Create listArray
     }
+
+    public Project2ArrayQueue() {this(Project2ArrayQueue.defaultSize);}
 
     // Reinitialize
     @Override

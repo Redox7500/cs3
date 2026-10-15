@@ -1,23 +1,28 @@
 package io.github.redox7500.project2;
 
+import io.github.redox7500.project1.Project1ArrayList;
+
 class Project2SortedArrayDictionary<K extends Comparable<? super K>, V> extends Project2AbstractDictionary<K, V>
 {
     // Default size
     private static final int defaultSize = 10;
 
     // To store dictionary
-    private io.github.redox7500.project1.Project1ArrayList<Project2KeyValuePair<K, V>> arrayList;
+    private Project1ArrayList<Project2KeyValuePair<K, V>> arrayList;
 
-    Project2SortedArrayDictionary() {this(defaultSize);}
-    Project2SortedArrayDictionary(int size) {this.arrayList = new MyArrayList<Project2KeyValuePair<K, V>>(size);}
+    public Project2SortedArrayDictionary() {this(defaultSize);}
+    public Project2SortedArrayDictionary(int size) {this.arrayList = new Project1ArrayList<Project2KeyValuePair<K, V>>(size);}
 
     // Reinitialize
+    @Override
     public void clear() {this.arrayList.clear();}
 
     /** Insert an element: append to list */
+    @Override
     public void insert(K key, V value) {this.arrayList.append(new Project2KeyValuePair<K, V>(key, value));}
 
     /** Use sequential search to find the element to remove */
+    @Override
     public V remove(K key)
     {
         V temp = find(key);
@@ -27,6 +32,7 @@ class Project2SortedArrayDictionary<K extends Comparable<? super K>, V> extends 
     }
 
     /** Remove the last element */
+    @Override
     public V removeAny()
     {
         if (size() == 0) return null;
@@ -39,6 +45,7 @@ class Project2SortedArrayDictionary<K extends Comparable<? super K>, V> extends 
     }
 
     // Find "k" using sequential search
+    @Override
     public V find(K key)
     {
         this.arrayList.moveToStart();
@@ -57,6 +64,7 @@ class Project2SortedArrayDictionary<K extends Comparable<? super K>, V> extends 
     }
 
     // Return list size
+    @Override
     public int size() {return this.arrayList.length();}
 
     @Override
