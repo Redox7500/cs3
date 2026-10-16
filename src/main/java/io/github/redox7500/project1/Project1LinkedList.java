@@ -5,10 +5,10 @@ package io.github.redox7500.project1;
 public class Project1LinkedList<E> extends Project1AbstractList<E>
 {
     /** Pointer to first link */
-    private final Project1Link<E> headLink = Project1Link.acquire(true);
+    protected final Project1Link<E> headLink = Project1Link.acquire(true);
 
     /** Pointer to second to last link */
-    private Project1Link<E> tailLink = this.headLink;
+    protected Project1Link<E> tailLink = this.headLink;
 
     /** Pointer to current link */
     private Project1Link<E> currentLink = this.headLink;
