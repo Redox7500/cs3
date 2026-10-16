@@ -6,5 +6,5 @@ public record Project2KeyValuePair<K, V>(K key, V value)
     public Project2KeyValuePair() {this(null, null);}
 
     @Override
-    public String toString() {return this.key + ": " + this.value;}
+    public String toString() {return this.key() + ": " + this.value();}
 }

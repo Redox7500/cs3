@@ -68,27 +68,32 @@ class Project2SortedArrayDictionary<K extends Comparable<? super K>, V> extends 
     public int size() {return this.arrayList.length();}
 
     @Override
-    public String toString()
+    public String toString() // could make this print single line i guess but i'm not sure how, maybe a static boolean for this class?
     {
         StringBuilder toReturn = new StringBuilder();
         toReturn.append('{');
         if (this.arrayList.size() > 0)
         {
-            toReturn.append("\n");
+            toReturn.append("\n\t");
 
             int currentIndex = this.arrayList.getCurrentIndex();
             this.arrayList.moveCurrentIndexToStart();
 
+            toReturn.append(this.arrayList.getCurrentValue());
+
             for (int i = 1; i < this.arrayList.size(); i++)
             {
-                toReturn.append(",\n");
+                toReturn.append(",\n\t");
 
                 this.arrayList.moveCurrentIndexToNext();
 
-                Project2KeyValuePair<K, V> currentPair = this.arrayList.getCurrentValue();
-                toReturn.append(currentPair.key());
-                toReturn.append(": ");
-                toReturn.append(currentPair.value());
+                // Project2KeyValuePair<K, V> currentPair = this.arrayList.getCurrentValue();
+                toReturn.append(this.arrayList.getCurrentValue());
+                // toReturn.append(currentPair.key());
+                // System.out.println(currentPair.key());
+                // System.out.println(currentPair.value());
+                // toReturn.append(": ");
+                // toReturn.append(currentPair.value());
             }
             toReturn.append("\n");
 

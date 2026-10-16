@@ -11,19 +11,25 @@ public class Project2Main
         // System.out.println(queue.dequeue());
         // System.out.println(queue);
         // queue.dequeue();
-        Project2LinkedList<Integer> a = new Project2LinkedList<>();
+        // Project2LinkedList<Integer> a = new Project2LinkedList<>();
         // a.append(1);
         // a.append(3);
         // a.append(5);
         // a.append(7);
         // a.append(null);
         // a.reverseOrder();
-        Project2LinkedList<Integer> b = new Project2LinkedList<>();
+        // Project2LinkedList<Integer> b = new Project2LinkedList<>();
         // b.append(2);
         // b.append(3);
         // b.append(4);
         // b.append(5);
         // b.append(6);
-        System.out.println(Project2LinkedList.mergeLists(a, b));
+        // System.out.println(Project2LinkedList.mergeLists(a, b));
+        Project2Dictionary<String, Integer> a = new Project2SortedArrayDictionary<>();
+        a.insert("a", 1);
+        a.removeAny();
+        // a.insert("a", 1);
+        // a.insert("b", 2);
+        System.out.println(a);
     }
 }
