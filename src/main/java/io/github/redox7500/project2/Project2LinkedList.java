@@ -48,13 +48,27 @@ public class Project2LinkedList<E> extends Project1LinkedList<E>
 
     public static <E extends Comparable<? super E>> Project2LinkedList<E> mergeLists(Project2LinkedList<E> list1, Project2LinkedList<E> list2)
     {
+        Project2LinkedList<E> toReturn = new Project2LinkedList<>();
+
+        // if (list1.size() == 0)
+        // {
+        //     for (Project1Link<E> currentLink = list2.headLink; currentLink != list2.tailLink; ) toReturn.append((currentLink = currentLink.nextLink).value);
+        //     return toReturn;
+        // }
+        // if (list2.size() == 0)
+        // {
+        //     for (Project1Link<E> currentLink = list1.headLink; currentLink != list1.tailLink; ) toReturn.append((currentLink = currentLink.nextLink).value);
+        //     return toReturn;
+        // }
+        if (list1.size() == 0 && list2.size() == 0) return toReturn; // could do list1.size() + list2.size() == 0
+
         Project1Link<E> list1CurrentLink = list1.headLink.nextLink;
         Project1Link<E> list2CurrentLink = list2.headLink.nextLink;
 
-        Project2LinkedList<E> toReturn = new Project2LinkedList<>();
-
         while (list1CurrentLink != null || list2CurrentLink != null)
         {
+            System.out.println(list1CurrentLink);
+            System.out.println(list2CurrentLink);
             // System.out.println(list1CurrentLink);
             // System.out.println(list2CurrentLink);
             // if (list1CurrentLink != null) System.out.println(list1CurrentLink.value);
