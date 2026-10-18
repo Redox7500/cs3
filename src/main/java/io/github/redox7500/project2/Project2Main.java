@@ -25,7 +25,7 @@ public class Project2Main
         // b.append(5);
         // b.append(6);
         // System.out.println(Project2LinkedList.mergeLists(a, b));
-        Project2Dictionary<String, Integer> a = new Project2SortedArrayDictionary<>();
+        Project2Dictionary<String, Integer> a = new Project2SortedArrayDictionary<>(100);
         a.insert("a", 1);
         a.removeAny();
         a.insert("a", 1);
@@ -38,7 +38,9 @@ public class Project2Main
         a.insert("x", 2);
         a.insert("x", 2);
         a.insert("x", 2);
-        a.insert("b", 2);
+        a.insert("b", 3);
+        System.out.println(a.find("z"));
+        System.out.println(a.remove("a"));
         System.out.println(a);
     }
 }

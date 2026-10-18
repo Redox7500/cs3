@@ -21,31 +21,45 @@ class Project2SortedArrayDictionary<K extends Comparable<? super K>, V> extends 
     @Override
     public void insert(K key, V value)
     {
-        Project2KeyValuePair<K, V> newPair = new Project2KeyValuePair<K, V>(key, value);
+        // Project2KeyValuePair<K, V> newPair = new Project2KeyValuePair<K, V>(key, value);
 
-        if (this.size() == 0) {this.arrayList.append(newPair); return;}
+        // if (this.size() == 0) {this.arrayList.append(newPair); return;}
 
-        int low = 0;
-        int high = this.arrayList.size() - 1;
-        int mid = (low + high) / 2;
-        while (low <= high)
-        {
-            this.arrayList.moveCurrentIndexTo(mid);
-            int comparison = this.arrayList.getCurrentValue().key().compareTo(key);
-            if (comparison < 0) low = mid + 1;
-            else if (comparison > 0) high = mid - 1;
-            else {low = mid; break;} // can break i guess
-            mid = (low + high) / 2;
-        }
+        // int low = 0;
+        // int high = this.arrayList.size() - 1;
+        // int mid;
+        // while (low <= high)
+        // {
+        //     mid = (low + high) / 2;
+        //     this.arrayList.moveCurrentIndexTo(mid);
+        //     int comparison = this.arrayList.getCurrentValue().key().compareTo(key);
+        //     if (comparison < 0) low = mid + 1;
+        //     else if (comparison > 0) high = mid - 1;
+        //     else {this.arrayList.setCurrentValue(newPair); return;} // setting like this is worse than setting just the value and keeping the old pair, but it's a record so idk // can break i guess
+        // }
         
-        if (low < this.arrayList.size())
+        // if (low < this.arrayList.size())
+        // {
+        //     this.arrayList.moveCurrentIndexTo(low);
+        //     this.arrayList.insert(newPair);
+        // }
+        // else
+        // {
+        //     // System.out.println(key);
+        //     this.arrayList.append(newPair);
+        // }
+
+        Project2KeyValuePair<K, V> newPair = new Project2KeyValuePair<>(key, value);
+
+        int index = this.closestIndexOf(key);
+        if (index < this.size())
         {
-            this.arrayList.moveCurrentIndexTo(low);
-            this.arrayList.insert(newPair);
+            this.arrayList.moveCurrentIndexTo(index);
+            if (this.arrayList.getCurrentValue().key() == key) this.arrayList.setCurrentValue(newPair);
+            else this.arrayList.insert(newPair);
         }
         else
         {
-            // System.out.println(key);
             this.arrayList.append(newPair);
         }
     }
@@ -54,10 +68,18 @@ class Project2SortedArrayDictionary<K extends Comparable<? super K>, V> extends 
     @Override
     public V remove(K key)
     {
-        V temp = find(key);
-        if (temp != null) this.arrayList.remove();
+        // V temp = find(key);
+        // if (temp != null) this.arrayList.remove();
 
-        return temp;
+        // return temp;
+        // now that i think about it the code above doesn't work with nulls, very terrible
+        int index = this.closestIndexOf(key);
+        if (index < this.size())
+        {
+            this.arrayList.moveCurrentIndexTo(index);
+            if (this.arrayList.getCurrentValue().key() == key) return this.arrayList.remove().value();
+        }
+        return null;
     }
 
     /** Remove the last element */
@@ -77,19 +99,28 @@ class Project2SortedArrayDictionary<K extends Comparable<? super K>, V> extends 
     @Override
     public V find(K key)
     {
-        this.arrayList.moveToStart();
-        int length = this.arrayList.length();
-        for (int i = 0; i < length; i++)
+        // this.arrayList.moveToStart();
+        // int length = this.arrayList.length();
+        // for (int i = 0; i < length; i++)
+        // {
+        //     Project2KeyValuePair<K, V> currentPair = this.arrayList.getValue();
+        //     if (key == currentPair.key()) return currentPair.value();
+
+        //     if (i == length - 1) break;
+
+        //     this.arrayList.next();
+        // }
+
+        // return null; // "k" does not appear in dictionary
+
+        int index = this.closestIndexOf(key);
+        if (index < this.size())
         {
-            Project2KeyValuePair<K, V> currentPair = this.arrayList.getValue();
-            if (key == currentPair.key()) return currentPair.value();
-
-            if (i == length - 1) break;
-
-            this.arrayList.next();
+            this.arrayList.moveCurrentIndexTo(index);
+            Project2KeyValuePair<K, V> pair = this.arrayList.getCurrentValue();
+            if (pair.key() == key) return pair.value();
         }
-
-        return null; // "k" does not appear in dictionary
+        return null;
     }
 
     // Return list size
@@ -131,5 +162,22 @@ class Project2SortedArrayDictionary<K extends Comparable<? super K>, V> extends 
         toReturn.append('}');
 
         return toReturn.toString();
+    }
+
+    private int closestIndexOf(K key)
+    {
+        int low = 0;
+        int high = this.arrayList.size() - 1;
+        int mid;
+        while (low <= high)
+        {
+            mid = (low + high) / 2;
+            this.arrayList.moveCurrentIndexTo(mid);
+            int comparison = this.arrayList.getCurrentValue().key().compareTo(key);
+            if (comparison < 0) low = mid + 1;
+            else if (comparison > 0) high = mid - 1;
+            else {return mid;} // setting like this is worse than setting just the value and keeping the old pair, but it's a record so idk // can break i guess
+        }
+        return low;
     }
 }
