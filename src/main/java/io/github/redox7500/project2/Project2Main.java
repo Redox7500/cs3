@@ -28,8 +28,17 @@ public class Project2Main
         Project2Dictionary<String, Integer> a = new Project2SortedArrayDictionary<>();
         a.insert("a", 1);
         a.removeAny();
-        // a.insert("a", 1);
-        // a.insert("b", 2);
+        a.insert("a", 1);
+        a.insert("b", 2);
+        a.insert("a", 5);
+        a.insert("d", 3);
+        a.insert("c", 3);
+        a.insert("a", 1);
+        a.insert("z", 2);
+        a.insert("x", 2);
+        a.insert("x", 2);
+        a.insert("x", 2);
+        a.insert("b", 2);
         System.out.println(a);
     }
 }

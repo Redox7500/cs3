@@ -19,7 +19,36 @@ class Project2SortedArrayDictionary<K extends Comparable<? super K>, V> extends 
 
     /** Insert an element: append to list */
     @Override
-    public void insert(K key, V value) {this.arrayList.append(new Project2KeyValuePair<K, V>(key, value));}
+    public void insert(K key, V value)
+    {
+        Project2KeyValuePair<K, V> newPair = new Project2KeyValuePair<K, V>(key, value);
+
+        if (this.size() == 0) {this.arrayList.append(newPair); return;}
+
+        int low = 0;
+        int high = this.arrayList.size() - 1;
+        int mid = (low + high) / 2;
+        while (low <= high)
+        {
+            this.arrayList.moveCurrentIndexTo(mid);
+            int comparison = this.arrayList.getCurrentValue().key().compareTo(key);
+            if (comparison < 0) low = mid + 1;
+            else if (comparison > 0) high = mid - 1;
+            else {low = mid; break;} // can break i guess
+            mid = (low + high) / 2;
+        }
+        
+        if (low < this.arrayList.size())
+        {
+            this.arrayList.moveCurrentIndexTo(low);
+            this.arrayList.insert(newPair);
+        }
+        else
+        {
+            // System.out.println(key);
+            this.arrayList.append(newPair);
+        }
+    }
 
     /** Use sequential search to find the element to remove */
     @Override
