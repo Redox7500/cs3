@@ -33,7 +33,7 @@ class Project2ArrayQueue<E> extends Project2AbstractQueue<E>
         int index = this.front + this.size++;
         if (index >= this.array.length) index -= this.array.length;
 
-        this.array[index] = it; // could make modulo a piecewise thing (more than or less than this.array.length) for performance theoretically -edit i did that
+        this.array[index] = it;
     }
 
     // Take element out of queue

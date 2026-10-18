@@ -1,10 +1,23 @@
 package io.github.redox7500.project2;
 
 // Container for a key-value pair
-public record Project2KeyValuePair<K, V>(K key, V value)
+public class Project2KeyValuePair<K, V>
 {
-    public Project2KeyValuePair() {this(null, null);}
+    final K key;
+    V value; // could make this V value = null;
+
+    public Project2KeyValuePair()
+    {
+        this.key = null;
+        this.value = null;
+    }
+
+    public Project2KeyValuePair(K key, V value)
+    {
+        this.key = key;
+        this.value = value;
+    }
 
     @Override
-    public String toString() {return this.key() + ": " + this.value();}
+    public String toString() {return this.key + ": " + this.value;}
 }
