@@ -49,26 +49,6 @@ public interface Project1List<E> extends Project1TestHarness.Testable<Project1Li
     /** @return The number of elements in the list */
     int size();
 
-    /** @return A copy of this list as far down as its elements (but elements in the copied array point to the same place as corresponding elements in this array) */
-    // CustomList<E> copy();
-
-    /**
-     * @param otherList The list to compare this list to
-     * @return A boolean representing whether or not this list is equal to otherList (which includes the result of getCurrentIndex)
-     */
-    // default boolean equals(CustomList<E> otherList)
-    // {
-
-    // }
-
-    // default int hashCode()
-    // {
-    //     return Object.hashCode
-    // }
-
-    /** String of the values in the list, comma separated, between square brackets */
-    // String toString();
-
     /** Shaffer's name for my equivalent {@link #project1lists.CustomList.moveCurrentIndexToStart moveCurrentIndexToStart()} method */
     default void moveToStart() {this.moveCurrentIndexToStart();}
 

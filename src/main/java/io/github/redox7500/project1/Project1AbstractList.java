@@ -63,24 +63,6 @@ public abstract class Project1AbstractList<E> implements Project1List<E>
     @Override
     public Project1TestHarness.Testable.EqualityTestResult equalityTest(Project1List<E> other) // only supports comparisons with other CustomLists
     {
-        // boolean error1 = false;
-        // boolean error2 = false;
-
-        // int size1;
-        // try {size1 = this.size();}
-        // catch (Throwable _) {error1 = true;}
-        // int size2;
-        // try {size2 = this.size();}
-        // catch (Throwable _) {error2 = true;}
-        // if (error1 && error2) return TestHarness.Testable.EqualityTestResult.ERROR_BOTH;
-        // if (error1 && !error2) return TestHarness.Testable.EqualityTestResult.ERROR_1;
-        // if (!error1 && error2) return TestHarness.Testable.EqualityTestResult.ERROR_2;
-        // if (size1 != size2) return TestHarness.Testable.EqualityTestResult.UNEQUAL;
-        // if (size1 == 0) return TestHarness.Testable.EqualityTestResult.EQUAL;
-        // could do what i did above and make it do the both thing but that's for later right now
-
-        // i just thought of a thing
-        // what if i make a record of size, nvm actually
         int thisSize;
         try {thisSize = this.size();}
         catch (Throwable _) {return Project1TestHarness.Testable.EqualityTestResult.ERROR_THIS;}
@@ -101,28 +83,12 @@ public abstract class Project1AbstractList<E> implements Project1List<E>
         catch (Throwable _) {return Project1TestHarness.Testable.EqualityTestResult.ERROR_OTHER;}
 
         if (thisCurrentIndex != otherCurrentIndex) return Project1TestHarness.Testable.EqualityTestResult.UNEQUAL;
-        // int currentIndex = this.getCurrentIndex();
-        // if (currentIndex != otherList.getCurrentIndex()) return false;
 
         try {this.moveCurrentIndexToStart();}
         catch (Throwable _) {return Project1TestHarness.Testable.EqualityTestResult.ERROR_THIS;}
         
         try {other.moveCurrentIndexToStart();}
         catch (Throwable _) {return Project1TestHarness.Testable.EqualityTestResult.ERROR_OTHER;}
-        // otherList.moveCurrentIndexToStart();
-
-        // for (int i = 0; ; i++)
-        // {
-        //     if (!(this.getCurrentValue().equals(otherList.getCurrentValue()))) return false;
-
-        //     if (i == size - 1) break;
-
-        //     this.moveCurrentIndexToNext();
-        //     otherList.moveCurrentIndexToNext();
-        // }
-
-        // this.moveCurrentIndexTo(currentIndex);
-        // otherList.moveCurrentIndexTo(currentIndex);
 
         for (int i = 0; ; i++)
         {
@@ -153,45 +119,6 @@ public abstract class Project1AbstractList<E> implements Project1List<E>
 
         return Project1TestHarness.Testable.EqualityTestResult.EQUAL;
     }
-
-    // @Override
-    // public int hashCode() // apparently i need to do this if i want to override equals(Object)
-    // {
-    //     int toReturn = 1;
-
-    //     int size = this.size();
-    //     int currentIndex = this.getCurrentIndex();
-
-    //     if (this.size() > 0)
-    //     {
-    //         try
-    //         {
-    //             this.moveCurrentIndexToStart();
-
-    //             for (int i = 0; ; i++)
-    //             {
-    //                 E currentValue = this.getCurrentValue();
-    //                 toReturn = 31 * toReturn + ((currentValue == null)? 0 : currentValue.hashCode());
-
-    //                 if (i == size - 1) break;
-
-    //                 this.moveCurrentIndexToNext();
-    //             }
-    //         }
-    //         finally
-    //         {
-    //             this.moveCurrentIndexTo(currentIndex);
-    //         }
-    //     }
-
-    //     toReturn = 31 * toReturn + Integer.hashCode(size);
-    //     toReturn = 31 * toReturn + Integer.hashCode(currentIndex);
-
-    //     E currentValue = this.getCurrentValue();
-    //     toReturn = 31 * toReturn + ((currentValue == null)? 0 : currentValue.hashCode());
-
-    //     return toReturn;
-    // }
     
     @Override
     public String toString()
