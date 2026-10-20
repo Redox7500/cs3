@@ -21,23 +21,11 @@ public class Project1LinkedList<E> extends Project1AbstractList<E>
     /** Size of list */
     private int elementCount = 0;
 
-    // private boolean a = false;
-
-    public ArrayList<String> history = new ArrayList<>();
-
-    // private void log()
-    // {
-    //     if (this.tailLink.nextLink == null && !this.a)
-    //     {
-    //         this.a = true;
-    //         System.out.println("\033[30;42mhere look here here here over here" + String.valueOf("\n").repeat(10) + "\033[0m");
-    //     }
-    // }
-
     @Override
     public void clear()
     {
         if (this.elementCount == 0) return;
+
         Project1Link<E> currentLink = this.headLink.nextLink;
         Project1Link<E> nextLink;
         while (currentLink != null)
@@ -46,13 +34,10 @@ public class Project1LinkedList<E> extends Project1AbstractList<E>
             currentLink.release();
             currentLink = nextLink;
         }
-        // for (Project1Link<E> tempLink = this.headLink.nextLink; tempLink != null; tempLink = tempLink.nextLink) tempLink.release();
+        
         this.headLink.nextLink = this.headLink; // Drop access to links
         this.currentIndex = 0;
         this.elementCount = 0;
-
-        // this.log();
-        history.add("clear()");
     }
 
     @Override
@@ -68,8 +53,6 @@ public class Project1LinkedList<E> extends Project1AbstractList<E>
             if (this.currentLink == this.tailLink) this.tailLink = this.tailLink.nextLink;
             this.elementCount++;
         }
-        // this.log();
-        history.add("insert(" + value + ")");
     }
     
     @Override
@@ -78,8 +61,6 @@ public class Project1LinkedList<E> extends Project1AbstractList<E>
         this.tailLink = this.tailLink.nextLink;
         this.tailLink.nextLink = Project1Link.acquire(value);
         this.elementCount++;
-        // this.log();
-        history.add("append(" + value + ")");
     }
     
     @Override
@@ -105,30 +86,21 @@ public class Project1LinkedList<E> extends Project1AbstractList<E>
                 this.headLink.nextLink = this.headLink;
             }
         }
-        else if (this.tailLink == currentNextLink) this.tailLink = this.currentLink;
-        // if (currentNextLink == this.tailLink)
-        // {
-        //     this.tailLink = this.currentLink;
-        // }
-        // if (this.elementCount == 1)
-        // {
-        //     this.headLink.nextLink = this.headLink;
-        // }
+        else if (currentNextLink == this.tailLink) this.tailLink = this.currentLink;
+        
         this.elementCount--;
-
-        // this.log();
-        history.add("remove()");
+        
         return value;
     }
 
     @Override
-    public E getCurrentValue() {assert this.elementCount > 0 : "Index out of range"; history.add("getCurrentValue()"); return this.currentLink.nextLink.value;}
+    public E getCurrentValue() {assert this.elementCount > 0 : "Index out of range"; return this.currentLink.nextLink.value;}
 
     @Override
-    public void setCurrentValue(E value) {if (this.elementCount > 0) this.currentLink.nextLink.value = value; else this.append(value); history.add("setCurrentValue()");}
+    public void setCurrentValue(E value) {if (this.elementCount > 0) this.currentLink.nextLink.value = value; else this.append(value);}
 
     @Override
-    public int getCurrentIndex() {history.add("getCurrentIndex()"); return this.currentIndex;}
+    public int getCurrentIndex() {return this.currentIndex;}
 
     @Override
     public void moveCurrentIndexTo(int index)
@@ -141,15 +113,13 @@ public class Project1LinkedList<E> extends Project1AbstractList<E>
             this.currentIndex = 0;
         }
         for (; this.currentIndex < index; this.currentIndex++) this.currentLink = this.currentLink.nextLink;
-        // this.log();
-        history.add("moveCurrentIndexTo(" + index + ")");
     }
 
     @Override
-    public void moveCurrentIndexToStart() {this.currentLink = this.headLink; this.currentIndex = 0; history.add("moveCurrentIndexToStart()");}
+    public void moveCurrentIndexToStart() {this.currentLink = this.headLink; this.currentIndex = 0;}
 
     @Override
-    public void moveCurrentIndexToEnd() {this.currentLink = this.tailLink; this.currentIndex = Math.max(this.elementCount - 1, 0); history.add("moveCurrentIndexToEnd()");}
+    public void moveCurrentIndexToEnd() {this.currentLink = this.tailLink; this.currentIndex = Math.max(this.elementCount - 1, 0);}
 
     @Override
     public void moveCurrentIndexToPrevious()
@@ -159,15 +129,13 @@ public class Project1LinkedList<E> extends Project1AbstractList<E>
         this.currentLink = this.headLink;
         int targetIndex = this.currentIndex - 1;
         for (this.currentIndex = 0; this.currentIndex < targetIndex; this.currentIndex++) this.currentLink = this.currentLink.nextLink;
-        // this.log();
-        history.add("moveCurrentIndexToPrevious()");
     }
     
     @Override
-    public void moveCurrentIndexToNext() {assert this.currentIndex != Math.max(this.elementCount - 1, 0) : "Index out of range"; this.currentLink = this.currentLink.nextLink; this.currentIndex++; history.add("moveCurrentIndexToNext()");}
+    public void moveCurrentIndexToNext() {assert this.currentIndex != Math.max(this.elementCount - 1, 0) : "Index out of range"; this.currentLink = this.currentLink.nextLink; this.currentIndex++;}
 
     @Override
-    public int size() {history.add("size()"); return this.elementCount;}
+    public int size() {return this.elementCount;}
 
     @Override
     public Project1LinkedList<E> copy()

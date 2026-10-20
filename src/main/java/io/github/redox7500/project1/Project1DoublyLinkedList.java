@@ -29,7 +29,7 @@ public class Project1DoublyLinkedList<E> extends Project1AbstractList<E>
             currentLink.release();
             currentLink = nextLink;
         }
-        // for (Project1DoubleLink<E> tempLink = this.headLink; tempLink != null; tempLink = tempLink.nextLink) tempLink.release();
+        
         this.headLink = this.currentLink = this.tailLink = null; // Drop access to links
         this.currentIndex = 0;
         this.elementCount = 0;
