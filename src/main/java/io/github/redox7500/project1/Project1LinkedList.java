@@ -1,7 +1,5 @@
 package io.github.redox7500.project1;
 
-import java.util.ArrayList;
-
 // honestly i could probably remove the dummy head link when there are no elements to save more, but idk, it does mess up the consistency
 /** Linked list implementation */
 public class Project1LinkedList<E> extends Project1AbstractList<E>
