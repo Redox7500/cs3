@@ -2,22 +2,22 @@ package io.github.redox7500.project2;
 
 import io.github.redox7500.project1.Project1ArrayList;
 
+/** Sorted array-based dictionary implementation */
 class Project2SortedArrayDictionary<K extends Comparable<? super K>, V> extends Project2AbstractDictionary<K, V>
 {
-    // Default size
-    private static final int defaultSize = 10;
+    /** The default maximum size of this dictionary implementation */
+    private static final int DEFAULT_SIZE = 10;
 
-    // To store dictionary
+    /** The array of key-value pairs backing this dictionary */
     private Project1ArrayList<Project2KeyValuePair<K, V>> arrayList;
 
-    public Project2SortedArrayDictionary() {this(defaultSize);}
+    public Project2SortedArrayDictionary() {this(DEFAULT_SIZE);}
+
     public Project2SortedArrayDictionary(int size) {this.arrayList = new Project1ArrayList<Project2KeyValuePair<K, V>>(size);}
 
-    // Reinitialize
     @Override
     public void clear() {this.arrayList.clear();}
-
-    /** Insert an element: append to list */
+    
     @Override
     public void insert(K key, V value)
     {
@@ -36,8 +36,7 @@ class Project2SortedArrayDictionary<K extends Comparable<? super K>, V> extends 
             this.arrayList.append(newPair);
         }
     }
-
-    /** Use sequential search to find the element to remove */
+    
     @Override
     public V remove(K key)
     {
@@ -49,8 +48,7 @@ class Project2SortedArrayDictionary<K extends Comparable<? super K>, V> extends 
         }
         return null;
     }
-
-    /** Remove the last element */
+    
     @Override
     public V removeAny()
     {
@@ -62,8 +60,7 @@ class Project2SortedArrayDictionary<K extends Comparable<? super K>, V> extends 
 
         return e.value;
     }
-
-    // Find "k" using sequential search
+    
     @Override
     public V find(K key)
     {
@@ -76,8 +73,7 @@ class Project2SortedArrayDictionary<K extends Comparable<? super K>, V> extends 
         }
         return null;
     }
-
-    // Return list size
+    
     @Override
     public int size() {return this.arrayList.length();}
 

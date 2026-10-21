@@ -2,41 +2,45 @@ package io.github.redox7500.project2;
 
 import java.lang.StringBuilder;
 
-// Array-based queue implementation
+/** Array-based queue implementation */
 class Project2ArrayQueue<E> extends Project2AbstractQueue<E>
 {
-    private static final int defaultSize = 10;
+    /** The default maximum size of this queue implementation */
+    private static final int DEFAULT_SIZE = 10;
+
+    /** Size of the queue (which will not always be as long as the entire array) */
     private int size;
-    private int front; // Index of front element
-    private E[] array; // Array holding queue elements
+
+    /** Index of the front element */
+    private int front;
+
+    /** Array holding this queue's elements */
+    private E[] array;
 
     @SuppressWarnings("unchecked") // For generic array
     Project2ArrayQueue(int size)
     {
         this.size = 0;
         this.front = 1;
-        this.array = (E[])new Object[size]; // Create listArray
+        this.array = (E[])new Object[size];
     }
 
-    public Project2ArrayQueue() {this(Project2ArrayQueue.defaultSize);}
-
-    // Reinitialize
+    public Project2ArrayQueue() {this(Project2ArrayQueue.DEFAULT_SIZE);}
+    
     @Override
     public void clear() {this.front = 0; this.size = 0;}
-
-    // Put "it" in queue
+    
     @Override
-    public void enqueue(E it)
+    public void enqueue(E value)
     {
         assert this.size != this.array.length - 1 : "Queue is full";
 
         int index = this.front + this.size++;
         if (index >= this.array.length) index -= this.array.length;
 
-        this.array[index] = it;
+        this.array[index] = value;
     }
 
-    // Take element out of queue
     @Override
     public E dequeue()
     {
@@ -50,15 +54,13 @@ class Project2ArrayQueue<E> extends Project2AbstractQueue<E>
 
         return it;
     }
-
-    // Get front value
+    
     @Override
     public E frontValue() {assert this.size != 0 : "Queue is empty"; return this.array[this.front];}
 
-    // Return length
     @Override
     public int length() {return this.size;}
-
+    
     @Override
     public String toString()
     {

@@ -25,22 +25,31 @@ public class Project2Main
         // b.append(5);
         // b.append(6);
         // System.out.println(Project2LinkedList.mergeLists(a, b));
-        Project2Dictionary<String, Integer> a = new Project2SortedArrayDictionary<>(100);
-        a.insert("a", 1);
-        a.removeAny();
-        a.insert("a", 1);
-        a.insert("b", 2);
-        a.insert("a", 5);
-        a.insert("d", 3);
-        a.insert("c", 3);
-        a.insert("a", 1);
-        a.insert("z", 2);
-        a.insert("x", 2);
-        a.insert("x", 2);
-        a.insert("x", 2);
-        a.insert("b", 3);
-        System.out.println(a.find("z"));
-        System.out.println(a.remove("a"));
+        // Project2Dictionary<String, Integer> a = new Project2SortedArrayDictionary<>(100);
+        // a.insert("a", 1);
+        // a.removeAny();
+        // a.insert("a", 1);
+        // a.insert("b", 2);
+        // a.insert("a", 5);
+        // a.insert("d", 3);
+        // a.insert("c", 3);
+        // a.insert("a", 1);
+        // a.insert("z", 2);
+        // a.insert("x", 2);
+        // a.insert("x", 2);
+        // a.insert("x", 2);
+        // a.insert("b", 3);
+        // System.out.println(a.find("z"));
+        // System.out.println(a.remove("a"));
+        // System.out.println(a);
+
+        Project2TowersOfHanoi a = new Project2TowersOfHanoi();
+        a.solve(2);
         System.out.println(a);
+        // a.moveTopDisk(0, 2);
+        // a.moveTopDisk(0, 1);
+        // // a.moveTopDisk(0, 2);
+        // a.moveTopDisk(2, 1);
+        // System.out.println(a);
     }
 }

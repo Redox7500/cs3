@@ -2,20 +2,23 @@ package io.github.redox7500.project2;
 
 import io.github.redox7500.project1.Project1Link;
 
-// Linked queue implementation
+/** Linked queue implementation */
 class Project2LinkedQueue<E> extends Project2AbstractQueue<E>
 {
-    private Project1Link<E> front; // Pointer to front queue node
-    private Project1Link<E> rear; // Pointer to rear queuenode
-    private int size; // Number of elements in queue
+    /** Pointer to the front link of this queue */
+    private Project1Link<E> front;
+
+    /** Pointer to the last link of this queue */
+    private Project1Link<E> rear;
+
+    /** Size of this queue (also known as the number of links in this queue) */
+    private int size;
     
     public Project2LinkedQueue() {this.front = this.rear = null; this.size = 0;}
 
-    // Reinitialize queue
     @Override
     public void clear() {this.front = this.rear = null; this.size = 0;}
-
-    // Put element on rear
+    
     @Override
     public void enqueue(E it)
     {
@@ -25,14 +28,13 @@ class Project2LinkedQueue<E> extends Project2AbstractQueue<E>
 
         this.size++;
     }
-
-    // remove element from front
+    
     @Override
     public E dequeue()
     {
         assert this.size != 0 : "Queue is empty";
 
-        E it = this.front.value; // Store dequeued value
+        E toReturn = this.front.value;
 
         Project1Link<E> newFrontLink = this.front.nextLink;
         this.front.release();
@@ -41,14 +43,12 @@ class Project2LinkedQueue<E> extends Project2AbstractQueue<E>
 
         this.size--;
 
-        return it; // Return Object
+        return toReturn;
     }
-
-    // Get front element
+    
     @Override
     public E frontValue() {assert size != 0 : "Queue is empty"; return this.front.value;}
-
-    // Return length
+    
     @Override
     public int length() {return this.size;}
 

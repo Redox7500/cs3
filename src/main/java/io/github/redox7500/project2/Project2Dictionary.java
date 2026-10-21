@@ -3,21 +3,24 @@ package io.github.redox7500.project2;
 /** The Dictionary abstract class. */
 public interface Project2Dictionary<K, V>
 {
-    /** Reinitialize dictionary */
+    /** Reinitialize this dictionary */
     void clear();
 
     /**
-     * Insert a record
-     * @param k The key for the record being inserted.
-     * @param e The record being inserted.
+     * Add a key-value pair to this dictionary
+     * @param key The key of the key-value pair being added
+     * @param value The value of the key-value pair being added
      */
-    void insert(K k, V e);
+    void insert(K key, V value);
 
-    /** Remove and return a record.
-     * @param k The key of the record to be removed.
-     * @return A maching record. If multiple records match "k", remove an arbitrary one. Return null if no record with key "k" exists.
+    /**
+     * Remove and return the value associated with the given key
+     * <br>
+     * Note: If multiple pairs match the given key, an arbitrary pair with the given key will be chosen
+     * @param key The key of the key-value pair to be removed, paired with the returned value
+     * @return The value associated with the key given, or {@code null} if the key is not found
      */
-    V remove(K k);
+    V remove(K key);
 
     /**
      * Remove and return an arbitrary record from dictionary.
@@ -25,9 +28,17 @@ public interface Project2Dictionary<K, V>
      */
     V removeAny();
 
-    /** @return A record matching "k" (null if none exists). If multiple records match, return an arbitrary one. */
-    V find(K k);
+    /** Get the value associated with the given key
+     * <br>
+     * Note: If multiple pairs match the given key, an arbitrary pair with the given key will be chosen
+     * @param key The key associated with the value to be returned
+     * @return The value associated with the given key, or {@code null} if the key is not found
+     */
+    V find(K key);
 
-    /** @return the number of records in the dictionary. */
+    /**
+     * Get the size of this dictionary
+     * @return the number of records in the dictionary.
+     */
     int size();
 };
