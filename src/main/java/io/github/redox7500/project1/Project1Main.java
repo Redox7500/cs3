@@ -1,6 +1,7 @@
 package io.github.redox7500.project1;
 
 import java.util.ArrayList;
+import java.util.function.Supplier;
 
 import io.github.redox7500.project1.Project1TestHarness.*;
 
@@ -8,24 +9,18 @@ public class Project1Main
 {
     public static void main(String[] args)
     {
-        Project1TestHarness.test(() -> new ThisState<Integer, Project1ArrayList<Integer>>(), 7);
+        Project1TestHarness.test(() -> new ThisState<Integer, Project1ArrayList<Integer>>(() -> new Project1ArrayList<Integer>()), 7);
     }
 
     private static class ThisState<E, T extends Project1List<E>> extends Project1TestHarness.State<Project1List<E>, T, ArrayListWrapper<E>>
     {
-        ThisState()
+        ThisState() {}
+        
+        ThisState(Supplier<T> supplier)
         {
-            this.toTest1 = new Project1ArrayList<E>();
+            this.toTest1 = supplier.get();
             this.toTest2 = new ArrayListWrapper<E>();
         }
-
-        // ThisState() {}
-        
-        // ThisState(Supplier<T> supplier)
-        // {
-        //     this.toTest1 = supplier.get();
-        //     this.toTest2 = new ArrayListWrapper<E>();
-        // }
 
         @SuppressWarnings("unchecked")
         @Override
