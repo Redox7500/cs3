@@ -3,7 +3,7 @@ package io.github.redox7500.project2;
 import io.github.redox7500.project1.Project1ArrayList;
 
 /** Sorted array-based dictionary implementation */
-class Project2SortedArrayDictionary<K extends Comparable<? super K>, V> extends Project2AbstractDictionary<K, V>
+public class Project2SortedArrayDictionary<K extends Comparable<? super K>, V> extends Project2AbstractDictionary<K, V>
 {
     /** The default maximum size of this dictionary implementation */
     private static final int DEFAULT_SIZE = 10;

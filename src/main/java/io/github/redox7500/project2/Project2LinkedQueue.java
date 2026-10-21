@@ -3,7 +3,7 @@ package io.github.redox7500.project2;
 import io.github.redox7500.project1.Project1Link;
 
 /** Linked queue implementation */
-class Project2LinkedQueue<E> extends Project2AbstractQueue<E>
+public class Project2LinkedQueue<E> extends Project2AbstractQueue<E>
 {
     /** Pointer to the front link of this queue */
     private Project1Link<E> front;

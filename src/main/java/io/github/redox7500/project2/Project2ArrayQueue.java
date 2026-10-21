@@ -3,7 +3,7 @@ package io.github.redox7500.project2;
 import java.lang.StringBuilder;
 
 /** Array-based queue implementation */
-class Project2ArrayQueue<E> extends Project2AbstractQueue<E>
+public class Project2ArrayQueue<E> extends Project2AbstractQueue<E>
 {
     /** The default maximum size of this queue implementation */
     private static final int DEFAULT_SIZE = 10;
