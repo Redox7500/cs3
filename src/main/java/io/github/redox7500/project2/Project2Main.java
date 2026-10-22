@@ -3,7 +3,6 @@ package io.github.redox7500.project2;
 import java.util.function.Supplier;
 import java.util.ArrayDeque;
 
-import io.github.redox7500.project1.Project1ArrayList;
 import io.github.redox7500.project1.Project1TestHarness;
 import io.github.redox7500.project1.Project1TestHarness.NamedTestFunction;
 import io.github.redox7500.project1.Project1TestHarness.OptionalValue;
@@ -60,14 +59,14 @@ public class Project2Main
         // a.moveTopDisk(2, 1);
         // System.out.println(a);
 
-        Project1TestHarness.test(() -> new ThisState<Integer, Project2LinkedQueue<Integer>>(() -> new Project2LinkedQueue<Integer>()), 12);
+        Project1TestHarness.test(() -> new ThisState<Integer>(() -> new Project2ArrayQueue<Integer>(12)), 12);
     }
 
-    private static class ThisState<E, T extends Project2Queue<E>> extends Project1TestHarness.State<Project2Queue<E>, T, ArrayDequeWrapper<E>>
+    private static class ThisState<E> extends Project1TestHarness.State<Project2Queue<E>, Project2Queue<E>, ArrayDequeWrapper<E>>
     {
         ThisState() {}
         
-        ThisState(Supplier<T> supplier)
+        ThisState(Supplier<Project2Queue<E>> supplier)
         {
             this.toTest1 = supplier.get();
             this.toTest2 = new ArrayDequeWrapper<E>();
@@ -99,7 +98,7 @@ public class Project2Main
         }
 
         @Override
-        protected ThisState<E, T> createInstance() {return new ThisState<E, T>();}
+        protected ThisState<E> createInstance() {return new ThisState<E>();}
     }
 
     private static class ArrayDequeWrapper<E> extends Project2AbstractQueue<E>
