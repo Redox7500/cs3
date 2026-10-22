@@ -33,7 +33,7 @@ public class Project2ArrayQueue<E> extends Project2AbstractQueue<E>
     @Override
     public void enqueue(E value)
     {
-        assert this.size != this.array.length - 1 : "Queue is full";
+        assert this.size != this.array.length : "Queue is full";
 
         int index = this.front + this.size++;
         if (index >= this.array.length) index -= this.array.length;
@@ -78,5 +78,17 @@ public class Project2ArrayQueue<E> extends Project2AbstractQueue<E>
         toReturn.append(']');
 
         return toReturn.toString();
+    }
+
+    @Override
+    public Project2ArrayQueue<E> copy()
+    {
+        Project2ArrayQueue<E> toReturn = new Project2ArrayQueue<>(this.array.length);
+
+        toReturn.array = this.array.clone();
+        toReturn.size = this.size;
+        toReturn.front = this.front;
+
+        return toReturn;
     }
 }

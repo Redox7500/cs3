@@ -124,4 +124,14 @@ public class Project2SortedArrayDictionary<K extends Comparable<? super K>, V> e
         }
         return low;
     }
+
+    @Override
+    public Project2SortedArrayDictionary<K, V> copy()
+    {
+        Project2SortedArrayDictionary<K, V> toReturn = new Project2SortedArrayDictionary<>();
+
+        toReturn.arrayList = this.arrayList.copy(); // elements not copied but i'll fix that later
+
+        return toReturn;
+    }
 }

@@ -1,7 +1,9 @@
 package io.github.redox7500.project2;
 
+import io.github.redox7500.project1.Project1TestHarness;
+
 /** The Dictionary abstract class. */
-public interface Project2Dictionary<K, V>
+public interface Project2Dictionary<K, V> extends Project1TestHarness.Testable<Project2Dictionary<K, V>>
 {
     /** Reinitialize this dictionary */
     void clear();

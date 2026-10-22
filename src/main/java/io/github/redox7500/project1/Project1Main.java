@@ -24,7 +24,7 @@ public class Project1Main
 
         @SuppressWarnings("unchecked")
         @Override
-        Project1TestHarness.NamedTestFunction<Project1List<E>>[] getTestFunctions()
+        protected Project1TestHarness.NamedTestFunction<Project1List<E>>[] getTestFunctions()
         {
             // do something to make this not make a new array every single time maybe?
             return (Project1TestHarness.NamedTestFunction<Project1List<E>>[])new Project1TestHarness.NamedTestFunction<?>[]
@@ -46,7 +46,7 @@ public class Project1Main
         }
 
         @Override
-        Object[][] generateArguments(int function)
+        protected Object[][] generateArguments(int function)
         {
             return switch (function)
             {
@@ -64,7 +64,7 @@ public class Project1Main
         }
 
         @Override
-        ThisState<E, T> createInstance() {return new ThisState<E, T>();}
+        protected ThisState<E, T> createInstance() {return new ThisState<E, T>();}
     }
 
     private static class ArrayListWrapper<E> extends Project1AbstractList<E>

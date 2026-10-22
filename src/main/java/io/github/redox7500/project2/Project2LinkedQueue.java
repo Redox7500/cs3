@@ -72,4 +72,17 @@ public class Project2LinkedQueue<E> extends Project2AbstractQueue<E>
 
         return toReturn.toString();
     }
+
+    @Override
+    public Project2LinkedQueue<E> copy()
+    {
+        Project2LinkedQueue<E> toReturn = new Project2LinkedQueue<>();
+
+        // i'll fix these later
+        toReturn.front = this.front;
+        toReturn.rear = this.rear;
+        toReturn.size = this.size;
+
+        return toReturn;
+    }
 }

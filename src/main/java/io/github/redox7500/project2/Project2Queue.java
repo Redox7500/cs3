@@ -1,7 +1,9 @@
 package io.github.redox7500.project2;
 
+import io.github.redox7500.project1.Project1TestHarness;
+
 /** Queue ADT */
-public interface Project2Queue<E>
+public interface Project2Queue<E> extends Project1TestHarness.Testable<Project2Queue<E>>
 {
     /** Reinitialize this queue. The user is responsible for reclaiming the storage used by the queue elements. */
     void clear();

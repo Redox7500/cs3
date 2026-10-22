@@ -1,6 +1,4 @@
 package io.github.redox7500.project1;
-
-import java.util.ArrayList;
 import java.util.function.Supplier;
 
 /** Test harness to test CustomList implementations (specifically CustomList<Integer, ?> implementations) */
@@ -9,30 +7,30 @@ public class Project1TestHarness
     /** Expresses a state that a CustomList and its corresponding ArrayList can be in, along with arrays to keep track of the function call and argument histories */
     public static abstract class State<S extends Testable<S>, T extends S, U extends S>
     {
-        abstract NamedTestFunction<S>[] getTestFunctions();
+        protected abstract NamedTestFunction<S>[] getTestFunctions();
         // static TestFunction<S>[] testFunctions;
-        abstract Object[][] generateArguments(int function);
+        protected abstract Object[][] generateArguments(int function);
 
         /** The instance of the CustomList being tested that resulted after the functionHistory/argumentHistory */
-        S toTest1;
+        protected S toTest1;
 
         /** An instance of ArrayList that resulted after the functionHistory/argumentHistory */
-        S toTest2;
+        protected S toTest2;
 
         /** An array containing all of the function calls leading up to this state */
-        int[] functionHistory;
+        protected int[] functionHistory;
 
         /** An array containing all of the arguments used in the function calls leading up to this state */
-        Object[][] argumentHistory; // maybe combine functionHistory and argumentHistory into an array of records?
+        protected Object[][] argumentHistory; // maybe combine functionHistory and argumentHistory into an array of records?
 
-        State()
+        protected State()
         {
             this.functionHistory = new int[0];
             this.argumentHistory = new Object[0][];
         }
 
         /** Log all of the information of this State (with formatting to work with {@link #project1lists.TestHarness.testCustomLists testCustomLists}) */
-        void printInfo()
+        protected void printInfo()
         {
             toTest1.printRelevantInfo("First object");
             System.out.println();
@@ -54,14 +52,14 @@ public class Project1TestHarness
             System.out.println();
         }
 
-        abstract State<S, T, U> createInstance();
+        protected abstract State<S, T, U> createInstance();
 
         /** Branch out from this state and add the new leaf states to leaves
          * @param leaves The deque to add the new leaf states to
          * @return A boolean representing whether any of the leaves had CustomLists that misbehaved or not
          */
         // final boolean branch(TestFunction<S>[] testFunctions, BiFunction<State<S, T, U>, Integer, Object[][]> argumentGenerator, int depth)
-        final boolean branch(int depth)
+        protected final boolean branch(int depth)
         {
             if (depth == 0) return true;
 
@@ -184,8 +182,8 @@ public class Project1TestHarness
 
     public record OptionalValue<T>(boolean empty, T value)
     {
-        OptionalValue() {this(true, null);}
+        public OptionalValue() {this(true, null);}
 
-        OptionalValue(T value) {this(false, value);}
+        public OptionalValue(T value) {this(false, value);}
     }
 }
