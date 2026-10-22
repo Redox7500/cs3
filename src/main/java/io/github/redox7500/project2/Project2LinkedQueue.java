@@ -25,7 +25,7 @@ public class Project2LinkedQueue<E> extends Project2AbstractQueue<E>
         try{
         Project1Link<E> newLink = Project1Link.acquire(it);
         if (newLink == null) System.out.println("\n\n\n\n\n");
-        if (this.rear == null) System.out.println(this.front == null);
+        // if (this.rear == null) System.out.println(this.front == null);
         // if (this.size == 0) this.front = this.rear = newLink;
         // else this.rear.nextLink = newLink; this.rear = this.rear.nextLink;
         if (this.size == 0) this.front = newLink;
@@ -87,9 +87,11 @@ public class Project2LinkedQueue<E> extends Project2AbstractQueue<E>
         Project2LinkedQueue<E> toReturn = new Project2LinkedQueue<>();
 
         // i'll fix these later
-        toReturn.front = this.front;
-        toReturn.rear = this.rear;
-        toReturn.size = this.size;
+        // toReturn.front = this.front;
+        // toReturn.rear = this.rear;
+        // toReturn.size = this.size;
+
+        for (Project1Link<E> tempLink = this.front; tempLink != null; tempLink = tempLink.nextLink) toReturn.enqueue(tempLink.value);
 
         return toReturn;
     }
