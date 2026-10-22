@@ -65,7 +65,7 @@ public class Project2Main
         // Project1TestHarness.test(() -> new ThisState<Integer>(() -> new Project2LinkedQueue<Integer>()), 12);
 
         // i should override static things or something like that (set static properties?) instead of making an extension of State i think maybe
-        Project1TestHarness.test(() -> new ThisState<String, Integer>(() -> new Project2SortedArrayDictionary<String, Integer>()), 4);
+        Project1TestHarness.test(() -> new ThisState<String, Integer>(() -> new Project2SortedArrayDictionary<String, Integer>()), 1);
     }
 
     // private static class ThisState<E> extends Project1TestHarness.State<Project2Queue<E>, Project2Queue<E>, ArrayDequeWrapper<E>>
@@ -174,7 +174,7 @@ public class Project2Main
         {
             return switch (function)
             {
-                case 1 -> new Object[][]{{("key " + (Integer)this.functionHistory.length).toString(), this.functionHistory.length}};
+                case 1 -> new Object[][]{{("key" + (Integer)this.functionHistory.length).toString(), this.functionHistory.length}};
                 case 2, 4 -> new Object[][]{{this.functionHistory.length}};
                 default -> new Object[][]{{}};
             };

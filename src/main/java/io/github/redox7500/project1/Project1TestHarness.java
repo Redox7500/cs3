@@ -45,7 +45,7 @@ public class Project1TestHarness
                 if (argumentLength > 0)
                 {
                     System.out.print(this.argumentHistory[i][0]);
-                    for (int j = 1; j < this.argumentHistory[i].length; j++) System.out.print(this.argumentHistory[i][j]);
+                    for (int j = 1; j < this.argumentHistory[i].length; j++) System.out.print(", " + this.argumentHistory[i][j]);
                 }
                 System.out.println(')');
             }
