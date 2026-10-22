@@ -2,6 +2,9 @@ package io.github.redox7500.project2;
 
 import io.github.redox7500.project1.Project1TestHarness;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /** This is what my dictionaries will extend, which implements {@link io.github.redox7500.project2.Project2Dictionary Project2Dictionary}
  * <br>
  * Right now it only forces toString() implementations.
@@ -70,7 +73,51 @@ public abstract class Project2AbstractDictionary<K extends Comparable<? super K>
         // try {other.moveCurrentIndexTo(otherCurrentIndex);} // could also be phrased as thisCurrentIndex
         // catch (Throwable _) {return Project1TestHarness.Testable.EqualityTestResult.ERROR_OTHER;}
 
-        if (this.toString() != other.toString()) return Project1TestHarness.Testable.EqualityTestResult.UNEQUAL;
+        // Project2Dictionary<K, V> thisCopy;
+        // try {thisCopy = this.copy();}
+        // catch (Throwable _) {return Project1TestHarness.Testable.EqualityTestResult.ERROR_THIS;}
+
+        // Project2Dictionary<K, V> otherCopy;
+        // try {otherCopy = other.copy();}
+        // catch (Throwable _) {return Project1TestHarness.Testable.EqualityTestResult.ERROR_OTHER;}
+
+        K[] thisKeys;
+        try {thisKeys = this.getKeys();}
+        catch (Throwable _) {return Project1TestHarness.Testable.EqualityTestResult.ERROR_THIS;}
+
+        K[] otherKeys;
+        try {otherKeys = other.getKeys();}
+        catch (Throwable _) {return Project1TestHarness.Testable.EqualityTestResult.ERROR_OTHER;}
+
+        // use weak hash map?
+        Map<K, Integer> keyCounts = new HashMap<>();
+        for (K key : thisKeys) keyCounts.put(key, keyCounts.getOrDefault(key, 0) + 1);
+        for (K key : otherKeys)
+        {
+            Integer keyCount = keyCounts.get(key);
+            switch (keyCount)
+            {
+                case null: return Project1TestHarness.Testable.EqualityTestResult.UNEQUAL;
+                case 0: keyCounts.remove(key);
+                default: keyCounts.put(key, keyCount - 1);
+            }
+        }
+        if (!keyCounts.isEmpty()) return Project1TestHarness.Testable.EqualityTestResult.UNEQUAL;
+
+        for (K key : thisKeys) // could be otherKeys too i suppose
+        {
+            V thisValue;
+            try {thisValue = this.find(key);}
+            catch (Throwable _) {return Project1TestHarness.Testable.EqualityTestResult.ERROR_THIS;}
+
+            V otherValue;
+            try {otherValue = other.find(key);}
+            catch (Throwable _) {return Project1TestHarness.Testable.EqualityTestResult.ERROR_OTHER;}
+
+            if (thisValue != otherValue) return Project1TestHarness.Testable.EqualityTestResult.UNEQUAL;
+        }
+
+        // if (this.toString() != other.toString()) return Project1TestHarness.Testable.EqualityTestResult.UNEQUAL;
         
         return Project1TestHarness.Testable.EqualityTestResult.EQUAL;
     }

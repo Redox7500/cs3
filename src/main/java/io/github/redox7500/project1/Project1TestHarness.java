@@ -97,14 +97,14 @@ public class Project1TestHarness
                     if (error1 && error2) continue;
                     if (error1 && !error2)
                     {
-                        System.out.println("Custom list had an error while ArrayListWrapper did not at state below");// \0337");
+                        System.out.println("First object had an error while second object did not at state below");
                         newState.printInfo();
 
                         return false;
                     }
                     if (!error1 && error2)
                     {
-                        System.out.println("ArrayListWrapper had an error while custom list did not at state below");// \0337");
+                        System.out.println("Second object had an error while first object did not at state below");
                         newState.printInfo();
 
                         return false;
@@ -112,7 +112,7 @@ public class Project1TestHarness
 
                     if ((result1 == null)? result2 != null : !result1.equals(result2))
                     {
-                        System.out.println("Results were not equal at state below");// \0337");
+                        System.out.println("Results were not equal at state below");
                         newState.printInfo();
 
                         return false;
@@ -121,17 +121,17 @@ public class Project1TestHarness
                     switch (newState.toTest1.equalityTest(newState.toTest2))
                     {
                         case ERROR_THIS:
-                            System.out.println("Custom list had an error when being compared to ArrayListWrapper");
+                            System.out.println("First object had an error when being compared to second object");
                             newState.printInfo();
 
                             return false;
                         case ERROR_OTHER:
-                            System.out.println("Custom list had an error when being compared to ArrayListWrapper");
+                            System.out.println("Second object had an error when being compared to first object");
                             newState.printInfo();
 
                             return false;
                         case UNEQUAL:
-                            System.out.println("Lists were not equal at state below");
+                            System.out.println("First and second objects were not equal at state below");
                             newState.printInfo();
 
                             return false;

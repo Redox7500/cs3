@@ -45,4 +45,9 @@ public interface Project2Dictionary<K, V> extends Project1TestHarness.Testable<P
      * @return the number of records in the dictionary.
      */
     int size();
+
+    /** Get an array of the keys in this dictionary
+     * @return An array of the keys in this dictionary
+     */
+    K[] getKeys();
 };

@@ -65,7 +65,7 @@ public class Project2Main
         // Project1TestHarness.test(() -> new ThisState<Integer>(() -> new Project2LinkedQueue<Integer>()), 12);
 
         // i should override static things or something like that (set static properties?) instead of making an extension of State i think maybe
-        Project1TestHarness.test(() -> new ThisState<String, Integer>(() -> new Project2SortedArrayDictionary<String, Integer>()), 12);
+        Project1TestHarness.test(() -> new ThisState<String, Integer>(() -> new Project2SortedArrayDictionary<String, Integer>()), 4);
     }
 
     // private static class ThisState<E> extends Project1TestHarness.State<Project2Queue<E>, Project2Queue<E>, ArrayDequeWrapper<E>>
@@ -255,5 +255,9 @@ public class Project2Main
 
         @Override
         public String toString() {return this.hashMap.toString();} // this does a slightly different formatting thing than what i do but it works i guess
+
+        @Override
+        @SuppressWarnings("unchecked") // idk if this is the right ordering of these two annotations
+        public K[] getKeys() {return (K[])this.hashMap.keySet().toArray();} // people say to not use this overload of toArray but i think it's fine specifically for here
     }
 }

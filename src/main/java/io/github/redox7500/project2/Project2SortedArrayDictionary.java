@@ -9,7 +9,7 @@ public class Project2SortedArrayDictionary<K extends Comparable<? super K>, V> e
     private static final int DEFAULT_SIZE = 10;
 
     /** The array of key-value pairs backing this dictionary */
-    private Project1ArrayList<Project2KeyValuePair<K, V>> arrayList;
+    private Project1ArrayList<Project2KeyValuePair<K, V>> arrayList; // do i even need to keep on moving the index of this arraylist back to where it was? i don't think so, probably i don't have to
 
     public Project2SortedArrayDictionary() {this(DEFAULT_SIZE);}
 
@@ -131,6 +131,27 @@ public class Project2SortedArrayDictionary<K extends Comparable<? super K>, V> e
         Project2SortedArrayDictionary<K, V> toReturn = new Project2SortedArrayDictionary<>();
 
         toReturn.arrayList = this.arrayList.copy(); // elements not copied but i'll fix that later
+
+        return toReturn;
+    }
+
+    @Override
+    public K[] getKeys()
+    {
+        int size = this.arrayList.size();
+
+        @SuppressWarnings("unchecked") // As Schaffer would say, "For generic array"
+        K[] toReturn = (K[])new Object[size];
+        
+        this.arrayList.moveCurrentIndexToStart();
+        for (int i = 0; ; i++)
+        {
+            toReturn[i] = this.arrayList.getCurrentValue().key;
+
+            if (i == size - 1) break;
+
+            this.arrayList.moveCurrentIndexToNext();
+        }
 
         return toReturn;
     }
