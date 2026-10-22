@@ -22,11 +22,19 @@ public class Project2LinkedQueue<E> extends Project2AbstractQueue<E>
     @Override
     public void enqueue(E it)
     {
+        try{
         Project1Link<E> newLink = Project1Link.acquire(it);
-        if (this.size == 0) this.front = this.rear = newLink;
-        else this.rear.nextLink = newLink; this.rear = this.rear.nextLink;
+        if (newLink == null) System.out.println("\n\n\n\n\n");
+        if (this.rear == null) System.out.println(this.front == null);
+        // if (this.size == 0) this.front = this.rear = newLink;
+        // else this.rear.nextLink = newLink; this.rear = this.rear.nextLink;
+        if (this.size == 0) this.front = newLink;
+        else this.rear.nextLink = newLink;
+        this.rear = newLink;
 
         this.size++;
+        }
+        catch (Throwable error) {error.printStackTrace(System.out);}
     }
     
     @Override

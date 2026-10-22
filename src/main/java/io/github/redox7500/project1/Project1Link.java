@@ -30,7 +30,7 @@ public class Project1Link<E>
         return toReturn;
     }
 
-    public static <E> Project1Link<E> acquire(E value)
+    public static <E> Project1Link<E> acquire(E value) // could make this acquire(value, null) instead to save room?
     {
         Project1Link<E> toReturn = Project1Link.acquire();
         toReturn.value = value;
