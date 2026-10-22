@@ -94,6 +94,8 @@ public abstract class Project2AbstractQueue<E> implements Project2Queue<E>
         // try {other.moveCurrentIndexTo(otherCurrentIndex);} // could also be phrased as thisCurrentIndex
         // catch (Throwable _) {return Project1TestHarness.Testable.EqualityTestResult.ERROR_OTHER;}
 
+        if (this.toString() != other.toString()) return Project1TestHarness.Testable.EqualityTestResult.UNEQUAL;
+        
         return Project1TestHarness.Testable.EqualityTestResult.EQUAL;
         // // i'll fix this
         // return EqualityTestResult.EQUAL;

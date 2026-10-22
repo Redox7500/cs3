@@ -25,8 +25,10 @@ public interface Project2Dictionary<K, V> extends Project1TestHarness.Testable<P
     V remove(K key);
 
     /**
-     * Remove and return an arbitrary record from dictionary.
-     * @return the record removed, or null if none exists.
+     * Remove and return the value of an arbitrary key-value pair from this
+     * <br>
+     * Note: If this dictionary is empty, nothing will be removed and null will be returned
+     * @return The value of the key-value pair removed
      */
     V removeAny();
 
