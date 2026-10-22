@@ -40,12 +40,20 @@ public class Project2SortedArrayDictionary<K extends Comparable<? super K>, V> e
     @Override
     public V remove(K key)
     {
+        // try
+        // {
         int index = this.closestIndexOf(key);
+        // System.out.println(index);
         if (index < this.size())
         {
             this.arrayList.moveCurrentIndexTo(index);
             if (this.arrayList.getCurrentValue().key == key) return this.arrayList.remove().value;
         }
+        // }
+        // catch (Throwable error)
+        // {
+        //     error.printStackTrace();
+        // }
         return null;
     }
     
@@ -141,7 +149,7 @@ public class Project2SortedArrayDictionary<K extends Comparable<? super K>, V> e
         int size = this.arrayList.size();
 
         @SuppressWarnings("unchecked") // As Schaffer would say, "For generic array"
-        K[] toReturn = (K[])new Object[size];
+        K[] toReturn = (K[])new Comparable[size];
         
         this.arrayList.moveCurrentIndexToStart();
         for (int i = 0; ; i++)

@@ -92,16 +92,18 @@ public abstract class Project2AbstractDictionary<K extends Comparable<? super K>
         // use weak hash map?
         Map<K, Integer> keyCounts = new HashMap<>();
         for (K key : thisKeys) keyCounts.put(key, keyCounts.getOrDefault(key, 0) + 1);
+        // System.out.println(keyCounts);
         for (K key : otherKeys)
         {
             Integer keyCount = keyCounts.get(key);
             switch (keyCount)
             {
                 case null: return Project1TestHarness.Testable.EqualityTestResult.UNEQUAL;
-                case 0: keyCounts.remove(key);
+                case 1: keyCounts.remove(key); break;
                 default: keyCounts.put(key, keyCount - 1);
             }
         }
+        // System.out.println(keyCounts);
         if (!keyCounts.isEmpty()) return Project1TestHarness.Testable.EqualityTestResult.UNEQUAL;
 
         for (K key : thisKeys) // could be otherKeys too i suppose

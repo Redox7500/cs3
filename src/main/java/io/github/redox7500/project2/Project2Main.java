@@ -62,110 +62,35 @@ public class Project2Main
         // a.moveTopDisk(2, 1);
         // System.out.println(a);
 
-        // Project1TestHarness.test(() -> new ThisState<Integer>(() -> new Project2LinkedQueue<Integer>()), 12);
+        Project1TestHarness.test(() -> new ThisState<Integer>(() -> new Project2LinkedQueue<Integer>()), 12);
 
         // i should override static things or something like that (set static properties?) instead of making an extension of State i think maybe
-        Project1TestHarness.test(() -> new ThisState<String, Integer>(() -> new Project2SortedArrayDictionary<String, Integer>()), 1);
+        // Project1TestHarness.test(() -> new ThisState<String, Integer>(() -> new Project2SortedArrayDictionary<String, Integer>(12)), 12);
     }
 
-    // private static class ThisState<E> extends Project1TestHarness.State<Project2Queue<E>, Project2Queue<E>, ArrayDequeWrapper<E>>
-    // {
-    //     ThisState() {}
-        
-    //     ThisState(Supplier<Project2Queue<E>> supplier)
-    //     {
-    //         this.toTest1 = supplier.get();
-    //         this.toTest2 = new ArrayDequeWrapper<E>();
-    //     }
-
-    //     @SuppressWarnings("unchecked")
-    //     @Override
-    //     protected NamedTestFunction<Project2Queue<E>>[] getTestFunctions()
-    //     {
-    //         // do something to make this not make a new array every single time maybe?
-    //         return (NamedTestFunction<Project2Queue<E>>[])new NamedTestFunction<?>[]
-    //         {
-    //             new NamedTestFunction<Project2Queue<E>>("clear",      (l, a) -> {l.clear();          return new OptionalValue<Object>();}),
-    //             new NamedTestFunction<Project2Queue<E>>("enqueue",    (l, a) -> {l.enqueue((E)a[0]); return new OptionalValue<Object>();}),
-    //             new NamedTestFunction<Project2Queue<E>>("dequeue",    (l, a) -> new OptionalValue<Object>(l.dequeue())),
-    //             new NamedTestFunction<Project2Queue<E>>("frontValue", (l, a) -> new OptionalValue<Object>(l.frontValue())),
-    //             new NamedTestFunction<Project2Queue<E>>("length",     (l, a) -> new OptionalValue<Object>(l.length())),
-    //         };
-    //     }
-
-    //     @Override
-    //     protected Object[][] generateArguments(int function)
-    //     {
-    //         return switch (function)
-    //         {
-    //             case 1 -> new Object[][]{{this.functionHistory.length}};
-    //             default -> new Object[][]{{}};
-    //         };
-    //     }
-
-    //     @Override
-    //     protected ThisState<E> createInstance() {return new ThisState<E>();}
-    // }
-
-    // private static class ArrayDequeWrapper<E> extends Project2AbstractQueue<E>
-    // {
-    //     ArrayDeque<E> arrayDeque = new ArrayDeque<>();
-
-    //     ArrayDequeWrapper() {super();}
-        
-    //     @Override
-    //     public void clear() {this.arrayDeque.clear();}
-        
-    //     @Override
-    //     public void enqueue(E value) {this.arrayDeque.offer(value);}
-
-    //     @Override
-    //     public E dequeue() {assert this.arrayDeque.size() != 0 : "Queue is empty"; return this.arrayDeque.poll();}
-        
-    //     @Override
-    //     public E frontValue() {return this.arrayDeque.getFirst();}
-
-    //     @Override
-    //     public int length() {return this.arrayDeque.size();}
-        
-    //     @Override
-    //     public String toString() {return this.arrayDeque.toString();}
-
-    //     @Override
-    //     public ArrayDequeWrapper<E> copy()
-    //     {
-    //         ArrayDequeWrapper<E> toReturn = new ArrayDequeWrapper<>();
-
-    //         toReturn.arrayDeque = new ArrayDeque<>(this.arrayDeque);
-
-    //         return toReturn;
-    //     }
-    // }
-
-    private static class ThisState<K extends Comparable<? super K>, V> extends Project1TestHarness.State<Project2Dictionary<K, V>, Project2Dictionary<K, V>, HashMapWrapper<K, V>>
+    // this one is for the queues, just swap out this implementation for the one below if you want to test the queues instead of the dictionaries or vice versa
+    private static class ThisState<E> extends Project1TestHarness.State<Project2Queue<E>, Project2Queue<E>, ArrayDequeWrapper<E>>
     {
         ThisState() {}
         
-        ThisState(Supplier<Project2Dictionary<K, V>> supplier)
+        ThisState(Supplier<Project2Queue<E>> supplier)
         {
             this.toTest1 = supplier.get();
-            this.toTest2 = new HashMapWrapper<K, V>();
+            this.toTest2 = new ArrayDequeWrapper<E>();
         }
 
         @SuppressWarnings("unchecked")
         @Override
-        protected NamedTestFunction<Project2Dictionary<K, V>>[] getTestFunctions()
+        protected NamedTestFunction<Project2Queue<E>>[] getTestFunctions()
         {
             // do something to make this not make a new array every single time maybe?
-            // clear, insert, remove, removeAny, find, size
-            return (NamedTestFunction<Project2Dictionary<K, V>>[])new NamedTestFunction<?>[]
+            return (NamedTestFunction<Project2Queue<E>>[])new NamedTestFunction<?>[]
             {
-                new NamedTestFunction<Project2Dictionary<K, V>>("clear",     (l, a) -> {l.clear();                  return new OptionalValue<Object>();}),
-                new NamedTestFunction<Project2Dictionary<K, V>>("insert",    (l, a) -> {l.insert((K)a[0], (V)a[1]); return new OptionalValue<Object>();}),
-                new NamedTestFunction<Project2Dictionary<K, V>>("remove",    (l, a) -> new OptionalValue<Object>(l.remove((K)a[0]))), // could be OptionalValue<V> for specificity now that i think about it
-                new NamedTestFunction<Project2Dictionary<K, V>>("removeAny", (l, a) -> new OptionalValue<Object>(l.removeAny())),
-                new NamedTestFunction<Project2Dictionary<K, V>>("find",      (l, a) -> new OptionalValue<Object>(l.find((K)a[0]))),
-                new NamedTestFunction<Project2Dictionary<K, V>>("size",      (l, a) -> new OptionalValue<Object>(l.size())),
+                new NamedTestFunction<Project2Queue<E>>("clear",      (l, a) -> {l.clear();          return new OptionalValue<Object>();}),
+                new NamedTestFunction<Project2Queue<E>>("enqueue",    (l, a) -> {l.enqueue((E)a[0]); return new OptionalValue<Object>();}),
+                new NamedTestFunction<Project2Queue<E>>("dequeue",    (l, a) -> new OptionalValue<Object>(l.dequeue())),
+                new NamedTestFunction<Project2Queue<E>>("frontValue", (l, a) -> new OptionalValue<Object>(l.frontValue())),
+                new NamedTestFunction<Project2Queue<E>>("length",     (l, a) -> new OptionalValue<Object>(l.length())),
             };
         }
 
@@ -174,15 +99,56 @@ public class Project2Main
         {
             return switch (function)
             {
-                case 1 -> new Object[][]{{("key" + (Integer)this.functionHistory.length).toString(), this.functionHistory.length}};
-                case 2, 4 -> new Object[][]{{this.functionHistory.length}};
+                case 1 -> new Object[][]{{this.functionHistory.length}};
                 default -> new Object[][]{{}};
             };
         }
 
         @Override
-        protected ThisState<K, V> createInstance() {return new ThisState<K, V>();}
+        protected ThisState<E> createInstance() {return new ThisState<E>();}
     }
+
+    // private static class ThisState<K extends Comparable<? super K>, V> extends Project1TestHarness.State<Project2Dictionary<K, V>, Project2Dictionary<K, V>, HashMapWrapper<K, V>>
+    // {
+    //     ThisState() {}
+        
+    //     ThisState(Supplier<Project2Dictionary<K, V>> supplier)
+    //     {
+    //         this.toTest1 = supplier.get();
+    //         this.toTest2 = new HashMapWrapper<K, V>();
+    //     }
+
+    //     @SuppressWarnings("unchecked")
+    //     @Override
+    //     protected NamedTestFunction<Project2Dictionary<K, V>>[] getTestFunctions()
+    //     {
+    //         // do something to make this not make a new array every single time maybe?
+    //         // clear, insert, remove, removeAny, find, size
+    //         return (NamedTestFunction<Project2Dictionary<K, V>>[])new NamedTestFunction<?>[]
+    //         {
+    //             new NamedTestFunction<Project2Dictionary<K, V>>("clear",     (l, a) -> {l.clear();                  return new OptionalValue<Object>();}),
+    //             new NamedTestFunction<Project2Dictionary<K, V>>("insert",    (l, a) -> {l.insert((K)a[0], (V)a[1]); return new OptionalValue<Object>();}),
+    //             new NamedTestFunction<Project2Dictionary<K, V>>("remove",    (l, a) -> new OptionalValue<Object>(l.remove((K)a[0]))), // could be OptionalValue<V> for specificity now that i think about it
+    //             // new NamedTestFunction<Project2Dictionary<K, V>>("removeAny", (l, a) -> new OptionalValue<Object>(l.removeAny())), // removeAny can't really be tested i think, especially not here!
+    //             new NamedTestFunction<Project2Dictionary<K, V>>("find",      (l, a) -> new OptionalValue<Object>(l.find((K)a[0]))),
+    //             new NamedTestFunction<Project2Dictionary<K, V>>("size",      (l, a) -> new OptionalValue<Object>(l.size())),
+    //         };
+    //     }
+
+    //     @Override
+    //     protected Object[][] generateArguments(int function)
+    //     {
+    //         return switch (function)
+    //         {
+    //             case 1 -> new Object[][]{{("key" + (Integer)this.functionHistory.length).toString(), this.functionHistory.length}};
+    //             case 2, 4 -> new Object[][]{{(K)((Integer)this.functionHistory.length).toString()}}; // probably want to change this but oh well
+    //             default -> new Object[][]{{}};
+    //         };
+    //     }
+
+    //     @Override
+    //     protected ThisState<K, V> createInstance() {return new ThisState<K, V>();}
+    // }
 
     private static class ArrayDequeWrapper<E> extends Project2AbstractQueue<E>
     {
@@ -258,6 +224,6 @@ public class Project2Main
 
         @Override
         @SuppressWarnings("unchecked") // idk if this is the right ordering of these two annotations
-        public K[] getKeys() {return (K[])this.hashMap.keySet().toArray();} // people say to not use this overload of toArray but i think it's fine specifically for here
+        public K[] getKeys() {return (K[])this.hashMap.keySet().toArray(new Comparable[0]);} // people say to not use this overload of toArray but i think it's fine specifically for here
     }
 }
