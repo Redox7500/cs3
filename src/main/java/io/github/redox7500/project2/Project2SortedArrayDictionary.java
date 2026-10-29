@@ -62,8 +62,8 @@ public class Project2SortedArrayDictionary<K extends Comparable<? super K>, V> e
     {
         if (size() == 0) return null;
         
-        this.arrayList.moveToEnd();
-        if (this.arrayList.length() > 1) this.arrayList.prev();
+        this.arrayList.moveCurrentIndexToEnd();
+        if (this.arrayList.size() > 1) this.arrayList.moveCurrentIndexToPrevious();
         Project2KeyValuePair<K, V> e = this.arrayList.remove();
 
         return e.value;
@@ -83,7 +83,7 @@ public class Project2SortedArrayDictionary<K extends Comparable<? super K>, V> e
     }
     
     @Override
-    public int size() {return this.arrayList.length();}
+    public int size() {return this.arrayList.size();}
 
     @Override
     public String toString() // could make this print single line i guess but i'm not sure how, maybe a static boolean for this class?
