@@ -1,14 +1,15 @@
 package io.github.redox7500.project2;
 
 import java.util.function.Supplier;
+
+import io.github.redox7500.testutil.TestHarness;
+import io.github.redox7500.testutil.TestHarness.NamedTestFunction;
+import io.github.redox7500.testutil.TestHarness.OptionalValue;
+
 import java.util.ArrayDeque;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Queue;
-
-import io.github.redox7500.project1.Project1TestHarness;
-import io.github.redox7500.project1.Project1TestHarness.NamedTestFunction;
-import io.github.redox7500.project1.Project1TestHarness.OptionalValue;
 
 public class Project2Main
 {
@@ -62,14 +63,14 @@ public class Project2Main
         // a.moveTopDisk(2, 1);
         // System.out.println(a);
 
-        Project1TestHarness.test(() -> new ThisState<Integer>(() -> new Project2LinkedQueue<Integer>()), 12);
+        TestHarness.test(() -> new ThisState<Integer>(() -> new Project2LinkedQueue<Integer>()), 12);
 
         // i should override static things or something like that (set static properties?) instead of making an extension of State i think maybe
         // Project1TestHarness.test(() -> new ThisState<String, Integer>(() -> new Project2SortedArrayDictionary<String, Integer>(12)), 12);
     }
 
     // this one is for the queues, just swap out this implementation for the one below if you want to test the queues instead of the dictionaries or vice versa
-    private static class ThisState<E> extends Project1TestHarness.State<Project2Queue<E>, Project2Queue<E>, ArrayDequeWrapper<E>>
+    private static class ThisState<E> extends TestHarness.State<Project2Queue<E>, Project2Queue<E>, ArrayDequeWrapper<E>>
     {
         ThisState() {}
         

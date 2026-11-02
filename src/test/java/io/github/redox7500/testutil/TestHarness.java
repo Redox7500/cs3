@@ -1,8 +1,10 @@
-package io.github.redox7500.project1;
+package io.github.redox7500.testutil;
 import java.util.function.Supplier;
 
+import io.github.redox7500.project1.Project1Copyable;
+
 /** Test harness to test CustomList implementations (specifically CustomList<Integer, ?> implementations) */
-public class Project1TestHarness
+public class TestHarness
 {
     /** Expresses a state that a CustomList and its corresponding ArrayList can be in, along with arrays to keep track of the function call and argument histories */
     public static abstract class State<S extends Testable<S>, T extends S, U extends S>
@@ -63,7 +65,7 @@ public class Project1TestHarness
         {
             if (depth == 0) return true;
 
-            Project1TestHarness.NamedTestFunction<S>[] functions = this.getTestFunctions();
+            TestHarness.NamedTestFunction<S>[] functions = this.getTestFunctions();
             for (int function = 0; function < functions.length; function++)
             {
                 Object[][] arguments = this.generateArguments(function);
@@ -146,7 +148,7 @@ public class Project1TestHarness
         }
     }
 
-    public static <S extends Testable<S>, T extends S, U extends S> boolean test(Supplier<Project1TestHarness.State<S, T, U>> stateSupplier, int depth)
+    public static <S extends Testable<S>, T extends S, U extends S> boolean test(Supplier<TestHarness.State<S, T, U>> stateSupplier, int depth)
     {
         long startTime = System.nanoTime();
 

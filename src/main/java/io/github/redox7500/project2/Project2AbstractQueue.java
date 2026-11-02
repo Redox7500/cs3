@@ -1,7 +1,7 @@
 package io.github.redox7500.project2;
 
-import io.github.redox7500.project1.Project1TestHarness;
-import io.github.redox7500.project1.Project1TestHarness.Testable;
+import io.github.redox7500.testutil.TestHarness;
+import io.github.redox7500.testutil.TestHarness.Testable;
 
 /** This is what my dictionaries will extend, which implements {@link io.github.redox7500.project2.Project2Queue Project2Queue}
  * <br>
@@ -41,25 +41,25 @@ public abstract class Project2AbstractQueue<E> implements Project2Queue<E>
     {
         int thisSize;
         try {thisSize = this.length();}
-        catch (Throwable _) {return Project1TestHarness.Testable.EqualityTestResult.ERROR_THIS;}
+        catch (Throwable _) {return TestHarness.Testable.EqualityTestResult.ERROR_THIS;}
 
         int otherSize;
         try {otherSize = other.length();}
-        catch (Throwable _) {return Project1TestHarness.Testable.EqualityTestResult.ERROR_OTHER;}
+        catch (Throwable _) {return TestHarness.Testable.EqualityTestResult.ERROR_OTHER;}
 
         // frontValue, enqueue
-        if (thisSize != otherSize) return Project1TestHarness.Testable.EqualityTestResult.UNEQUAL;
-        if (thisSize == 0) return Project1TestHarness.Testable.EqualityTestResult.EQUAL; // this one is debatable but i'm feeling lazy right now.
+        if (thisSize != otherSize) return TestHarness.Testable.EqualityTestResult.UNEQUAL;
+        if (thisSize == 0) return TestHarness.Testable.EqualityTestResult.EQUAL; // this one is debatable but i'm feeling lazy right now.
 
         E thisFrontValue;
         try {thisFrontValue = this.frontValue();}
-        catch (Throwable _) {return Project1TestHarness.Testable.EqualityTestResult.ERROR_THIS;}
+        catch (Throwable _) {return TestHarness.Testable.EqualityTestResult.ERROR_THIS;}
 
         E otherFrontValue;
         try {otherFrontValue = other.frontValue();}
-        catch (Throwable _) {return Project1TestHarness.Testable.EqualityTestResult.ERROR_OTHER;}
+        catch (Throwable _) {return TestHarness.Testable.EqualityTestResult.ERROR_OTHER;}
 
-        if (thisFrontValue != otherFrontValue) return Project1TestHarness.Testable.EqualityTestResult.UNEQUAL;
+        if (thisFrontValue != otherFrontValue) return TestHarness.Testable.EqualityTestResult.UNEQUAL;
 
         // try {this.moveCurrentIndexToStart();}
         // catch (Throwable _) {return Project1TestHarness.Testable.EqualityTestResult.ERROR_THIS;}
@@ -94,9 +94,9 @@ public abstract class Project2AbstractQueue<E> implements Project2Queue<E>
         // try {other.moveCurrentIndexTo(otherCurrentIndex);} // could also be phrased as thisCurrentIndex
         // catch (Throwable _) {return Project1TestHarness.Testable.EqualityTestResult.ERROR_OTHER;}
 
-        if (!this.toString().equals(other.toString())) return Project1TestHarness.Testable.EqualityTestResult.UNEQUAL; // just realized that this won't work for, say, a string like "0, 1" because that would most definitely mess it up, but right now i'm only using integers so it should be fine for the moment/time being
+        if (!this.toString().equals(other.toString())) return TestHarness.Testable.EqualityTestResult.UNEQUAL; // just realized that this won't work for, say, a string like "0, 1" because that would most definitely mess it up, but right now i'm only using integers so it should be fine for the moment/time being
         
-        return Project1TestHarness.Testable.EqualityTestResult.EQUAL;
+        return TestHarness.Testable.EqualityTestResult.EQUAL;
         // // i'll fix this
         // return EqualityTestResult.EQUAL;
     }
