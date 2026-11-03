@@ -31,28 +31,28 @@ public class TestHarness
             this.argumentHistory = new Object[0][];
         }
 
-        /** Log all of the information of this State (with formatting to work with {@link #project1lists.TestHarness.testCustomLists testCustomLists}) */
-        protected void printInfo()
-        {
-            toTest1.printRelevantInfo("First object");
-            System.out.println();
-            toTest2.printRelevantInfo("Second object");
-            System.out.println();
-            System.out.println("Function history (first at the top):");
-            NamedTestFunction<S>[] functions = this.getTestFunctions();
-            for (int i = 0; i < this.functionHistory.length; i++)
-            {
-                System.out.print('\t' + functions[this.functionHistory[i]].name() + '(');
-                int argumentLength = this.argumentHistory[i].length;
-                if (argumentLength > 0)
-                {
-                    System.out.print(this.argumentHistory[i][0]);
-                    for (int j = 1; j < this.argumentHistory[i].length; j++) System.out.print(", " + this.argumentHistory[i][j]);
-                }
-                System.out.println(')');
-            }
-            System.out.println();
-        }
+        // /** Log all of the information of this State (with formatting to work with {@link #project1lists.TestHarness.testCustomLists testCustomLists}) */
+        // protected void printInfo()
+        // {
+        //     toTest1.printRelevantInfo("First object");
+        //     System.out.println();
+        //     toTest2.printRelevantInfo("Second object");
+        //     System.out.println();
+        //     System.out.println("Function history (first at the top):");
+        //     NamedTestFunction<S>[] functions = this.getTestFunctions();
+        //     for (int i = 0; i < this.functionHistory.length; i++)
+        //     {
+        //         System.out.print('\t' + functions[this.functionHistory[i]].name() + '(');
+        //         int argumentLength = this.argumentHistory[i].length;
+        //         if (argumentLength > 0)
+        //         {
+        //             System.out.print(this.argumentHistory[i][0]);
+        //             for (int j = 1; j < this.argumentHistory[i].length; j++) System.out.print(", " + this.argumentHistory[i][j]);
+        //         }
+        //         System.out.println(')');
+        //     }
+        //     System.out.println();
+        // }
 
         protected abstract State<S, T, U> createInstance();
 
@@ -100,14 +100,14 @@ public class TestHarness
                     if (error1 && !error2)
                     {
                         System.out.println("First object had an error while second object did not at state below");
-                        newState.printInfo();
+                        // newState.printInfo();
 
                         return false;
                     }
                     if (!error1 && error2)
                     {
                         System.out.println("Second object had an error while first object did not at state below");
-                        newState.printInfo();
+                        // newState.printInfo();
 
                         return false;
                     }
@@ -115,26 +115,26 @@ public class TestHarness
                     if ((result1 == null)? result2 != null : !result1.equals(result2))
                     {
                         System.out.println("Results were not equal at state below");
-                        newState.printInfo();
+                        // newState.printInfo();
 
                         return false;
                     }
 
-                    switch (newState.toTest1.equalityTest(newState.toTest2))
+                    switch (newState.equalityTest())
                     {
                         case ERROR_THIS:
                             System.out.println("First object had an error when being compared to second object");
-                            newState.printInfo();
+                            // newState.printInfo();
 
                             return false;
                         case ERROR_OTHER:
                             System.out.println("Second object had an error when being compared to first object");
-                            newState.printInfo();
+                            // newState.printInfo();
 
                             return false;
                         case UNEQUAL:
                             System.out.println("First and second objects were not equal at state below");
-                            newState.printInfo();
+                            // newState.printInfo();
 
                             return false;
                         case EQUAL:
@@ -146,6 +146,9 @@ public class TestHarness
 
             return true;
         }
+
+        protected abstract Testable.EqualityTestResult equalityTest();
+        protected abstract void printRelevantInfo(String name);
     }
 
     public static <S extends Testable<S>, T extends S, U extends S> boolean test(Supplier<TestHarness.State<S, T, U>> stateSupplier, int depth)
@@ -162,8 +165,8 @@ public class TestHarness
 
     public interface Testable<T extends Testable<T>> extends Project1Copyable<T>
     {
-        EqualityTestResult equalityTest(T other);
-        void printRelevantInfo(String name);
+        // EqualityTestResult equalityTest(T other);
+        // void printRelevantInfo(String name);
         
         enum EqualityTestResult
         {
