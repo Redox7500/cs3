@@ -44,7 +44,7 @@ public interface TestableProject1List<E> implements io.github.redox7500.project1
     }
     
     @Override
-    public TestHarness.Testable.EqualityTestResult equalityTest(TestableProject1AbstractList<E> other) // only supports comparisons with other CustomLists
+    public EqualityTestResult equalityTest(TestableProject1AbstractList<E> other) // only supports comparisons with other CustomLists
     {
         int thisSize;
         try {thisSize = this.size();}
