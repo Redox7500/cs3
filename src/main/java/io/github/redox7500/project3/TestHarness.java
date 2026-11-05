@@ -35,7 +35,7 @@ public class TestHarness {
         System.out.print("smallCount: ");
         System.out.println(smallCount(bst.root(), 150));
     }
-
+    
     public static void printRange(BSTNode<Integer, Integer> rt, int low, int high) {
         rt.printRange(low, high);
     }

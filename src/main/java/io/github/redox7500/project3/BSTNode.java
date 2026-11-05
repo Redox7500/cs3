@@ -88,20 +88,30 @@ class BSTNode<Key, E> implements BinNode<E> {
         return (left == null) && (right == null);
     }
 
+    /** Prints out the node keys of the BST (of which this is the root) in reverse sorted order from highest to lowest */
     public void printHighToLow() {
         if (this.right != null) this.right.printHighToLow();
         System.out.print(this.key + " ");
         if (this.left != null) this.left.printHighToLow();
     }
 
-    // fix
+    /**
+     * Given a low key integer value and a high key integer value, prints in sorted order all records including and beneath this node whose key values fall between the two given keys, inclusive
+     * @param low The lower bound for what keys to print
+     * @param high The upper bound for what keys to print
+     */
     public void printRange(int low, int high) {
         // maybe supposed to be non inclusive like < or > but i forgot if the insert does that or not
-        if (this.left != null && (Integer)this.left.key >= low) this.left.printRange(low, high);
-        if (low <= (Integer)this.key && high >= (Integer)this.key) System.out.print(this.key + " ");
-        if (this.right != null && (Integer)this.right.key <= high) this.right.printRange(low, high);
+        // System.out.println(this.left != null && (Integer)this.left.key >= low);
+        // System.out.println(this.right != null && (Integer)this.right.key <= high);
+        if (this.left  != null && (Integer)this.key  >= low)  this.left .printRange(low, high);
+        if (low <= (Integer)this.key && high >= (Integer)this.key) System.out.print((Integer)this.key + " ");
+        if (this.right != null && (Integer)this.key <= high) this.right.printRange(low, high);
     }
 
+    /** Returns the sum of the elements of all nodes in the tree (of which this is the root)
+     * @return The sum of the elements of all nodes in the tree
+    */
     public int sumNodes() {
         int toReturn = 0;
         if (this.element != null) toReturn += (Integer)this.element;
@@ -110,6 +120,10 @@ class BSTNode<Key, E> implements BinNode<E> {
         return toReturn;
     }
 
+    /** Given a key value K, returns the number of nodes beneath and including this having key values less than or equal to K
+     * @param K Key value to return the number of nodes having key values less than or equal to
+     * @return The number of nodes having key values less than or equal to K
+     */
     public int smallCount(Integer K) {
         int toReturn = 0;
         if ((Integer)this.key <= K) {
