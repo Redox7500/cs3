@@ -27,7 +27,7 @@ public abstract class Project2AbstractDictionary<K extends Comparable<? super K>
     }
 
     @Override
-    public EqualityTestResult equalityTest(Project2Dictionary<K, V> other)
+    public TestEqualityResult equalityTest(Project2Dictionary<K, V> other)
     {
         int thisSize;
         try {thisSize = this.size();}

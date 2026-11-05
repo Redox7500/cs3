@@ -37,7 +37,7 @@ public abstract class Project2AbstractQueue<E> implements Project2Queue<E>
     }
 
     @Override
-    public Testable.EqualityTestResult equalityTest(Project2Queue<E> other)
+    public Testable.TestEqualityResult equalityTest(Project2Queue<E> other)
     {
         int thisSize;
         try {thisSize = this.length();}

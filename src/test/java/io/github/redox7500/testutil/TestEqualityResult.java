@@ -1,6 +1,6 @@
 package io.github.redox7500.testutil;
 
-enum EqualityTestResult
+public enum TestEqualityResult
 {
     ERROR_THIS,
     ERROR_OTHER,

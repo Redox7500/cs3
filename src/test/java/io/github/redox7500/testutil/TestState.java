@@ -7,7 +7,85 @@ public abstract class TestState<S, T extends S, U extends S>
     // static TestFunction<S>[] testFunctions;
     protected abstract Object[][] generateArguments(int function);
 
-    protected abstract TestState<S, T, U> copy(int function, Object[] arg);
+    protected abstract S copyToTest(S toCopy);
+
+    protected TestState<S, T, U> branchWith(int function, Object[] argument)
+    // {
+    //     TestState<S, T, U> toReturn = this.createInstance();
+
+    //     // toReturn.toTest1 = this.toTest1.copy();
+    //     // toReturn.toTest2 = this.toTest2.copy();
+
+    //     int historyLength = this.functionHistory.length;
+
+    //     toReturn.functionHistory = new int[historyLength + 1];
+    //     System.arraycopy(this.functionHistory, 0, toReturn.functionHistory, 0, historyLength);
+    //     toReturn.functionHistory[historyLength] = function;
+
+    //     toReturn.argumentHistory = new Object[historyLength + 1][];
+    //     System.arraycopy(this.argumentHistory, 0, toReturn.argumentHistory, 0, historyLength);
+    //     toReturn.argumentHistory[historyLength] = argument;
+
+    //     return toReturn;
+    // }
+
+    // protected EqualityTestResult evaluate()
+    // {
+    //     Object result1 = null;
+    //     Object result2 = null;
+    //     boolean error1 = false;
+    //     boolean error2 = false;
+ 
+    //     try {result1 = functions[function].function().apply(newState.toTest1, argument);}
+    //     catch (Throwable _) {error1 = true;}
+    //     try {result2 = functions[function].function().apply(newState.toTest2, argument);}
+    //     catch (Throwable _) {error2 = true;}
+
+    //     if (error1 && error2) continue;
+    //     if (error1 && !error2)
+    //     {
+    //         System.out.println("First object had an error while second object did not at state below");
+    //         // newState.printInfo();
+
+    //         return false;
+    //     }
+    //     if (!error1 && error2)
+    //     {
+    //         System.out.println("Second object had an error while first object did not at state below");
+    //         // newState.printInfo();
+
+    //         return false;
+    //     }
+
+    //     if ((result1 == null)? result2 != null : !result1.equals(result2))
+    //     {
+    //         System.out.println("Results were not equal at state below");
+    //         // newState.printInfo();
+
+    //         return false;
+    //     }
+
+    //     switch (newState.equalityTest())
+    //     {
+    //         case ERROR_THIS:
+    //             System.out.println("First object had an error when being compared to second object");
+    //             // newState.printInfo();
+
+    //             return false;
+    //         case ERROR_OTHER:
+    //             System.out.println("Second object had an error when being compared to first object");
+    //             // newState.printInfo();
+
+    //             return false;
+    //         case UNEQUAL:
+    //             System.out.println("First and second objects were not equal at state below");
+    //             // newState.printInfo();
+
+    //             return false;
+    //         case EQUAL:
+    //             if (!newState.branch(depth - 1)) return false;
+    //     }
+    // }
 
     /** The instance of the CustomList being tested that resulted after the functionHistory/argumentHistory */
     protected S toTest1;

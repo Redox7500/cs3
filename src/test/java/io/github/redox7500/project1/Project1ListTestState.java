@@ -8,6 +8,7 @@ import io.github.redox7500.testutil.TestHarness;
 import io.github.redox7500.testutil.TestState;
 import io.github.redox7500.testutil.TestFunction;
 import io.github.redox7500.testutil.TestFunctionNamed;
+import io.github.redox7500.testutil.TestEqualityResult;
 
 public class Project1ListTestState<E, T extends Project1List<E>> extends TestState<Project1List<E>, T, Project1ArrayListWrapper<E>>
 {
@@ -62,4 +63,44 @@ public class Project1ListTestState<E, T extends Project1List<E>> extends TestSta
 
     @Override
     protected Project1ListTestState<E, T> createInstance() {return new Project1ListTestState<E, T>();}
+
+    @Override
+    protected Project1List<E> copyToTest(Project1List<E> toCopy)
+    {
+        Project1List<E> toReturn;
+
+        try {toReturn = toCopy.getClass().getDeclaredConstructor().newInstance();}
+        catch (Throwable _) {System.err.println("Class to copy has no visible parameterless constructor"); return null;}
+
+        int size = toCopy.size();
+        if (size == 0) return toReturn;
+
+        int currentIndex = toCopy.getCurrentIndex();
+
+        try
+        {
+            toCopy.moveCurrentIndexToStart();
+
+            for (int i = 0; ; i++)
+            {
+                toReturn.append(toCopy.getCurrentValue());
+
+                if (i == size - 1) break;
+
+                toCopy.moveCurrentIndexToNext();
+            }
+            toReturn.append(toCopy.getCurrentValue());
+
+            toReturn.moveCurrentIndexTo(currentIndex);
+        }
+        finally
+        {
+            toCopy.moveCurrentIndexTo(currentIndex);
+        }
+
+        return toReturn;
+    }
+
+    @Override
+    protected TestEqualityResult 
 }
