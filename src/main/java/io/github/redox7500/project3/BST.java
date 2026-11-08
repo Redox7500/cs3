@@ -4,7 +4,7 @@
  */
 package io.github.redox7500.project3;
 
-import java.lang.Comparable;
+import java.util.ArrayDeque;
 
 /**
  * Binary Search Tree implementation for Dictionary ADT
@@ -189,4 +189,31 @@ class BST<Key extends Comparable<? super Key>, E> implements Dictionary<Key, E> 
         this.root.printHighToLow();
     }
 
+    public int countNodes() {
+        return this.root.countNodes();
+    }
+
+    public int countLeaves() {
+        return this.root.countLeaves();
+    }
+
+    public int countParents() {
+        return this.root.countParents();
+    }
+
+    // i should verify this one better
+    /** Prints the node elements of the tree in-level order (prints the root node, then all the nodes in level 1 left-to-right, then all the nodes in level 2 left-to-right, and so on) */
+    public void printInLevel() {
+        StringBuilder toPrint = new StringBuilder();
+        ArrayDeque<BSTNode<Key, E>> layer = new ArrayDeque<>();
+        layer.add(this.root);
+        BSTNode<Key, E> node;
+        while ((node = layer.poll()) != null) {
+            toPrint.append(node.element());
+            toPrint.append(' ');
+            if (node.left() != null) layer.add(node.left());
+            if (node.right() != null) layer.add(node.right());
+        }
+        System.out.println(toPrint);
+    }
 }

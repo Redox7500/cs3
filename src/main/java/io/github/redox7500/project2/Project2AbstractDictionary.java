@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import io.github.redox7500.testutil.TestHarness;
+import io.github.redox7500.testutil.TestEqualityResult;
 
 /** This is what my dictionaries will extend, which implements {@link io.github.redox7500.project2.Project2Dictionary Project2Dictionary}
  * <br>
@@ -27,18 +28,18 @@ public abstract class Project2AbstractDictionary<K extends Comparable<? super K>
     }
 
     @Override
-    public TestEqualityResult equalityTest(Project2Dictionary<K, V> other)
+    public TestEqualityResult testEquality(Project2Dictionary<K, V> other)
     {
         int thisSize;
         try {thisSize = this.size();}
-        catch (Throwable _) {return TestHarness.Testable.EqualityTestResult.ERROR_THIS;}
+        catch (Throwable _) {return TestEqualityResult.ERROR_THIS;}
 
         int otherSize;
         try {otherSize = other.size();}
-        catch (Throwable _) {return TestHarness.Testable.EqualityTestResult.ERROR_OTHER;}
+        catch (Throwable _) {return TestEqualityResult.ERROR_OTHER;}
 
-        if (thisSize != otherSize) return TestHarness.Testable.EqualityTestResult.UNEQUAL;
-        if (thisSize == 0) return TestHarness.Testable.EqualityTestResult.EQUAL; // this one is debatable but i'm feeling lazy right now.
+        if (thisSize != otherSize) return TestEqualityResult.UNEQUAL;
+        if (thisSize == 0) return TestEqualityResult.EQUAL; // this one is debatable but i'm feeling lazy right now.
         
         // try {this.moveCurrentIndexToStart();}
         // catch (Throwable _) {return Project1TestHarness.Testable.EqualityTestResult.ERROR_THIS;}
@@ -83,11 +84,11 @@ public abstract class Project2AbstractDictionary<K extends Comparable<? super K>
 
         K[] thisKeys;
         try {thisKeys = this.getKeys();}
-        catch (Throwable _) {return TestHarness.Testable.EqualityTestResult.ERROR_THIS;}
+        catch (Throwable _) {return TestEqualityResult.ERROR_THIS;}
 
         K[] otherKeys;
         try {otherKeys = other.getKeys();}
-        catch (Throwable _) {return TestHarness.Testable.EqualityTestResult.ERROR_OTHER;}
+        catch (Throwable _) {return TestEqualityResult.ERROR_OTHER;}
 
         // use weak hash map?
         Map<K, Integer> keyCounts = new HashMap<>();
@@ -98,29 +99,29 @@ public abstract class Project2AbstractDictionary<K extends Comparable<? super K>
             Integer keyCount = keyCounts.get(key);
             switch (keyCount)
             {
-                case null: return TestHarness.Testable.EqualityTestResult.UNEQUAL;
+                case null: return TestEqualityResult.UNEQUAL;
                 case 1: keyCounts.remove(key); break;
                 default: keyCounts.put(key, keyCount - 1);
             }
         }
         // System.out.println(keyCounts);
-        if (!keyCounts.isEmpty()) return TestHarness.Testable.EqualityTestResult.UNEQUAL;
+        if (!keyCounts.isEmpty()) return TestEqualityResult.UNEQUAL;
 
         for (K key : thisKeys) // could be otherKeys too i suppose
         {
             V thisValue;
             try {thisValue = this.find(key);}
-            catch (Throwable _) {return TestHarness.Testable.EqualityTestResult.ERROR_THIS;}
+            catch (Throwable _) {return TestEqualityResult.ERROR_THIS;}
 
             V otherValue;
             try {otherValue = other.find(key);}
-            catch (Throwable _) {return TestHarness.Testable.EqualityTestResult.ERROR_OTHER;}
+            catch (Throwable _) {return TestEqualityResult.ERROR_OTHER;}
 
-            if (thisValue != otherValue) return TestHarness.Testable.EqualityTestResult.UNEQUAL;
+            if (thisValue != otherValue) return TestEqualityResult.UNEQUAL;
         }
 
         // if (this.toString() != other.toString()) return Project1TestHarness.Testable.EqualityTestResult.UNEQUAL;
         
-        return TestHarness.Testable.EqualityTestResult.EQUAL;
+        return TestEqualityResult.EQUAL;
     }
 }

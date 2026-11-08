@@ -1,7 +1,6 @@
 package io.github.redox7500.project2;
 
 import io.github.redox7500.testutil.TestHarness;
-import io.github.redox7500.testutil.TestHarness.Testable;
 
 /** This is what my dictionaries will extend, which implements {@link io.github.redox7500.project2.Project2Queue Project2Queue}
  * <br>

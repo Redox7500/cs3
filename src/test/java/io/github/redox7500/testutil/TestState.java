@@ -9,7 +9,7 @@ public abstract class TestState<S, T extends S, U extends S>
 
     protected abstract S copyToTest(S toCopy);
 
-    protected TestState<S, T, U> branchWith(int function, Object[] argument)
+    // protected TestState<S, T, U> branchWith(int function, Object[] argument)
     // {
     //     TestState<S, T, U> toReturn = this.createInstance();
 
@@ -147,8 +147,8 @@ public abstract class TestState<S, T extends S, U extends S>
             {
                 TestState<S, T, U> newState = this.createInstance();
 
-                newState.toTest1 = this.toTest1.copy();
-                newState.toTest2 = this.toTest2.copy();
+                newState.toTest1 = this.copyToTest(toTest1);
+                newState.toTest2 = this.copyToTest(toTest2);
 
                 int historyLength = this.functionHistory.length;
 
@@ -194,7 +194,7 @@ public abstract class TestState<S, T extends S, U extends S>
                     return false;
                 }
 
-                switch (newState.equalityTest())
+                switch (newState.testEquality())
                 {
                     case ERROR_THIS:
                         System.out.println("First object had an error when being compared to second object");
@@ -221,6 +221,6 @@ public abstract class TestState<S, T extends S, U extends S>
         return true;
     }
 
-    protected abstract EqualityTestResult equalityTest();
+    protected abstract TestEqualityResult testEquality();
     protected abstract void printRelevantInfo(String name);
 }

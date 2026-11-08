@@ -10,7 +10,7 @@ package io.github.redox7500.project3;
  * @param E The data element
  * @param Key The associated key for the record
  */
-class BSTNode<Key, E> implements BinNode<E> {
+class BSTNode<Key extends Comparable<? super Key>, E> implements BinNode<E> {
 
     private Key key;              // Key for this node
     private E element;            // Element for this node
@@ -92,7 +92,7 @@ class BSTNode<Key, E> implements BinNode<E> {
     public void printHighToLow() {
         if (this.right != null) this.right.printHighToLow();
         System.out.print(this.key + " ");
-        if (this.left != null) this.left.printHighToLow();
+        if (this.left  != null) this.left .printHighToLow();
     }
 
     /**
@@ -100,37 +100,84 @@ class BSTNode<Key, E> implements BinNode<E> {
      * @param low The lower bound for what keys to print
      * @param high The upper bound for what keys to print
      */
-    public void printRange(int low, int high) {
+    public void printRange(Key low, Key high) {
         // maybe supposed to be non inclusive like < or > but i forgot if the insert does that or not
         // System.out.println(this.left != null && (Integer)this.left.key >= low);
         // System.out.println(this.right != null && (Integer)this.right.key <= high);
-        if (this.left  != null && (Integer)this.key  >= low)  this.left .printRange(low, high);
-        if (low <= (Integer)this.key && high >= (Integer)this.key) System.out.print((Integer)this.key + " ");
-        if (this.right != null && (Integer)this.key <= high) this.right.printRange(low, high);
+        if (this.left  != null && this.key.compareTo(low)  >= 0) this.left .printRange(low, high);
+        if (this.key.compareTo(low) >= 0 && this.key.compareTo(high) <= 0) System.out.print(this.key + " ");
+        if (this.right != null && this.key.compareTo(high) <= 0) this.right.printRange(low, high);
     }
 
-    /** Returns the sum of the elements of all nodes in the tree (of which this is the root)
-     * @return The sum of the elements of all nodes in the tree
-    */
-    public int sumNodes() {
-        int toReturn = 0;
-        if (this.element != null) toReturn += (Integer)this.element;
-        if (this.left  != null) toReturn += this.left .sumNodes();
-        if (this.right != null) toReturn += this.right.sumNodes();
-        return toReturn;
-    }
+    // /**
+    //  * Returns the sum of the elements of all nodes in the tree (of which this is the root)
+    //  * @return The sum of the elements of all nodes in the tree
+    //  */
+    // public int sumNodes() {
+    //     int toReturn = 0;
+    //     if (this.element != null) toReturn += (Integer)this.element;
+    //     if (this.left  != null) toReturn += this.left .sumNodes();
+    //     if (this.right != null) toReturn += this.right.sumNodes();
+    //     return toReturn;
+    // }
 
-    /** Given a key value K, returns the number of nodes beneath and including this having key values less than or equal to K
+    /**
+     * Given a key value K, returns the number of nodes beneath and including this having key values less than or equal to K
      * @param K Key value to return the number of nodes having key values less than or equal to
      * @return The number of nodes having key values less than or equal to K
      */
-    public int smallCount(Integer K) {
+    public int smallCount(Key K) {
         int toReturn = 0;
-        if ((Integer)this.key <= K) {
+        if (this.key.compareTo(K) <= 0) {
             toReturn++;
             if (this.right != null) toReturn += this.right.smallCount(K);
         }
         if (this.left != null) toReturn += this.left.smallCount(K);
+        return toReturn;
+    }
+
+    /**
+     * Returns the count of all the nodes in the tree (of which this is the root)
+     * @return The count of all the nodes in the tree (of which this is the root)
+     */
+    public int countNodes() {
+        int toReturn = 1;
+        if (this.left  != null) toReturn += this.left .countNodes();
+        if (this.right != null) toReturn += this.right.countNodes();
+        return toReturn;
+    }
+
+    // public int evenNodes() {
+    //     int toReturn = 0;
+    //     if ((Integer)this.element % 2 == 0) toReturn++;
+    //     if (this.left  != null) toReturn += this.left .evenNodes();
+    //     if (this.right != null) toReturn += this.right.evenNodes();
+    //     return toReturn;
+    // }
+
+    /**
+     * Returns the count of all the leaves (nodes with only null children) in the tree (of which this is the root)
+     * @return The count of all the leaves (nodes with only null children) in the tree (of which this is the root)
+     */
+    public int countLeaves() {
+        int toReturn = 0;
+        if (this.isLeaf()) toReturn++;
+        if (this.left  != null) toReturn += this.left .countLeaves();
+        if (this.right != null) toReturn += this.right.countLeaves();
+        return toReturn;
+    }
+
+    /**
+     * Returns the count of all the parents (nodes with at least one non-null child) in the tree (of which this is the root)
+     * @return The count of all the parents (nodes with at least one non-null child) in the tree (of which this is the root)
+     */
+    public int countParents() {
+        // this feels like it's getting repetitive
+        // also this specific method feels inefficient for some reason
+        int toReturn = 0;
+        if (!this.isLeaf()) toReturn++;
+        if (this.left  != null) toReturn += this.left .countParents();
+        if (this.right != null) toReturn += this.right.countParents();
         return toReturn;
     }
 }

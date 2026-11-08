@@ -1,10 +1,8 @@
 package io.github.redox7500.project1;
 
-import java.util.ArrayList;
 import java.util.function.Supplier;
 
 import io.github.redox7500.testutil.OptionalValue;
-import io.github.redox7500.testutil.TestHarness;
 import io.github.redox7500.testutil.TestState;
 import io.github.redox7500.testutil.TestFunction;
 import io.github.redox7500.testutil.TestFunctionNamed;
@@ -64,43 +62,130 @@ public class Project1ListTestState<E, T extends Project1List<E>> extends TestSta
     @Override
     protected Project1ListTestState<E, T> createInstance() {return new Project1ListTestState<E, T>();}
 
+    // @SuppressWarnings("unchecked")
     @Override
     protected Project1List<E> copyToTest(Project1List<E> toCopy)
     {
-        Project1List<E> toReturn;
+        return toCopy.copy();
+        // Project1List<E> toReturn;
 
-        try {toReturn = toCopy.getClass().getDeclaredConstructor().newInstance();}
-        catch (Throwable _) {System.err.println("Class to copy has no visible parameterless constructor"); return null;}
+        // try {toReturn = toCopy.getClass().getDeclaredConstructor().newInstance();}
+        // catch (Throwable _) {System.err.println("Class to copy has no visible parameterless constructor"); return null;}
 
-        int size = toCopy.size();
-        if (size == 0) return toReturn;
+        // int size = toCopy.size();
+        // if (size == 0) return toReturn;
 
-        int currentIndex = toCopy.getCurrentIndex();
+        // int currentIndex = toCopy.getCurrentIndex();
 
-        try
-        {
-            toCopy.moveCurrentIndexToStart();
+        // try
+        // {
+        //     toCopy.moveCurrentIndexToStart();
 
-            for (int i = 0; ; i++)
-            {
-                toReturn.append(toCopy.getCurrentValue());
+        //     for (int i = 0; ; i++)
+        //     {
+        //         toReturn.append(toCopy.getCurrentValue());
 
-                if (i == size - 1) break;
+        //         if (i == size - 1) break;
 
-                toCopy.moveCurrentIndexToNext();
-            }
-            toReturn.append(toCopy.getCurrentValue());
+        //         toCopy.moveCurrentIndexToNext();
+        //     }
+        //     toReturn.append(toCopy.getCurrentValue());
 
-            toReturn.moveCurrentIndexTo(currentIndex);
-        }
-        finally
-        {
-            toCopy.moveCurrentIndexTo(currentIndex);
-        }
+        //     toReturn.moveCurrentIndexTo(currentIndex);
+        // }
+        // finally
+        // {
+        //     toCopy.moveCurrentIndexTo(currentIndex);
+        // }
 
-        return toReturn;
+        // return toReturn;
     }
 
     @Override
-    protected TestEqualityResult 
+    protected TestEqualityResult testEquality()
+    {
+        int toTest1Size;
+        try {toTest1Size = this.toTest1.size();}
+        catch (Throwable _) {return TestEqualityResult.ERROR_THIS;}
+
+        int toTest2Size;
+        try {toTest2Size = this.toTest2.size();}
+        catch (Throwable _) {return TestEqualityResult.ERROR_OTHER;}
+
+        if (toTest1Size != toTest2Size) return TestEqualityResult.UNEQUAL;
+        if (toTest1Size == 0) return TestEqualityResult.EQUAL; // this one is debatable but i'm feeling lazy right now.
+
+        int toTest1CurrentIndex;
+        try {toTest1CurrentIndex = this.toTest1.getCurrentIndex();}
+        catch (Throwable _) {return TestEqualityResult.ERROR_THIS;}
+
+        int toTest2CurrentIndex;
+        try {toTest2CurrentIndex = this.toTest2.getCurrentIndex();}
+        catch (Throwable _) {return TestEqualityResult.ERROR_OTHER;}
+
+        if (toTest1CurrentIndex != toTest2CurrentIndex) return TestEqualityResult.UNEQUAL;
+
+        try {this.toTest1.moveCurrentIndexToStart();}
+        catch (Throwable _) {return TestEqualityResult.ERROR_THIS;}
+        
+        try {this.toTest2.moveCurrentIndexToStart();}
+        catch (Throwable _) {return TestEqualityResult.ERROR_OTHER;}
+
+        for (int i = 0; ; i++)
+        {
+            E toTest1CurrentValue;
+            try {toTest1CurrentValue = this.toTest1.getCurrentValue();}
+            catch (Throwable _) {return TestEqualityResult.ERROR_THIS;}
+
+            E toTest2CurrentValue;
+            try {toTest2CurrentValue = this.toTest2.getCurrentValue();}
+            catch (Throwable _) {return TestEqualityResult.ERROR_OTHER;}
+
+            if (!toTest1CurrentValue.equals(toTest2CurrentValue)) return TestEqualityResult.UNEQUAL;
+
+            if (i == toTest1Size - 1) break;
+
+            try {this.toTest1.moveCurrentIndexToNext();}
+            catch (Throwable _) {return TestEqualityResult.ERROR_THIS;}
+
+            try {this.toTest2.moveCurrentIndexToNext();}
+            catch (Throwable _) {return TestEqualityResult.ERROR_OTHER;}
+        }
+
+        try {this.toTest1.moveCurrentIndexTo(toTest1CurrentIndex);}
+        catch (Throwable _) {return TestEqualityResult.ERROR_THIS;}
+
+        try {this.toTest2.moveCurrentIndexTo(toTest2CurrentIndex);} // could also be phrased as thisCurrentIndex
+        catch (Throwable _) {return TestEqualityResult.ERROR_OTHER;}
+
+        return TestEqualityResult.EQUAL;
+    }
+
+    protected void printRelevantInfo(String name)
+    {
+        System.out.print(name + ": ");
+        try {System.out.println(this.toTest1);}
+        catch (Throwable error) {System.out.println("error: " + error);}
+
+        System.out.print(name + " size: ");
+        int size = 0;
+        try {size = this.toTest1.size(); System.out.println(size);}
+        catch (Throwable error) {System.out.println("error: " + error);}
+
+        System.out.print(name + " current value: ");
+        if (size > 0) // kinda scuffed using this possibly unitialized value of 0 thing but idk i'll think about that one for later
+        // also i could definitely make this a ternary in the line below, where this.getCurrentValue() is it would branch i think
+        {
+            try {System.out.println(this.toTest1.getCurrentValue());}
+            catch (Throwable error) {System.out.println("error: " + error);}
+        }
+        else
+        {
+            System.out.println("N/A (empty list)");
+        }
+
+        System.out.print(name + " current index: ");
+        try {System.out.println(this.toTest1.getCurrentIndex());}
+        catch (Throwable error) {System.out.println("error: " + error);}
+    }
 }

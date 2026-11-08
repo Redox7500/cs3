@@ -2,7 +2,7 @@ package io.github.redox7500.project1;
 
 // add negative indices like in python maybe?
 /** List ADT */
-public interface Project1List<E>
+public interface Project1List<E> extends Project1Copyable<Project1List<E>>
 {
     /** Remove all contents from the list, so it is once again empty. The client is responsible for reclaiming storage used by the list elements. */
     void clear();

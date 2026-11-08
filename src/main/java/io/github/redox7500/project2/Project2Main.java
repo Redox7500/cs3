@@ -151,80 +151,80 @@ public class Project2Main
     //     protected ThisState<K, V> createInstance() {return new ThisState<K, V>();}
     // }
 
-    private static class ArrayDequeWrapper<E> extends Project2AbstractQueue<E>
-    {
-        Queue<E> arrayDeque = new ArrayDeque<>();
+    // private static class ArrayDequeWrapper<E> extends Project2AbstractQueue<E>
+    // {
+    //     Queue<E> arrayDeque = new ArrayDeque<>();
 
-        ArrayDequeWrapper() {super();}
+    //     ArrayDequeWrapper() {super();}
         
-        @Override
-        public void clear() {this.arrayDeque.clear();}
+    //     @Override
+    //     public void clear() {this.arrayDeque.clear();}
         
-        @Override
-        public void enqueue(E value) {this.arrayDeque.offer(value);}
+    //     @Override
+    //     public void enqueue(E value) {this.arrayDeque.offer(value);}
 
-        @Override
-        public E dequeue() {assert this.arrayDeque.size() != 0 : "Queue is empty"; return this.arrayDeque.poll();}
+    //     @Override
+    //     public E dequeue() {assert this.arrayDeque.size() != 0 : "Queue is empty"; return this.arrayDeque.poll();}
         
-        @Override
-        public E frontValue() {return this.arrayDeque.element();}
+    //     @Override
+    //     public E frontValue() {return this.arrayDeque.element();}
 
-        @Override
-        public int length() {return this.arrayDeque.size();}
+    //     @Override
+    //     public int length() {return this.arrayDeque.size();}
         
-        @Override
-        public String toString() {return this.arrayDeque.toString();}
+    //     @Override
+    //     public String toString() {return this.arrayDeque.toString();}
 
-        @Override
-        public ArrayDequeWrapper<E> copy()
-        {
-            ArrayDequeWrapper<E> toReturn = new ArrayDequeWrapper<>();
+    //     @Override
+    //     public ArrayDequeWrapper<E> copy()
+    //     {
+    //         ArrayDequeWrapper<E> toReturn = new ArrayDequeWrapper<>();
 
-            toReturn.arrayDeque = new ArrayDeque<>(this.arrayDeque);
+    //         toReturn.arrayDeque = new ArrayDeque<>(this.arrayDeque);
 
-            return toReturn;
-        }
-    }
+    //         return toReturn;
+    //     }
+    // }
 
-    private static class HashMapWrapper<K extends Comparable<? super K>, V> extends Project2AbstractDictionary<K, V>
-    {
-        Map<K, V> hashMap = new HashMap<>();
+    // private static class HashMapWrapper<K extends Comparable<? super K>, V> extends Project2AbstractDictionary<K, V>
+    // {
+    //     Map<K, V> hashMap = new HashMap<>();
 
-        // clear, insert, remove, removeAny, find, size, copy
+    //     // clear, insert, remove, removeAny, find, size, copy
 
-        @Override
-        public void clear() {this.hashMap.clear();}
+    //     @Override
+    //     public void clear() {this.hashMap.clear();}
 
-        @Override
-        public void insert(K key, V value) {this.hashMap.put(key, value);}
+    //     @Override
+    //     public void insert(K key, V value) {this.hashMap.put(key, value);}
 
-        @Override // i kinda wanna change these to not return null but error, that would allow for nulls and make people aware that it errored i think
-        public V remove(K key) {return this.hashMap.remove(key);}
+    //     @Override // i kinda wanna change these to not return null but error, that would allow for nulls and make people aware that it errored i think
+    //     public V remove(K key) {return this.hashMap.remove(key);}
 
-        @Override
-        public V removeAny() {return (this.hashMap.size() > 0)? this.hashMap.remove(this.hashMap.keySet().iterator().next()) : null;}
+    //     @Override
+    //     public V removeAny() {return (this.hashMap.size() > 0)? this.hashMap.remove(this.hashMap.keySet().iterator().next()) : null;}
 
-        @Override
-        public V find(K key) {return this.hashMap.get(key);}
+    //     @Override
+    //     public V find(K key) {return this.hashMap.get(key);}
 
-        @Override
-        public int size() {return this.hashMap.size();}
+    //     @Override
+    //     public int size() {return this.hashMap.size();}
 
-        @Override
-        public HashMapWrapper<K, V> copy()
-        {
-            HashMapWrapper<K, V> toReturn = new HashMapWrapper<>();
+    //     @Override
+    //     public HashMapWrapper<K, V> copy()
+    //     {
+    //         HashMapWrapper<K, V> toReturn = new HashMapWrapper<>();
 
-            toReturn.hashMap = new HashMap<>(this.hashMap); // fix later, this is shallow i think but it should be at least 2 layers deep, maybe infinitely deep if i feel extra cool
+    //         toReturn.hashMap = new HashMap<>(this.hashMap); // fix later, this is shallow i think but it should be at least 2 layers deep, maybe infinitely deep if i feel extra cool
 
-            return toReturn;
-        }
+    //         return toReturn;
+    //     }
 
-        @Override
-        public String toString() {return this.hashMap.toString();} // this does a slightly different formatting thing than what i do but it works i guess
+    //     @Override
+    //     public String toString() {return this.hashMap.toString();} // this does a slightly different formatting thing than what i do but it works i guess
 
-        @Override
-        @SuppressWarnings("unchecked") // idk if this is the right ordering of these two annotations
-        public K[] getKeys() {return (K[])this.hashMap.keySet().toArray(new Comparable[0]);} // people say to not use this overload of toArray but i think it's fine specifically for here
-    }
+    //     @Override
+    //     @SuppressWarnings("unchecked") // idk if this is the right ordering of these two annotations
+    //     public K[] getKeys() {return (K[])this.hashMap.keySet().toArray(new Comparable[0]);} // people say to not use this overload of toArray but i think it's fine specifically for here
+    // }
 }

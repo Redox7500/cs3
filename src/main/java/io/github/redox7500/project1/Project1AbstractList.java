@@ -22,6 +22,44 @@ public abstract class Project1AbstractList<E> implements Project1List<E>
     @Override
     public void moveCurrentIndexToNext() {this.moveCurrentIndexTo(this.getCurrentIndex() + 1);}
     
+    @SuppressWarnings("unchecked")
+    @Override
+    public Project1List<E> copy()
+    {
+        Project1List<E> toReturn;
+
+        try {toReturn = this.getClass().getDeclaredConstructor().newInstance();}
+        catch (Throwable _) {System.err.println("Class to copy has no visible parameterless constructor"); return null;}
+
+        int size = this.size();
+        if (size == 0) return toReturn;
+
+        int currentIndex = this.getCurrentIndex();
+
+        try
+        {
+            this.moveCurrentIndexToStart();
+
+            for (int i = 0; ; i++)
+            {
+                toReturn.append(this.getCurrentValue());
+
+                if (i == size - 1) break;
+
+                this.moveCurrentIndexToNext();
+            }
+            toReturn.append(this.getCurrentValue());
+
+            toReturn.moveCurrentIndexTo(currentIndex);
+        }
+        finally
+        {
+            this.moveCurrentIndexTo(currentIndex);
+        }
+
+        return toReturn;
+    }
+
     @Override
     public String toString()
     {
@@ -50,32 +88,32 @@ public abstract class Project1AbstractList<E> implements Project1List<E>
         return toReturn.toString();
     }
 
-    @Override
-    public void printRelevantInfo(String name)
-    {
-        System.out.print(name + ": ");
-        try {System.out.println(this);}
-        catch (Throwable error) {System.out.println("error: " + error);}
+    // @Override
+    // public void printRelevantInfo(String name)
+    // {
+    //     System.out.print(name + ": ");
+    //     try {System.out.println(this);}
+    //     catch (Throwable error) {System.out.println("error: " + error);}
 
-        System.out.print(name + " size: ");
-        int size = 0;
-        try {size = this.size(); System.out.println(size);}
-        catch (Throwable error) {System.out.println("error: " + error);}
+    //     System.out.print(name + " size: ");
+    //     int size = 0;
+    //     try {size = this.size(); System.out.println(size);}
+    //     catch (Throwable error) {System.out.println("error: " + error);}
 
-        System.out.print(name + " current value: ");
-        if (size > 0) // kinda scuffed using this possibly unitialized value of 0 thing but idk i'll think about that one for later
-        // also i could definitely make this a ternary in the line below, where this.getCurrentValue() is it would branch i think
-        {
-            try {System.out.println(this.getCurrentValue());}
-            catch (Throwable error) {System.out.println("error: " + error);}
-        }
-        else
-        {
-            System.out.println("N/A (empty list)");
-        }
+    //     System.out.print(name + " current value: ");
+    //     if (size > 0) // kinda scuffed using this possibly unitialized value of 0 thing but idk i'll think about that one for later
+    //     // also i could definitely make this a ternary in the line below, where this.getCurrentValue() is it would branch i think
+    //     {
+    //         try {System.out.println(this.getCurrentValue());}
+    //         catch (Throwable error) {System.out.println("error: " + error);}
+    //     }
+    //     else
+    //     {
+    //         System.out.println("N/A (empty list)");
+    //     }
 
-        System.out.print(name + " current index: ");
-        try {System.out.println(this.getCurrentIndex());}
-        catch (Throwable error) {System.out.println("error: " + error);}
-    }
+    //     System.out.print(name + " current index: ");
+    //     try {System.out.println(this.getCurrentIndex());}
+    //     catch (Throwable error) {System.out.println("error: " + error);}
+    // }
 }
