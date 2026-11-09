@@ -94,7 +94,7 @@ public class TestHarness {
         System.out.println();
 
         System.out.print("smallCount: ");
-        System.out.println(charBst.root().smallCount((char)150));
+        System.out.println(smallCount(charBst.root(), (char)109));
 
         System.out.print("countNodes: ");
         System.out.println(charBst.countNodes());
@@ -117,7 +117,7 @@ public class TestHarness {
      * Returns the sum of the elements of all nodes in the tree (of which this is the root)
      * @return The sum of the elements of all nodes in the tree
     */
-    public static int sumNodes(BSTNode<Integer, Integer> rt) {
+    public static int sumNodes(BSTNode<?, Integer> rt) {
         int toReturn = 0;
         if (rt.element() != null) toReturn += rt.element();
         if (rt.left () != null) toReturn += sumNodes(rt.left ());
@@ -125,8 +125,8 @@ public class TestHarness {
         return toReturn;
     }
 
-    public static int smallCount(BSTNode<Integer, Integer> rt, Integer K) {
-        return rt.smallCount(K);
+    public static <K extends Comparable<? super K>> int smallCount(BSTNode<K, ?> rt, K k) {
+        return rt.smallCount(k);
     }
 
     /** 
