@@ -216,4 +216,8 @@ class BST<Key extends Comparable<? super Key>, E> implements Dictionary<Key, E> 
         }
         System.out.println(toPrint);
     }
+
+    public void printRange(Key low, Key high) {
+        this.root.printRange(low, high);
+    }
 }

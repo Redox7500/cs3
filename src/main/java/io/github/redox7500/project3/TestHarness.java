@@ -50,14 +50,14 @@ public class TestHarness {
         System.out.println();
         
         System.out.print("printRange: ");
-        intBst.root().printRange(100, 150);
+        intBst.printRange(100, 150);
         System.out.println();
 
         System.out.print("sumNodes: ");
         System.out.println(sumNodes(intBst.root()));
 
         System.out.print("smallCount: ");
-        System.out.println(intBst.root().smallCount(150));
+        System.out.println(smallCount(intBst.root(), 150));
 
         System.out.print("countNodes: ");
         System.out.println(intBst.countNodes());
@@ -90,7 +90,7 @@ public class TestHarness {
         System.out.println();
         
         System.out.print("printRange: ");
-        charBst.root().printRange((char)97, (char)109);
+        charBst.printRange((char)97, (char)109);
         System.out.println();
 
         System.out.print("smallCount: ");
@@ -125,9 +125,9 @@ public class TestHarness {
         return toReturn;
     }
 
-    // public static int smallCount(BSTNode<Integer, Integer> rt, Integer K) {
-    //     return rt.smallCount(K);
-    // }
+    public static int smallCount(BSTNode<Integer, Integer> rt, Integer K) {
+        return rt.smallCount(K);
+    }
 
     /** 
      * Given a pointer to the root node of a BST storing integer elements in its nodes, returns the count of all the nodes with even elements in the tree
