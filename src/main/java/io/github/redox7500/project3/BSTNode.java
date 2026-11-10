@@ -180,4 +180,18 @@ class BSTNode<Key extends Comparable<? super Key>, E> implements BinNode<E> {
         if (this.right != null) toReturn += this.right.countParents();
         return toReturn;
     }
+
+    /** 
+     * Given a pointer to the root node of a BST storing integer values in its nodes and two key values low and high, returns the number of nodes having key values >= low and <= high
+     * @param low Counts only nodes >= low
+     * @param high Counts only nodes <= high
+     * @return Number of nodes having key values >= low and <= high
+     */
+    public int countRange(Key low, Key high) {
+        int toReturn = 0;
+        if (this.key.compareTo(low) >= 0 && this.key.compareTo(high) <= 0) toReturn++;
+        if (this.left  != null && this.key.compareTo(low)  >= 0) toReturn += this.left .countRange(low, high);
+        if (this.right != null && this.key.compareTo(high) <= 0) toReturn += this.right.countRange(low, high);
+        return toReturn;
+    }
 }

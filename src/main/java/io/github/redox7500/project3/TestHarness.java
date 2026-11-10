@@ -65,11 +65,17 @@ public class TestHarness {
         System.out.print("evenNodes: ");
         System.out.println(evenNodes(intBst.root()));
 
+        System.out.print("sumChildrenOfEvens: ");
+        System.out.println(sumChildrenOfEvens(intBst.root()));
+
         System.out.print("countLeaves: ");
         System.out.println(intBst.countLeaves());
 
         System.out.print("countParents: ");
         System.out.println(intBst.countParents());
+
+        System.out.print("countRange: ");
+        System.out.println(countRange(intBst.root(), 100, 150));
 
         System.out.print("printInLevel: ");
         intBst.printInLevel();
@@ -105,6 +111,9 @@ public class TestHarness {
         System.out.print("countParents: ");
         System.out.println(charBst.countParents());
 
+        System.out.print("countRange: ");
+        System.out.println(countRange(charBst.root(), (char)97, (char)109));
+
         System.out.print("printInLevel: ");
         charBst.printInLevel();
     }
@@ -124,7 +133,7 @@ public class TestHarness {
         if (rt.right() != null) toReturn += sumNodes(rt.right());
         return toReturn;
     }
-
+    
     public static <K extends Comparable<? super K>> int smallCount(BSTNode<K, ?> rt, K k) {
         return rt.smallCount(k);
     }
@@ -140,5 +149,22 @@ public class TestHarness {
         if (rt.left () != null) toReturn += evenNodes(rt.left ());
         if (rt.right() != null) toReturn += evenNodes(rt.right());
         return toReturn;
+    }
+
+    /**
+     * Given a pointer to the root node of a BST storing integer elements in its nodes, returns the sum of the elements of all direct children who hav e aparent with an element that is even
+     * @param rt Pointer to the root node of a BST storing integer elements in its ndoes
+     * @return Sum of the elements of all direct children who have a prent with an element that is even
+     */
+    public static int sumChildrenOfEvens(BSTNode<?, Integer> rt) {
+        int toReturn = 0;
+        int multiplier = 1 - (rt.element() % 2);
+        if (rt.left () != null) toReturn += multiplier * rt.left ().element() + sumChildrenOfEvens(rt.left ());
+        if (rt.right() != null) toReturn += multiplier * rt.right().element() + sumChildrenOfEvens(rt.right());
+        return toReturn;
+    }
+
+    public static <K extends Comparable<? super K>> int countRange(BSTNode<K, ?> rt, K low, K high) {
+        return rt.countRange(low, high);
     }
 }
