@@ -28,12 +28,6 @@ public class TestHarness {
     }
     
     public static void main(String[] args) {
-        // BST<Integer, Integer> bst = new BST<Integer, Integer>();
-        // int temp;
-        // for (int i=1; i<=30; i++) {
-        //     temp = randomInt(300);
-        //     bst.insert(temp, temp);
-        // }
         BST<Integer, Integer> intBst = new BST<Integer, Integer>();
         int[] intTemp = new int[1];
         for (int i=1; i<=30; i++) {
