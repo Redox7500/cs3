@@ -1,187 +1,197 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package io.github.redox7500.project3;
 
 import java.util.ArrayDeque;
 
+// there are a bunch of methods that should be static or just removed completely, all the help stuff
 /**
- * Binary Search Tree implementation for Dictionary ADT
+ * Binary Search Tree implementation for Dictionary ADT. 
+ * 
+ * @param <K> the type of this BST's keys
+ * @param <V> the type of this BST's values
  */
-class BST<Key extends Comparable<? super Key>, E> implements Dictionary<Key, E> {
+class BST<K extends Comparable<? super K>, V> implements Dictionary<K, V> {
 
-    private BSTNode<Key, E> root;   // Root of the BST
-    int nodecount;                  // Number of nodes in the BST
+    /** Root of this BST. */
+    private BSTNode<K, V> root;
 
-    /**
-     * Constructor
-     */
+    /** Number of nodes in this BST. */
+    int nodecount;
+
+    /** Initializes a BST with no nodes. */
     BST() {
-        root = null;
-        nodecount = 0;
+        // Intentionally left blank
     }
-
-    /**
-     * Reinitialize tree
-     */
+    
     public void clear() {
-        root = null;
-        nodecount = 0;
+        this.root = null;
+        this.nodecount = 0;
     }
 
-    /**
-     * Insert a record into the tree.
-     *
-     * @param k Key value of the record.
-     * @param e The record to insert.
-     */
-    public void insert(Key k, E e) {
-        root = inserthelp(root, k, e);
-        nodecount++;
+    public void insert(K key, V value) {
+        this.root = inserthelp(this.root, key, value);
+        this.nodecount++;
     }
-
-    /**
-     * Remove a record from the tree.
-     *
-     * @param k Key value of record to remove.
-     * @return The record removed, null if there is none.
-     */
-    public E remove(Key k) {
-        E temp = findhelp(root, k);   // First find it
-        if (temp != null) {
-            root = removehelp(root, k); // Now remove it
-            nodecount--;
+    
+    public V remove(K key) {
+        V tempNode = findhelp(this.root, key); // First find it
+        if (tempNode != null) {
+            this.root = removehelp(this.root, key); // Now remove it
+            this.nodecount--;
         }
-        return temp;
+        return tempNode;
     }
-
-    /**
-     * Remove and return the root node from the dictionary.
-     *
-     * @return The record removed, null if tree is empty.
-     */
-    public E removeAny() {
-        if (root == null) {
+    
+    public V removeAny() {
+        if (this.root == null) {
             return null;
         }
-        E temp = root.element();
-        root = removehelp(root, root.key());
-        nodecount--;
+        V temp = this.root.element();
+        this.root = removehelp(this.root, this.root.key());
+        this.nodecount--;
         return temp;
     }
-
-    /**
-     * @return Record with key value k, null if none exist.
-     * @param k The key value to find.
-     */
-    public E find(Key k) {
-        return findhelp(root, k);
+    
+    public V find(K key) {
+        return findhelp(this.root, key);
     }
-
-    /**
-     * @return The number of records in the dictionary.
-     */
+    
     public int size() {
-        return nodecount;
+        return this.nodecount;
     }
     
     /**
-     * @return A pointer to the root node of the tree.
+     * Get the root node of this tree.
+     * 
+     * @return the root node of this tree
      */
-    public BSTNode<Key, E> root() {
+    public BSTNode<K, V> root() {
+        return this.root;
+    }
+
+    /**
+     * Get the value of the node in the given tree with the given key
+     * 
+     * @param root the root of the tree to find the node with the given key in
+     * @param key  the key of the node to get the value of
+     * @return the value of the node in the given tree with the given key, or {@code null} if it couldn't be found
+     */
+    private V findhelp(BSTNode<K, V> root, K key) {
+        if (root == null) {
+            return null;
+        }
+        if (root.key().compareTo(key) > 0) {
+            return findhelp(root.left(), key);
+        } else if (root.key().compareTo(key) == 0) {
+            return root.element();
+        } else {
+            return findhelp(root.right(), key);
+        }
+    }
+
+    /**
+     * Get the current subtree modified to contain the new node containing the key {@code key} and the value {@code value}.
+     * 
+     * @param root  the subtree to insert the new node containing the key {@code key} and the value {@code value} into
+     * @param key   the key of the new node to insert
+     * @param value the value of the new node to insert
+     * @return the current subtree modified to contain the new node containing the key {@code key} and the value {@code value}
+     */
+    private BSTNode<K, V> inserthelp(BSTNode<K, V> root, K key, V value) {
+        if (root == null) {
+            return new BSTNode<K, V>(key, value);
+        }
+        if (root.key().compareTo(key) > 0) {
+            root.setLeft(inserthelp(root.left(), key, value));
+        } else {
+            root.setRight(inserthelp(root.right(), key, value));
+        }
         return root;
     }
 
-    private E findhelp(BSTNode<Key, E> rt, Key k) {
-        if (rt == null) {
+    /**
+     * Remove a node with the key value given of the tree given.
+     * 
+     * @param root the root of the tree to remove from
+     * @param key  the key of the node to be removed
+     * @return the given tree with a node with the key given removed
+     */
+    private BSTNode<K, V> removehelp(BSTNode<K, V> root, K key) {
+        if (root == null) {
             return null;
         }
-        if (rt.key().compareTo(k) > 0) {
-            return findhelp(rt.left(), k);
-        } else if (rt.key().compareTo(k) == 0) {
-            return rt.element();
+        if (root.key().compareTo(key) > 0) {
+            root.setLeft(removehelp(root.left(), key));
+        } else if (root.key().compareTo(key) < 0) {
+            root.setRight(removehelp(root.right(), key));
         } else {
-            return findhelp(rt.right(), k);
-        }
-    }
-
-    /**
-     * @return The current subtree, modified to contain the new item
-     */
-    private BSTNode<Key, E> inserthelp(BSTNode<Key, E> rt, Key k, E e) {
-        if (rt == null) {
-            return new BSTNode<Key, E>(k, e);
-        }
-        if (rt.key().compareTo(k) > 0) {
-            rt.setLeft(inserthelp(rt.left(), k, e));
-        } else {
-            rt.setRight(inserthelp(rt.right(), k, e));
-        }
-        return rt;
-    }
-
-    /**
-     * Remove a node with key value k
-     *
-     * @return The tree with the node removed
-     */
-    private BSTNode<Key, E> removehelp(BSTNode<Key, E> rt, Key k) {
-        if (rt == null) {
-            return null;
-        }
-        if (rt.key().compareTo(k) > 0) {
-            rt.setLeft(removehelp(rt.left(), k));
-        } else if (rt.key().compareTo(k) < 0) {
-            rt.setRight(removehelp(rt.right(), k));
-        } else { // Found it
-            if (rt.left() == null) {
-                return rt.right();
-            } else if (rt.right() == null) {
-                return rt.left();
-            } else { // Two children
-                BSTNode<Key, E> temp = getmin(rt.right());
-                rt.setElement(temp.element());
-                rt.setKey(temp.key());
-                rt.setRight(deletemin(rt.right()));
+            // Found it
+            if (root.left() == null) {
+                return root.right();
+            } else if (root.right() == null) {
+                return root.left();
+            } else {
+                // Two children
+                BSTNode<K, V> temp = getmin(root.right());
+                root.setElement(temp.element());
+                root.setKey(temp.key());
+                root.setRight(deletemin(root.right()));
             }
         }
-        return rt;
+        return root;
     }
 
-    private BSTNode<Key, E> getmin(BSTNode<Key, E> rt) {
-        if (rt.left() == null) {
-            return rt;
+    /**
+     * Get the node with the least value in the given tree.
+     * 
+     * @param root the root of the tree to get the node with the least value of
+     * @return the node with the least value in the given tree
+     */
+    private BSTNode<K, V> getmin(BSTNode<K, V> root) {
+        if (root.left() == null) {
+            return root;
         }
-        return getmin(rt.left());
+        return getmin(root.left());
     }
 
-    private BSTNode<Key, E> deletemin(BSTNode<Key, E> rt) {
-        if (rt.left() == null) {
-            return rt.right();
+    /**
+     * Get the tree given with its node with the minimum value removed.
+     * 
+     * @param root the root of the tree to delete the node with the minimum value from
+     * @return the tree given, with the node with the minimum value removed
+     */
+    private BSTNode<K, V> deletemin(BSTNode<K, V> root) {
+        if (root.left() == null) {
+            return root.right();
         }
-        rt.setLeft(deletemin(rt.left()));
-        return rt;
+        root.setLeft(deletemin(root.left()));
+        return root;
     }
 
+    /** Schaffer is a very strange person. */
     private StringBuffer out;
-
+    
     public String toString() {
         out = new StringBuffer(100);
         printhelp(root);
         return out.toString();
     }
 
-    private void printhelp(BSTNode<Key, E> rt) {
-        if (rt == null) {
+    /**
+     * Print all of the nodes of the tree given.
+     * 
+     * @param root the root of the tree to print
+     */
+    private void printhelp(BSTNode<K, V> root) {
+        if (root == null) {
             return;
         }
-        printhelp(rt.left());
-        printVisit(rt.element());
-        printhelp(rt.right());
+        printhelp(root.left());
+        printVisit(root.element());
+        printhelp(root.right());
     }
 
-    private void printVisit(E it) {
+    /** I genuinely have no idea why Schaffer is doing this. */
+    private void printVisit(V it) {
         out.append(it + " ");
     }
     
@@ -205,9 +215,9 @@ class BST<Key extends Comparable<? super Key>, E> implements Dictionary<Key, E> 
     /** Prints the node elements of the tree in-level order (prints the root node, then all the nodes in level 1 left-to-right, then all the nodes in level 2 left-to-right, and so on) */
     public void printInLevel() {
         StringBuilder toPrint = new StringBuilder();
-        ArrayDeque<BSTNode<Key, E>> layer = new ArrayDeque<>();
+        ArrayDeque<BSTNode<K, V>> layer = new ArrayDeque<>();
         layer.add(this.root);
-        BSTNode<Key, E> node;
+        BSTNode<K, V> node;
         while ((node = layer.poll()) != null) {
             toPrint.append(node.element());
             toPrint.append(' ');
@@ -217,7 +227,7 @@ class BST<Key extends Comparable<? super Key>, E> implements Dictionary<Key, E> 
         System.out.println(toPrint);
     }
 
-    public void printRange(Key low, Key high) {
+    public void printRange(K low, K high) {
         this.root.printRange(low, high);
     }
 }

@@ -1,28 +1,26 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package io.github.redox7500.project3;
 
-import java.util.*;
+import java.util.Random;
 
 public class TestHarness {
-    static private Random rndvalue = new Random(); // Hold the Random class object
-    // static int randomInt(int n) {
-    //     return Math.abs(rndvalue.nextInt()) % n;
-    // }
-    // static void random(int low, int high, Object out) {
-    //     switch (out) {
-    //         case int [] i -> i[0] = rndvalue.nextInt(low, high);
-    //         case char[] c -> c[0] = (char)rndvalue.nextInt(low, high);
-    //         default -> System.out.println("a");
-    //     }
-    // }
+    /** Hold the Random class object. */
+    static private Random rndvalue = new Random();
 
-    static void random(int n, int[] out) {
-        out[0] = rndvalue.nextInt(n);
+    /**
+     * Get a random integer (specifically for this test harness).
+     * 
+     * @param max the maximum value of the range of values that can be given
+     * @param out the mutable object in which the random integer is stored
+    */
+    static void random(int max, int[] out) {
+        out[0] = rndvalue.nextInt(max);
     }
 
+    /**
+     * Get a random character (specifically for this test harness).
+     * 
+     * @param out the mutable object in which the random character is stored
+     */
     static void random(char[] out) {
         // 97 is the ascii value for a
         // and 122 is the ascii value for z
@@ -123,44 +121,48 @@ public class TestHarness {
     // }
 
     /**
-     * Returns the sum of the elements of all nodes in the tree (of which this is the root)
-     * @return The sum of the elements of all nodes in the tree
+     * Returns the sum of the elements of all nodes in the tree given (of which this is the root).
+     * 
+     * @param root the root of the tree to sum the values of the nodes of
+     * @return the sum of the elements of all nodes in the tree given
     */
-    public static int sumNodes(BSTNode<?, Integer> rt) {
+    public static int sumNodes(BSTNode<?, Integer> root) {
         int toReturn = 0;
-        if (rt.element() != null) toReturn += rt.element();
-        if (rt.left () != null) toReturn += sumNodes(rt.left ());
-        if (rt.right() != null) toReturn += sumNodes(rt.right());
+        if (root.element() != null) toReturn += root.element();
+        if (root.left () != null) toReturn += sumNodes(root.left ());
+        if (root.right() != null) toReturn += sumNodes(root.right());
         return toReturn;
     }
     
-    public static <K extends Comparable<? super K>> int smallCount(BSTNode<K, ?> rt, K k) {
-        return rt.smallCount(k);
+    public static <K extends Comparable<? super K>> int smallCount(BSTNode<K, ?> root, K key) {
+        return root.smallCount(key);
     }
 
     /** 
-     * Given a pointer to the root node of a BST storing integer elements in its nodes, returns the count of all the nodes with even elements in the tree
-     * @param rt The root node of a BST storing integer elements in its nodes
-     * @return The count of all the nodes with even elements in the tree
+     * Given a pointer to the root node of a BST storing integer elements in its nodes, returns the count of all the nodes with even elements in the tree.
+     * 
+     * @param root the root node of a BST storing integer elements in its nodes
+     * @return the count of all the nodes with even elements in the tree
      */
-    public static int evenNodes(BSTNode<?, Integer> rt) {
+    public static int evenNodes(BSTNode<?, Integer> root) {
         int toReturn = 0;
-        if (rt.element() % 2 == 0) toReturn++;
-        if (rt.left () != null) toReturn += evenNodes(rt.left ());
-        if (rt.right() != null) toReturn += evenNodes(rt.right());
+        if (root.element() % 2 == 0) toReturn++;
+        if (root.left () != null) toReturn += evenNodes(root.left ());
+        if (root.right() != null) toReturn += evenNodes(root.right());
         return toReturn;
     }
 
     /**
-     * Given a pointer to the root node of a BST storing integer elements in its nodes, returns the sum of the elements of all direct children who hav e aparent with an element that is even
-     * @param rt Pointer to the root node of a BST storing integer elements in its ndoes
-     * @return Sum of the elements of all direct children who have a prent with an element that is even
+     * Given a pointer to the root node of a BST storing integer elements in its nodes, returns the sum of the elements of all direct children who have a parent with an element that is even.
+     * 
+     * @param root pointer to the root node of a BST storing integer elements in its ndoes
+     * @return sum of the elements of all direct children who have a prent with an element that is even
      */
-    public static int sumChildrenOfEvens(BSTNode<?, Integer> rt) {
+    public static int sumChildrenOfEvens(BSTNode<?, Integer> root) {
         int toReturn = 0;
-        int multiplier = 1 - (rt.element() % 2);
-        if (rt.left () != null) toReturn += multiplier * rt.left ().element() + sumChildrenOfEvens(rt.left ());
-        if (rt.right() != null) toReturn += multiplier * rt.right().element() + sumChildrenOfEvens(rt.right());
+        int multiplier = 1 - (root.element() % 2);
+        if (root.left () != null) toReturn += multiplier * root.left ().element() + sumChildrenOfEvens(root.left ());
+        if (root.right() != null) toReturn += multiplier * root.right().element() + sumChildrenOfEvens(root.right());
         return toReturn;
     }
 

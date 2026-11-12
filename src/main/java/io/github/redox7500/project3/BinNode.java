@@ -1,33 +1,47 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package io.github.redox7500.project3;
 
+// some things in BSTNode can go here i think, such as isLeaf or whatever that's called
 /**
- * ADT for binary tree nodes
+ * ADT for binary tree nodes.
+ * <p>
+ * Note: a node is considered a leaf node if both of its children are null.
+ * 
+ * @param <E> the type of value this node contains
  */
 public interface BinNode<E> {
 
     /**
-     * Get and set the element value
+     * Get this node's value.
+     * 
+     * @return this node's value
      */
-    public E element();
-
-    public void setElement(E v);
-
-    /**
-     * @return The left child
-     */
-    public BinNode<E> left();
+    E element();
 
     /**
-     * @return The right child
+     * Set this node's value.
+     * 
+     * @param element to set this node's value to
      */
-    public BinNode<E> right();
+    void setElement(E element);
 
     /**
-     * @return True if a leaf node, false otherwise
+     * Get this node's left child.
+     * 
+     * @return this node's left child
      */
-    public boolean isLeaf();
+    BinNode<E> left();
+
+    /**
+     * Get this node's right child.
+     * 
+     * @return this node's right child
+     */
+    BinNode<E> right();
+
+    /**
+     * Get whether or not this node is a leaf node. A leaf node's only requirement is to have {@code null} for both of its children.
+     * 
+     * @return {@code true} if this is a leaf node, and {@code false} otherwise
+     */
+    boolean isLeaf();
 }

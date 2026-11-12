@@ -1,94 +1,125 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package io.github.redox7500.project3;
 
+// what on earth is schaffer's description for bstnode here
+// like yes of course it has pointers to children we know
 /**
- * Binary tree node implementation: Pointers to children
- *
- * @param E The data element
- * @param Key The associated key for the record
+ * Binary tree node implementation: Pointers to children.
+ * 
+ * @param <K> the type of this record's key
+ * @param <V> the type of this record's value
  */
-class BSTNode<Key extends Comparable<? super Key>, E> implements BinNode<E> {
+class BSTNode<K extends Comparable<? super K>, V> implements BinNode<V> {
+    /** This node's key. */
+    private K key;
 
-    private Key key;              // Key for this node
-    private E element;            // Element for this node
-    private BSTNode<Key, E> left;  // Pointer to left child
-    private BSTNode<Key, E> right; // Pointer to right child
+    /** This node's value. */
+    private V value;
 
-    /**
-     * Constructors
-     */
+    /** This node's left child */
+    private BSTNode<K, V> left;
+
+    /** This node's right child. */
+    private BSTNode<K, V> right;
+    
+    /** Initializes a BSTNode with its key, value, and children all {@code null}. */
     public BSTNode() {
-        left = right = null;
-    }
-
-    public BSTNode(Key k, E val) {
-        left = right = null;
-        key = k;
-        element = val;
-    }
-
-    public BSTNode(Key k, E val, BSTNode<Key, E> l, BSTNode<Key, E> r) {
-        left = l;
-        right = r;
-        key = k;
-        element = val;
+        // Intentionally left empty
     }
 
     /**
-     * Get and set the key value
+     * Initializes a BSTNode with the given key and value.
+     * 
+     * @param key   the key to initialize the BSTNode with
+     * @param value the value to initialize the BSTNode with
      */
-    public Key key() {
-        return key;
-    }
-
-    public void setKey(Key k) {
-        key = k;
+    public BSTNode(K key, V value) {
+        this.left = this.right = null;
+        this.key = key;
+        this.value = value;
     }
 
     /**
-     * Get and set the element value
+     * Initializes a BSTNode with the given key, value, and left and right children.
+     * 
+     * @param key   the key value to initialize the BSTNode with
+     * @param value the value to initialize the BSTNode with
+     * @param left  the left child to initialize the BSTNode with
+     * @param right the right child to initialize the BSTNode with
      */
-    public E element() {
-        return element;
-    }
-
-    public void setElement(E v) {
-        element = v;
+    public BSTNode(K key, V value, BSTNode<K, V> left, BSTNode<K, V> right) {
+        this.left = left;
+        this.right = right;
+        this.key = key;
+        this.value = value;
     }
 
     /**
-     * Get and set the left child
+     * Get this node's key.
+     * 
+     * @return this node's key
      */
-    public BSTNode<Key, E> left() {
-        return left;
+    public K key() {
+        return this.key;
     }
 
-    public void setLeft(BSTNode<Key, E> p) {
-        left = p;
-    }
-
+    // there has to be a better way to phrase this, other than saying "the value"
     /**
-     * Get and set the right child
+     * Set this node's key.
+     * 
+     * @param key to set this node's key to
      */
-    public BSTNode<Key, E> right() {
-        return right;
+    public void setKey(K key) {
+        this.key = key;
     }
 
-    public void setRight(BSTNode<Key, E> p) {
-        right = p;
+    @Override
+    public V element() {
+        return this.value;
+    }
+
+    @Override
+    public void setElement(V value) {
+        this.value = value;
+    }
+
+    @Override
+    public BSTNode<K, V> left() {
+        return this.left;
     }
 
     /**
-     * @return True if a leaf node, false otherwise
+     * Set this node's left child.
+     * 
+     * @param left to set this node's left child to
+     */
+    public void setLeft(BSTNode<K, V> left) {
+        this.left = left;
+    }
+
+    @Override
+    public BSTNode<K, V> right() {
+        return this.right;
+    }
+
+    /**
+     * Set this node's right child.
+     * 
+     * @param right to set this node's right child to
+     */
+    public void setRight(BSTNode<K, V> right) {
+        this.right = right;
+    }
+
+    /**
+     * Get whether or not this node is a leaf node.
+     * 
+     * @return {@code true} if this node has only null children, and {@code false} otherwise
      */
     public boolean isLeaf() {
         return (left == null) && (right == null);
     }
 
-    /** Prints out the node keys of the BST (of which this is the root) in reverse sorted order from highest to lowest */
+    /** Prints out the node keys of the BST (of which this is the root) in reverse sorted order from highest to lowest. */
     public void printHighToLow() {
         if (this.right != null) this.right.printHighToLow();
         System.out.print(this.key + " ");
@@ -96,11 +127,12 @@ class BSTNode<Key extends Comparable<? super Key>, E> implements BinNode<E> {
     }
 
     /**
-     * Given a low key integer value and a high key integer value, prints in sorted order all records including and beneath this node whose key values fall between the two given keys, inclusive
-     * @param low The lower bound for what keys to print
-     * @param high The upper bound for what keys to print
+     * Given a low key integer value and a high key integer value, prints in sorted order all records including and beneath this node whose key values fall between the two given keys, inclusive.
+     * 
+     * @param low  the lower bound for what keys to print
+     * @param high the upper bound for what keys to print
      */
-    public void printRange(Key low, Key high) {
+    public void printRange(K low, K high) {
         // maybe supposed to be non inclusive like < or > but i forgot if the insert does that or not
         // System.out.println(this.left != null && (Integer)this.left.key >= low);
         // System.out.println(this.right != null && (Integer)this.right.key <= high);
@@ -109,36 +141,26 @@ class BSTNode<Key extends Comparable<? super Key>, E> implements BinNode<E> {
         if (this.right != null && this.key.compareTo(high) <= 0) this.right.printRange(low, high);
     }
 
-    // /**
-    //  * Returns the sum of the elements of all nodes in the tree (of which this is the root)
-    //  * @return The sum of the elements of all nodes in the tree
-    //  */
-    // public int sumNodes() {
-    //     int toReturn = 0;
-    //     if (this.element != null) toReturn += (Integer)this.element;
-    //     if (this.left  != null) toReturn += this.left .sumNodes();
-    //     if (this.right != null) toReturn += this.right.sumNodes();
-    //     return toReturn;
-    // }
-
     /**
-     * Given a key value K, returns the number of nodes beneath and including this having key values less than or equal to K
-     * @param K Key value to return the number of nodes having key values less than or equal to
-     * @return The number of nodes having key values less than or equal to K
+     * Given a key value {@code key}, returns the number of nodes beneath and including this having key values less than or equal to {@code key}.
+     * 
+     * @param key the key value to return the number of nodes having key values less than or equal to
+     * @return the number of nodes having key values less than or equal to {@code key}
      */
-    public int smallCount(Key K) {
+    public int smallCount(K key) {
         int toReturn = 0;
-        if (this.key.compareTo(K) <= 0) {
+        if (this.key.compareTo(key) <= 0) {
             toReturn++;
-            if (this.right != null) toReturn += this.right.smallCount(K);
+            if (this.right != null) toReturn += this.right.smallCount(key);
         }
-        if (this.left != null) toReturn += this.left.smallCount(K);
+        if (this.left != null) toReturn += this.left.smallCount(key);
         return toReturn;
     }
 
     /**
-     * Returns the count of all the nodes in the tree (of which this is the root)
-     * @return The count of all the nodes in the tree (of which this is the root)
+     * Returns the count of all the nodes in the tree (of which this is the root).
+     * 
+     * @return the count of all the nodes in the tree (of which this is the root)
      */
     public int countNodes() {
         int toReturn = 1;
@@ -147,17 +169,10 @@ class BSTNode<Key extends Comparable<? super Key>, E> implements BinNode<E> {
         return toReturn;
     }
 
-    // public int evenNodes() {
-    //     int toReturn = 0;
-    //     if ((Integer)this.element % 2 == 0) toReturn++;
-    //     if (this.left  != null) toReturn += this.left .evenNodes();
-    //     if (this.right != null) toReturn += this.right.evenNodes();
-    //     return toReturn;
-    // }
-
     /**
-     * Returns the count of all the leaves (nodes with only null children) in the tree (of which this is the root)
-     * @return The count of all the leaves (nodes with only null children) in the tree (of which this is the root)
+     * Returns the count of all the leaves (nodes with only null children) in the tree (of which this is the root).
+     * 
+     * @return the count of all the leaves (nodes with only null children) in the tree (of which this is the root)
      */
     public int countLeaves() {
         int toReturn = 0;
@@ -168,8 +183,9 @@ class BSTNode<Key extends Comparable<? super Key>, E> implements BinNode<E> {
     }
 
     /**
-     * Returns the count of all the parents (nodes with at least one non-null child) in the tree (of which this is the root)
-     * @return The count of all the parents (nodes with at least one non-null child) in the tree (of which this is the root)
+     * Returns the count of all the parents (nodes with at least one non-null child) in the tree (of which this is the root).
+     * 
+     * @return the count of all the parents (nodes with at least one non-null child) in the tree (of which this is the root)
      */
     public int countParents() {
         // this feels like it's getting repetitive
@@ -182,12 +198,13 @@ class BSTNode<Key extends Comparable<? super Key>, E> implements BinNode<E> {
     }
 
     /** 
-     * Given a pointer to the root node of a BST storing integer values in its nodes and two key values low and high, returns the number of nodes having key values >= low and <= high
-     * @param low Counts only nodes >= low
-     * @param high Counts only nodes <= high
-     * @return Number of nodes having key values >= low and <= high
+     * Given a pointer to the root node of a BST storing integer values in its nodes and two key values low and high, returns the number of nodes having key values >= low and <= high.
+     * 
+     * @param low  the lower bound of nodes to count
+     * @param high the upper bound of nodes to count
+     * @return the number of nodes having key values within low and high, inclusive
      */
-    public int countRange(Key low, Key high) {
+    public int countRange(K low, K high) {
         int toReturn = 0;
         if (this.key.compareTo(low) >= 0 && this.key.compareTo(high) <= 0) toReturn++;
         if (this.left  != null && this.key.compareTo(low)  >= 0) toReturn += this.left .countRange(low, high);

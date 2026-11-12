@@ -1,52 +1,54 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package io.github.redox7500.project3;
 
-/**
- * The Dictionary abstract class.
- */
-public interface Dictionary<Key, E> {
-
-    /**
-     * Reinitialize dictionary
-     */
+// maybe i should make all of the comments things like "adds x" instead of "add x"
+// and should things after "Note: " be lowercase or capitalized, i wonder?
+// also i have notes but then i put a little "or null blah blah blah" thing in the return, which might belong in the note instead
+/** The Dictionary abstract class. */
+public interface Dictionary<K, V> {
+    /** Reinitialize this dictionary. */
     public void clear();
 
     /**
-     * Insert a record
-     *
-     * @param k The key for the record being inserted.
-     * @param e The record being inserted.
+     * Add a key-value pair to this dictionary.
+     * 
+     * @param key   the key of the key-value pair to add
+     * @param value the value of the key-value pair to add
      */
-    public void insert(Key k, E e);
+    public void insert(K key, V value);
 
     /**
-     * Remove and return a record.
-     *
-     * @param k The key of the record to be removed.
-     * @return A matching record. If multiple records match "k", remove an
-     * arbitrary one. Return null if no record with key "k" exists.
+     * Remove the key-value pair with the given key and get its value.
+     * <p>
+     * Note: If multiple pairs match the given key, any one of them could be chosen.
+     * 
+     * @param key the key of the key-value pair to be removed, paired with the returned value
+     * @return the value associated with the key given, or {@code null} if the key is not found
      */
-    public E remove(Key k);
+    public V remove(K key);
 
     /**
-     * Remove and return an arbitrary record from dictionary.
-     *
-     * @return the record removed, or null if none exists.
+     * Remove any of this Dictionary's key-value pairs and get its value.
+     * <p>
+     * Note: If this dictionary is empty, nothing will be removed and {@code null} will be returned.
+     * 
+     * @return the value of the key-value pair removed
      */
-    public E removeAny();
+    public V removeAny();
 
     /**
-     * @return A record matching "k" (null if none exists). If multiple records
-     * match, return an arbitrary one.
-     * @param k The key of the record to find
+     * Get the value of the key-value pair with the given key.
+     * <p>
+     * Note: If multiple pairs match the given key, any one of them could be chosen.
+     * 
+     * @param key the key associated with the value to be returned
+     * @return the value associated with the given key, or {@code null} if the key is not found
      */
-    public E find(Key k);
+    public V find(K key);
 
     /**
-     * @return The number of records in the dictionary.
+     * Get the size of this Dictionary.
+     * 
+     * @return the number of key-value pairs in this Dictionary
      */
     public int size();
 };
