@@ -109,10 +109,6 @@ public class TestHarness {
         System.out.print("printInLevel: ");
         charBst.printInLevel();
     }
-    
-    // public static void printRange(BSTNode<Integer, Integer> rt, int low, int high) {
-    //     rt.printRange(low, high);
-    // }
 
     /**
      * Returns the sum of the elements of all nodes in the tree given (of which this is the root).
